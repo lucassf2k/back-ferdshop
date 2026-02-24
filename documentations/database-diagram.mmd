@@ -1,0 +1,48 @@
+---
+title: FerdShop Database Diagram
+---
+erDiagram
+  USER ||--o{ ORDER : places
+  ORDER ||--|{ ORDER_ITEM : contains
+  PRODUCT ||--o{ ORDER_ITEM : appears_in
+  CATEGORY ||--o{ PRODUCT : classifies
+
+    CATEGORY {
+        uuid id
+        string name
+        date createdAt
+        date updatedAt
+    }
+
+    PRODUCT {
+        uuid id
+        string name
+        string description
+        numeric price
+        int stock
+        enum rating
+    }
+
+    USER {
+        uuid id
+        string name
+        string email
+        string password
+        enum role
+    }
+
+    ORDER {
+        uuid id
+        uuid userId
+        numeric totalPrice
+        enum status
+        date createdAt
+    }
+
+    ORDER_ITEM {
+        uuid id
+        uuid orderId
+        uuid productId
+        int quantity
+        numeric unitPrice
+    }
