@@ -4,45 +4,77 @@ title: FerdShop Database Diagram
 erDiagram
   USER ||--o{ ORDER : places
   ORDER ||--|{ ORDER_ITEM : contains
-  PRODUCT ||--o{ ORDER_ITEM : appears_in
+  PRODUCT ||--o{ ORDER_ITEM : appearIn
   CATEGORY ||--o{ PRODUCT : classifies
 
-    CATEGORY {
-        uuid id
-        string name
-        date createdAt
-        date updatedAt
-    }
+  USER ||--o{ REVIEW : writes
+  PRODUCT ||--o{ REVIEW : receives
 
-    PRODUCT {
-        uuid id
-        string name
-        string description
-        numeric price
-        int stock
-        enum rating
-    }
+  CATEGORY {
+      uuid id_PK
+      string name_UNIQUE
+      boolean isDeleted
+      date createdAt
+      date updatedAt
+      date deleteAt
+  }
 
-    USER {
-        uuid id
-        string name
-        string email
-        string password
-        enum role
-    }
+  PRODUCT {
+      uuid id_PK
+      string name
+      string description
+      numeric price
+      int stock
+      boolean isDeleted
+      uuid categoryId_FK
+      date createdAt
+      date updatedAt
+      date deletedAt
+  }
 
-    ORDER {
-        uuid id
-        uuid userId
-        numeric totalPrice
-        enum status
-        date createdAt
-    }
+  USER {
+      uuid id_PK
+      string name
+      string email_UNIQUE
+      string password
+      enum role
+      boolean isDeleted
+      date createdAt
+      date updatedAt
+      date deletedAt
+  }
 
-    ORDER_ITEM {
-        uuid id
-        uuid orderId
-        uuid productId
-        int quantity
-        numeric unitPrice
-    }
+  ORDER {
+      uuid id_PK
+      uuid userId_FK
+      numeric totalPrice
+      enum status
+      string deliveryAddress
+      boolean isDeleted
+      date createdAt
+      date updatedAt
+      date deletedAt
+  }
+
+  ORDER_ITEM {
+      uuid id_PK
+      uuid orderId_FK
+      uuid productId_FK
+      int quantity
+      numeric unitPrice
+      boolean isDeleted
+      date createdAt
+      date updatedAt
+      date deletedAt
+  }
+
+  REVIEW {
+      uuid id_PK
+      uuid userId_FK
+      uuid productId_FK
+      int rating
+      boolean isDeleted
+      date createdAt
+      date updatedAt
+      date deletedAt
+  }
