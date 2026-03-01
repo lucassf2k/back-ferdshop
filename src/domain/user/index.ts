@@ -1,5 +1,6 @@
 import { getUUIDV7 } from '../../infrastructure/services/id-services';
 import type { UserRole } from '../enums/user-role';
+import type { Order } from '../order';
 import type { Email } from './email';
 
 export type UserProps = {
@@ -8,6 +9,7 @@ export type UserProps = {
   password: string;
   role: UserRole;
   isDeleted: boolean;
+  orders?: Order[];
   createdAt?: Date;
   updatedAt?: Date;
   deleteAt?: Date | null;
