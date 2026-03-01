@@ -1,5 +1,6 @@
 import { getUUIDV7 } from '../../infrastructure/services/id-services';
 import type { Category } from '../category';
+import type { Review } from './review';
 import type { Stock } from './stock';
 
 export type ProductProps = {
@@ -9,6 +10,7 @@ export type ProductProps = {
   stock: Stock;
   isDeleted: boolean;
   categories: Category[];
+  reviews: Review[];
   createdAt?: Date;
   updatedAt?: Date;
   deleteAt?: Date | null;
