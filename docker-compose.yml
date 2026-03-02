@@ -1,7 +1,7 @@
 services:
   postgres:
     image: postgres:latest
-    container_name: app
+    container_name: ferdshop-app
     environment:
       POSTGRES_USER: docker
       POSTGRES_PASSWORD: docker
