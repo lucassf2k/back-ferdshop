@@ -1,12 +1,14 @@
+import { BadRequestApiError } from '../../common/api-erros';
 import { getUUIDV7 } from '../../infrastructure/services/id-services';
-import type { UserRole } from '../enums/user-role';
+import { UserRole } from '../enums/user-role';
 import type { Order } from '../order';
 import type { Email } from './email';
+import type { PasswordProtocol } from './password/password-protocol';
 
 export type UserProps = {
   name: string;
   email: Email;
-  password: string;
+  password: PasswordProtocol;
   role: UserRole;
   isDeleted: boolean;
   orders?: Order[];
@@ -31,5 +33,11 @@ export class User {
 
   static restore(id: string, props: UserProps): User {
     return new User(id, props);
+  }
+
+  static userRoleFromStringToEnum(input: string): UserRole {
+    if (input === UserRole.ADMIN) return UserRole.ADMIN;
+    if (input === UserRole.CUSTOMER) return UserRole.CUSTOMER;
+    throw new BadRequestApiError('invalid user role');
   }
 }
