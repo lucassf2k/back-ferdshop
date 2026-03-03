@@ -44,7 +44,7 @@ model Product {
   description String?
   price       Decimal
   stock       Int
-  idDeleted   Boolean @default(false) @map("is_deleted")
+  isDeleted   Boolean @default(false) @map("is_deleted")
 
   category   Category? @relation(fields: [categoryId], references: [id])
   categoryId String?   @map("category_id")
