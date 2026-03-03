@@ -6,5 +6,5 @@ export interface CategoryRepositories extends Repository<
   Category,
   string
 > {
-  getOfName(name: string): Promise<Category>;
+  getOfName(name: string): Promise<Category | undefined>;
 }
