@@ -2,7 +2,10 @@
   // Visit https://aka.ms/tsconfig to read more about this file
   "compilerOptions": {
     // File Layout
-    "rootDir": "./src",
+    "rootDirs": [
+      "./src",
+      "./generated"
+    ],
     "outDir": "./dist",
     "module": "esnext",
     "moduleResolution": "bundler",
@@ -24,5 +27,8 @@
   },
   "include": [
     "src"
+  ],
+  "exclude": [
+    "node_modules"
   ]
 }
