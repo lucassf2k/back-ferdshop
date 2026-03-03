@@ -26,8 +26,9 @@ export class PrismaCategoryRepositories implements CategoryRepositories {
       name: category.name,
       isDeleted: category.isDeleted,
       createdAt: category.createdAt,
-      deleteAt: category.deletedAt,
+      deletedAt: category.deletedAt,
       updatedAt: category.updatedAt,
+      products: [],
     });
   }
 
@@ -41,8 +42,9 @@ export class PrismaCategoryRepositories implements CategoryRepositories {
           name: category.name,
           isDeleted: category.isDeleted,
           createdAt: category.createdAt,
-          deleteAt: category.deletedAt,
+          deletedAt: category.deletedAt,
           updatedAt: category.updatedAt,
+          products: [],
         }),
       );
     }
@@ -60,8 +62,9 @@ export class PrismaCategoryRepositories implements CategoryRepositories {
       name: categoryDeleted.name,
       isDeleted: categoryDeleted.isDeleted,
       createdAt: categoryDeleted.createdAt,
-      deleteAt: categoryDeleted.deletedAt,
+      deletedAt: categoryDeleted.deletedAt,
       updatedAt: categoryDeleted.updatedAt,
+      products: [],
     });
   }
 
@@ -76,8 +79,9 @@ export class PrismaCategoryRepositories implements CategoryRepositories {
       name: category.name,
       isDeleted: category.isDeleted,
       createdAt: category.createdAt,
-      deleteAt: category.deletedAt,
+      deletedAt: category.deletedAt,
       updatedAt: category.updatedAt,
+      products: [],
     });
   }
 }

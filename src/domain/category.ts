@@ -1,11 +1,13 @@
 import { getUUIDV7 } from '../infrastructure/services/id-services';
+import type { Product } from './product';
 
 export type CategoryProps = {
   name: string;
   isDeleted: boolean;
+  products: Product[];
   createdAt?: Date;
   updatedAt?: Date;
-  deleteAt?: Date | null;
+  deletedAt?: Date | null;
 };
 
 export class Category {
@@ -28,12 +30,12 @@ export class Category {
 
   deleteCategory(): void {
     this.props.isDeleted = true;
-    this.props.deleteAt = new Date();
+    this.props.deletedAt = new Date();
   }
 
   undeleteCategory(): void {
     this.props.isDeleted = false;
-    this.props.deleteAt = null;
+    this.props.deletedAt = null;
   }
 
   updateName(newName: string): void {
