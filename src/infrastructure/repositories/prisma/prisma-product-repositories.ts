@@ -1,4 +1,5 @@
 import type { ProductRepositories } from '../../../application/repositories/product-repositories';
+import { Category } from '../../../domain/category';
 import { Product } from '../../../domain/product';
 import { Rating } from '../../../domain/product/rating';
 import { Review } from '../../../domain/product/review';
@@ -14,6 +15,7 @@ export class PrismaProductRepositories implements ProductRepositories {
         price: data.props.price,
         stock: data.props.stock.value,
         description: data.props.description,
+        category: { connect: { id: data.props.category._id } },
       },
     });
     if (!newProduct) return false;
@@ -24,6 +26,9 @@ export class PrismaProductRepositories implements ProductRepositories {
       where: {
         id,
       },
+      include: {
+        category: true,
+      },
     });
     if (!product) return undefined;
     return Product.restore(product.id, {
@@ -33,8 +38,16 @@ export class PrismaProductRepositories implements ProductRepositories {
       description: product.description,
       isDeleted: product.isDeleted,
       createdAt: product.createdAt,
-      updatedAt: product.updateAt,
+      updatedAt: product.updatedAt,
       deletedAt: product.deletedAt,
+      category: Category.restore(product.category.id, {
+        name: product.category.name,
+        isDeleted: product.category.isDeleted,
+        createdAt: product.category.createdAt,
+        deletedAt: product.category.deletedAt,
+        updatedAt: product.category.updatedAt,
+        products: [],
+      }),
       reviews: [],
     });
   }
@@ -42,6 +55,9 @@ export class PrismaProductRepositories implements ProductRepositories {
     const allProducts = await prisma.product.findMany({
       where: {
         isDeleted: false,
+      },
+      include: {
+        category: true,
       },
     });
     if (allProducts.length === 0) return [];
@@ -54,8 +70,16 @@ export class PrismaProductRepositories implements ProductRepositories {
         stock: new Stock(product.stock),
         isDeleted: product.isDeleted,
         createdAt: product.createdAt,
-        updatedAt: product.updateAt,
+        updatedAt: product.updatedAt,
         deletedAt: product.deletedAt,
+        category: Category.restore(product.category.id, {
+          name: product.category.name,
+          isDeleted: product.category.isDeleted,
+          createdAt: product.category.createdAt,
+          deletedAt: product.category.deletedAt,
+          updatedAt: product.category.updatedAt,
+          products: [],
+        }),
         reviews: [],
       });
       products.push(productoToDomain);
@@ -67,8 +91,12 @@ export class PrismaProductRepositories implements ProductRepositories {
       where: {
         id,
       },
+      include: {
+        category: true,
+      },
       data: {
         isDeleted: true,
+        deletedAt: new Date().toISOString(),
       },
     });
     if (!productDeleted) return undefined;
@@ -79,8 +107,16 @@ export class PrismaProductRepositories implements ProductRepositories {
       stock: new Stock(productDeleted.stock),
       isDeleted: productDeleted.isDeleted,
       createdAt: productDeleted.createdAt,
-      updatedAt: productDeleted.updateAt,
+      updatedAt: productDeleted.updatedAt,
       deletedAt: productDeleted.deletedAt,
+      category: Category.restore(productDeleted.category.id, {
+        name: productDeleted.category.name,
+        isDeleted: productDeleted.category.isDeleted,
+        createdAt: productDeleted.category.createdAt,
+        deletedAt: productDeleted.category.deletedAt,
+        updatedAt: productDeleted.category.updatedAt,
+        products: [],
+      }),
       reviews: [],
     });
   }
@@ -96,6 +132,9 @@ export class PrismaProductRepositories implements ProductRepositories {
           isDeleted: false,
         },
       },
+      include: {
+        category: true,
+      },
     });
     if (products.length === 0) return [];
     const productsToDomain: Product[] = [];
@@ -107,8 +146,16 @@ export class PrismaProductRepositories implements ProductRepositories {
         stock: new Stock(product.stock),
         isDeleted: product.isDeleted,
         createdAt: product.createdAt,
-        updatedAt: product.updateAt,
+        updatedAt: product.updatedAt,
         deletedAt: product.deletedAt,
+        category: Category.restore(product.category.id, {
+          name: product.category.name,
+          isDeleted: product.category.isDeleted,
+          createdAt: product.category.createdAt,
+          deletedAt: product.category.deletedAt,
+          updatedAt: product.category.updatedAt,
+          products: [],
+        }),
         reviews: [],
       });
       productsToDomain.push(productToDomain);
@@ -125,6 +172,9 @@ export class PrismaProductRepositories implements ProductRepositories {
           isDeleted: false,
         },
       },
+      include: {
+        category: true,
+      },
     });
     if (allProductsWithStock.length === 0) return [];
     const products: Product[] = [];
@@ -136,8 +186,16 @@ export class PrismaProductRepositories implements ProductRepositories {
         stock: new Stock(product.stock),
         isDeleted: product.isDeleted,
         createdAt: product.createdAt,
-        updatedAt: product.updateAt,
+        updatedAt: product.updatedAt,
         deletedAt: product.deletedAt,
+        category: Category.restore(product.category.id, {
+          name: product.category.name,
+          isDeleted: product.category.isDeleted,
+          createdAt: product.category.createdAt,
+          deletedAt: product.category.deletedAt,
+          updatedAt: product.category.updatedAt,
+          products: [],
+        }),
         reviews: [],
       });
       products.push(productToDomain);
@@ -155,6 +213,7 @@ export class PrismaProductRepositories implements ProductRepositories {
       include: {
         _count: true,
         reviews: true,
+        category: true,
       },
     });
     if (allProductsWithCategoryId.length === 0) return [];
@@ -167,8 +226,16 @@ export class PrismaProductRepositories implements ProductRepositories {
         stock: new Stock(product.stock),
         isDeleted: product.isDeleted,
         createdAt: product.createdAt,
-        updatedAt: product.updateAt,
+        updatedAt: product.updatedAt,
         deletedAt: product.deletedAt,
+        category: Category.restore(product.category.id, {
+          name: product.category.name,
+          isDeleted: product.category.isDeleted,
+          createdAt: product.category.createdAt,
+          deletedAt: product.category.deletedAt,
+          updatedAt: product.category.updatedAt,
+          products: [],
+        }),
         reviews: product.reviews.map((review) => {
           return Review.restore(review.id, {
             rating: new Rating(review.rating),
