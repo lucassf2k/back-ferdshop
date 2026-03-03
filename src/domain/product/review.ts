@@ -1,3 +1,4 @@
+import { getUUIDV7 } from '../../infrastructure/services/id-services';
 import { Entity } from '../entity';
 import type { Rating } from './rating';
 
@@ -6,7 +7,19 @@ export type ReviewProps = {
   isDeleted: boolean;
   createdAt?: Date;
   updatedAt?: Date;
-  deleteAt?: Date | null;
+  deletedAt?: Date | null;
 };
 
-export class Review extends Entity<ReviewProps> {}
+export class Review extends Entity<ReviewProps> {
+  private constructor(id: string, props: ReviewProps) {
+    super(id, props);
+  }
+
+  static create(props: ReviewProps): Review {
+    return new Review(getUUIDV7(), props);
+  }
+
+  static restore(id: string, props: ReviewProps): Review {
+    return new Review(id, props);
+  }
+}

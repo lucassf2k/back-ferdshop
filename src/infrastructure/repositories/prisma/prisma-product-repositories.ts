@@ -1,0 +1,186 @@
+import type { ProductRepositories } from '../../../application/repositories/product-repositories';
+import { Product } from '../../../domain/product';
+import { Rating } from '../../../domain/product/rating';
+import { Review } from '../../../domain/product/review';
+import { Stock } from '../../../domain/product/stock';
+import { prisma } from '../../database/prisma';
+
+export class PrismaProductRepositories implements ProductRepositories {
+  async save(data: Product): Promise<boolean> {
+    const newProduct = await prisma.product.create({
+      data: {
+        id: data._id,
+        name: data.props.name,
+        price: data.props.price,
+        stock: data.props.stock.value,
+        description: data.props.description,
+      },
+    });
+    if (!newProduct) return false;
+    return true;
+  }
+  async getOfId(id: string): Promise<Product | undefined> {
+    const product = await prisma.product.findUnique({
+      where: {
+        id,
+      },
+    });
+    if (!product) return undefined;
+    return Product.restore(product.id, {
+      name: product.name,
+      price: Number(product.price),
+      stock: new Stock(product.stock),
+      description: product.description,
+      isDeleted: product.isDeleted,
+      createdAt: product.createdAt,
+      updatedAt: product.updateAt,
+      deletedAt: product.deletedAt,
+      reviews: [],
+    });
+  }
+  async getAll(): Promise<Product[]> {
+    const allProducts = await prisma.product.findMany({
+      where: {
+        isDeleted: false,
+      },
+    });
+    if (allProducts.length === 0) return [];
+    const products: Product[] = [];
+    for (const product of allProducts) {
+      const productoToDomain = Product.restore(product.id, {
+        name: product.name,
+        description: product.description,
+        price: Number(product.price),
+        stock: new Stock(product.stock),
+        isDeleted: product.isDeleted,
+        createdAt: product.createdAt,
+        updatedAt: product.updateAt,
+        deletedAt: product.deletedAt,
+        reviews: [],
+      });
+      products.push(productoToDomain);
+    }
+    return products;
+  }
+  async delete(id: string): Promise<Product | undefined> {
+    const productDeleted = await prisma.product.update({
+      where: {
+        id,
+      },
+      data: {
+        isDeleted: true,
+      },
+    });
+    if (!productDeleted) return undefined;
+    return Product.restore(productDeleted.id, {
+      name: productDeleted.name,
+      description: productDeleted.description,
+      price: Number(productDeleted.price),
+      stock: new Stock(productDeleted.stock),
+      isDeleted: productDeleted.isDeleted,
+      createdAt: productDeleted.createdAt,
+      updatedAt: productDeleted.updateAt,
+      deletedAt: productDeleted.deletedAt,
+      reviews: [],
+    });
+  }
+
+  async getOfName(name: string): Promise<Product[]> {
+    const products = await prisma.product.findMany({
+      where: {
+        name: {
+          contains: name,
+          mode: 'insensitive',
+        },
+        AND: {
+          isDeleted: false,
+        },
+      },
+    });
+    if (products.length === 0) return [];
+    const productsToDomain: Product[] = [];
+    for (const product of products) {
+      const productToDomain = Product.restore(product.id, {
+        name: product.name,
+        description: product.description,
+        price: Number(product.price),
+        stock: new Stock(product.stock),
+        isDeleted: product.isDeleted,
+        createdAt: product.createdAt,
+        updatedAt: product.updateAt,
+        deletedAt: product.deletedAt,
+        reviews: [],
+      });
+      productsToDomain.push(productToDomain);
+    }
+    return productsToDomain;
+  }
+  async getOfStock(stock: Stock): Promise<Product[]> {
+    const allProductsWithStock = await prisma.product.findMany({
+      where: {
+        stock: {
+          equals: stock.value,
+        },
+        AND: {
+          isDeleted: false,
+        },
+      },
+    });
+    if (allProductsWithStock.length === 0) return [];
+    const products: Product[] = [];
+    for (const product of allProductsWithStock) {
+      const productToDomain = Product.restore(product.id, {
+        name: product.name,
+        description: product.description,
+        price: Number(product.price),
+        stock: new Stock(product.stock),
+        isDeleted: product.isDeleted,
+        createdAt: product.createdAt,
+        updatedAt: product.updateAt,
+        deletedAt: product.deletedAt,
+        reviews: [],
+      });
+      products.push(productToDomain);
+    }
+    return products;
+  }
+  async getOfCategory(categoryId: string): Promise<Product[]> {
+    const allProductsWithCategoryId = await prisma.product.findMany({
+      where: {
+        categoryId,
+        AND: {
+          isDeleted: false,
+        },
+      },
+      include: {
+        _count: true,
+        reviews: true,
+      },
+    });
+    if (allProductsWithCategoryId.length === 0) return [];
+    const products: Product[] = [];
+    for (const product of allProductsWithCategoryId) {
+      const productToDomain = Product.restore(product.id, {
+        name: product.name,
+        description: product.description,
+        price: Number(product.price),
+        stock: new Stock(product.stock),
+        isDeleted: product.isDeleted,
+        createdAt: product.createdAt,
+        updatedAt: product.updateAt,
+        deletedAt: product.deletedAt,
+        reviews: product.reviews.map((review) => {
+          return Review.restore(review.id, {
+            rating: new Rating(review.rating),
+            isDeleted: review.isDeleted,
+            createdAt: review.createdAt,
+            updatedAt: review.updatedAt,
+            deletedAt: review.deletedAt,
+          });
+        }),
+      });
+      products.push(productToDomain);
+    }
+    return products;
+  }
+}

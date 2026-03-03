@@ -1,4 +1,4 @@
-import type { Entity } from '../../domain/entity';
+import { Entity } from '../../domain/entity';
 
 export interface Repository<Props, E extends Entity<Props>, ID> {
   save(data: E): Promise<boolean>;
