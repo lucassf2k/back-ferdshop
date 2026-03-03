@@ -1,6 +1,6 @@
 import { StatusCodeEnum } from '../status-code-enum';
 
-export class BaseApiError extends Error {
+export abstract class BaseApiError extends Error {
   readonly code: StatusCodeEnum;
   constructor(message: string, statusCode: StatusCodeEnum) {
     super(message);
