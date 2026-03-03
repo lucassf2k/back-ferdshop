@@ -6,3 +6,5 @@ coverage
 .env
 
 /generated/prisma
+/.postgres-data
+/postgres-data
