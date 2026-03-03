@@ -1,9 +1,7 @@
 import type { UserRepositories } from '../../../application/repositories/user-repositories';
 import { User } from '../../../domain/user';
-import { Email } from '../../../domain/user/email';
-import { PBKDF2Password } from '../../../domain/user/password/pbkdf2-password';
 import { prisma } from '../../database/prisma';
-import { ZodValidationService } from '../../services/zod-validation-service';
+import { userMapper } from './mappers/user-mapper';
 
 export class PrismaUserRepositories implements UserRepositories {
   async save(data: User): Promise<boolean> {
@@ -26,43 +24,19 @@ export class PrismaUserRepositories implements UserRepositories {
     const user = await prisma.user.findUnique({
       where: {
         id,
+        AND: {
+          isDeleted: false,
+        },
       },
     });
     if (!user) return undefined;
-    return User.restore(user.id, {
-      name: user.name,
-      email: new Email(user.email, new ZodValidationService()),
-      password: PBKDF2Password.restore(user.passwordValue, user.passwordSalt),
-      role: User.userRoleFromStringToEnum(user.role),
-      isDeleted: user.isDeleted,
-      createdAt: user.createdAt,
-      deleteAt: user.deletedAt,
-      updatedAt: user.updatedAt,
-    });
+    return userMapper.toDomain(user);
   }
 
   async getAll(): Promise<User[]> {
     const allUsers = await prisma.user.findMany();
     if (allUsers.length === 0) return [];
-    const users: User[] = [];
-    for (const user of allUsers) {
-      users.push(
-        User.restore(user.id, {
-          name: user.name,
-          email: new Email(user.email, new ZodValidationService()),
-          password: PBKDF2Password.restore(
-            user.passwordValue,
-            user.passwordSalt,
-          ),
-          role: User.userRoleFromStringToEnum(user.role),
-          isDeleted: user.isDeleted,
-          createdAt: user.createdAt,
-          deleteAt: user.deletedAt,
-          updatedAt: user.updatedAt,
-        }),
-      );
-    }
-    return users;
+    return allUsers.map(userMapper.toDomain);
   }
 
   async delete(id: string): Promise<User | undefined> {
@@ -72,16 +46,7 @@ export class PrismaUserRepositories implements UserRepositories {
       },
     });
     if (!user) return undefined;
-    return User.restore(user.id, {
-      name: user.name,
-      email: new Email(user.email, new ZodValidationService()),
-      password: PBKDF2Password.restore(user.passwordValue, user.passwordSalt),
-      role: User.userRoleFromStringToEnum(user.role),
-      isDeleted: user.isDeleted,
-      createdAt: user.createdAt,
-      deleteAt: user.deletedAt,
-      updatedAt: user.updatedAt,
-    });
+    return userMapper.toDomain(user);
   }
 
   async getOfEmail(email: string): Promise<User | undefined> {
@@ -91,15 +56,6 @@ export class PrismaUserRepositories implements UserRepositories {
       },
     });
     if (!user) return undefined;
-    return User.restore(user.id, {
-      name: user.name,
-      email: new Email(user.email, new ZodValidationService()),
-      password: PBKDF2Password.restore(user.passwordValue, user.passwordSalt),
-      role: User.userRoleFromStringToEnum(user.role),
-      isDeleted: user.isDeleted,
-      createdAt: user.createdAt,
-      deleteAt: user.deletedAt,
-      updatedAt: user.updatedAt,
-    });
+    return userMapper.toDomain(user);
   }
 }

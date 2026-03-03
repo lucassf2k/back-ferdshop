@@ -1,6 +1,7 @@
 import type { CategoryRepositories } from '../../../application/repositories/category-repositories';
 import { Category } from '../../../domain/category';
 import { prisma } from '../../database/prisma';
+import { categoryMapper } from './mappers/category-mapper';
 
 export class PrismaCategoryRepositories implements CategoryRepositories {
   async save(data: Category): Promise<boolean> {
@@ -8,7 +9,6 @@ export class PrismaCategoryRepositories implements CategoryRepositories {
       data: {
         id: data._id,
         name: data.props.name,
-        isDeleted: data.props.isDeleted,
       },
     });
     if (!newCategory) return false;
@@ -22,33 +22,13 @@ export class PrismaCategoryRepositories implements CategoryRepositories {
       },
     });
     if (!category) return undefined;
-    return Category.restore(category.id, {
-      name: category.name,
-      isDeleted: category.isDeleted,
-      createdAt: category.createdAt,
-      deletedAt: category.deletedAt,
-      updatedAt: category.updatedAt,
-      products: [],
-    });
+    return categoryMapper.toDmain(category);
   }
 
   async getAll(): Promise<Category[]> {
     const allCategories = await prisma.category.findMany();
     if (allCategories.length === 0) return [];
-    const categories: Category[] = [];
-    for (const category of allCategories) {
-      categories.push(
-        Category.restore(category.id, {
-          name: category.name,
-          isDeleted: category.isDeleted,
-          createdAt: category.createdAt,
-          deletedAt: category.deletedAt,
-          updatedAt: category.updatedAt,
-          products: [],
-        }),
-      );
-    }
-    return categories;
+    return allCategories.map(categoryMapper.toDmain);
   }
 
   async delete(id: string): Promise<Category | undefined> {
@@ -58,14 +38,7 @@ export class PrismaCategoryRepositories implements CategoryRepositories {
       },
     });
     if (!categoryDeleted) return undefined;
-    return Category.restore(categoryDeleted.id, {
-      name: categoryDeleted.name,
-      isDeleted: categoryDeleted.isDeleted,
-      createdAt: categoryDeleted.createdAt,
-      deletedAt: categoryDeleted.deletedAt,
-      updatedAt: categoryDeleted.updatedAt,
-      products: [],
-    });
+    return categoryMapper.toDmain(categoryDeleted);
   }
 
   async getOfName(name: string): Promise<Category | undefined> {
@@ -75,13 +48,6 @@ export class PrismaCategoryRepositories implements CategoryRepositories {
       },
     });
     if (!category) return undefined;
-    return Category.restore(category.id, {
-      name: category.name,
-      isDeleted: category.isDeleted,
-      createdAt: category.createdAt,
-      deletedAt: category.deletedAt,
-      updatedAt: category.updatedAt,
-      products: [],
-    });
+    return categoryMapper.toDmain(category);
   }
 }
