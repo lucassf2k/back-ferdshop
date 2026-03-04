@@ -11,8 +11,7 @@ export class PrismaCategoryRepositories implements CategoryRepositories {
         name: data.props.name,
       },
     });
-    if (!newCategory) return false;
-    return true;
+    return Boolean(newCategory);
   }
 
   async getOfId(id: string): Promise<Category | undefined> {

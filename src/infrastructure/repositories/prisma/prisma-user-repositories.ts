@@ -16,8 +16,7 @@ export class PrismaUserRepositories implements UserRepositories {
         role: data.props.role,
       },
     });
-    if (!newUser) return false;
-    return true;
+    return Boolean(newUser);
   }
 
   async getOfId(id: string): Promise<User | undefined> {

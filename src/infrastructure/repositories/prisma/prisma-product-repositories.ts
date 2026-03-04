@@ -18,8 +18,7 @@ export class PrismaProductRepositories implements ProductRepositories {
         category: { connect: { id: data.props.category._id } },
       },
     });
-    if (!newProduct) return false;
-    return true;
+    return Boolean(newProduct);
   }
   async getOfId(id: string): Promise<Product | undefined> {
     const product = await prisma.product.findUnique({
