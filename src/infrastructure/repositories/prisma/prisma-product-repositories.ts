@@ -1,10 +1,8 @@
 import type { ProductRepositories } from '../../../application/repositories/product-repositories';
-import { Category } from '../../../domain/category';
 import { Product } from '../../../domain/product';
-import { Rating } from '../../../domain/product/rating';
-import { Review } from '../../../domain/product/review';
 import { Stock } from '../../../domain/product/stock';
 import { prisma } from '../../database/prisma';
+import { productMapper } from './mappers/product-mapper';
 
 export class PrismaProductRepositories implements ProductRepositories {
   async save(data: Product): Promise<boolean> {
@@ -30,25 +28,7 @@ export class PrismaProductRepositories implements ProductRepositories {
       },
     });
     if (!product) return undefined;
-    return Product.restore(product.id, {
-      name: product.name,
-      price: Number(product.price),
-      stock: new Stock(product.stock),
-      description: product.description,
-      isDeleted: product.isDeleted,
-      createdAt: product.createdAt,
-      updatedAt: product.updatedAt,
-      deletedAt: product.deletedAt,
-      category: Category.restore(product.category.id, {
-        name: product.category.name,
-        isDeleted: product.category.isDeleted,
-        createdAt: product.category.createdAt,
-        deletedAt: product.category.deletedAt,
-        updatedAt: product.category.updatedAt,
-        products: [],
-      }),
-      reviews: [],
-    });
+    return productMapper.toDomain(product);
   }
   async getAll(): Promise<Product[]> {
     const allProducts = await prisma.product.findMany({
@@ -60,30 +40,7 @@ export class PrismaProductRepositories implements ProductRepositories {
       },
     });
     if (allProducts.length === 0) return [];
-    const products: Product[] = [];
-    for (const product of allProducts) {
-      const productoToDomain = Product.restore(product.id, {
-        name: product.name,
-        description: product.description,
-        price: Number(product.price),
-        stock: new Stock(product.stock),
-        isDeleted: product.isDeleted,
-        createdAt: product.createdAt,
-        updatedAt: product.updatedAt,
-        deletedAt: product.deletedAt,
-        category: Category.restore(product.category.id, {
-          name: product.category.name,
-          isDeleted: product.category.isDeleted,
-          createdAt: product.category.createdAt,
-          deletedAt: product.category.deletedAt,
-          updatedAt: product.category.updatedAt,
-          products: [],
-        }),
-        reviews: [],
-      });
-      products.push(productoToDomain);
-    }
-    return products;
+    return allProducts.map(productMapper.toDomain);
   }
   async delete(id: string): Promise<Product | undefined> {
     const productDeleted = await prisma.product.update({
@@ -99,25 +56,7 @@ export class PrismaProductRepositories implements ProductRepositories {
       },
     });
     if (!productDeleted) return undefined;
-    return Product.restore(productDeleted.id, {
-      name: productDeleted.name,
-      description: productDeleted.description,
-      price: Number(productDeleted.price),
-      stock: new Stock(productDeleted.stock),
-      isDeleted: productDeleted.isDeleted,
-      createdAt: productDeleted.createdAt,
-      updatedAt: productDeleted.updatedAt,
-      deletedAt: productDeleted.deletedAt,
-      category: Category.restore(productDeleted.category.id, {
-        name: productDeleted.category.name,
-        isDeleted: productDeleted.category.isDeleted,
-        createdAt: productDeleted.category.createdAt,
-        deletedAt: productDeleted.category.deletedAt,
-        updatedAt: productDeleted.category.updatedAt,
-        products: [],
-      }),
-      reviews: [],
-    });
+    return productMapper.toDomain(productDeleted);
   }
 
   async getOfName(name: string): Promise<Product[]> {
@@ -136,30 +75,7 @@ export class PrismaProductRepositories implements ProductRepositories {
       },
     });
     if (products.length === 0) return [];
-    const productsToDomain: Product[] = [];
-    for (const product of products) {
-      const productToDomain = Product.restore(product.id, {
-        name: product.name,
-        description: product.description,
-        price: Number(product.price),
-        stock: new Stock(product.stock),
-        isDeleted: product.isDeleted,
-        createdAt: product.createdAt,
-        updatedAt: product.updatedAt,
-        deletedAt: product.deletedAt,
-        category: Category.restore(product.category.id, {
-          name: product.category.name,
-          isDeleted: product.category.isDeleted,
-          createdAt: product.category.createdAt,
-          deletedAt: product.category.deletedAt,
-          updatedAt: product.category.updatedAt,
-          products: [],
-        }),
-        reviews: [],
-      });
-      productsToDomain.push(productToDomain);
-    }
-    return productsToDomain;
+    return products.map(productMapper.toDomain);
   }
   async getOfStock(stock: Stock): Promise<Product[]> {
     const allProductsWithStock = await prisma.product.findMany({
@@ -176,30 +92,7 @@ export class PrismaProductRepositories implements ProductRepositories {
       },
     });
     if (allProductsWithStock.length === 0) return [];
-    const products: Product[] = [];
-    for (const product of allProductsWithStock) {
-      const productToDomain = Product.restore(product.id, {
-        name: product.name,
-        description: product.description,
-        price: Number(product.price),
-        stock: new Stock(product.stock),
-        isDeleted: product.isDeleted,
-        createdAt: product.createdAt,
-        updatedAt: product.updatedAt,
-        deletedAt: product.deletedAt,
-        category: Category.restore(product.category.id, {
-          name: product.category.name,
-          isDeleted: product.category.isDeleted,
-          createdAt: product.category.createdAt,
-          deletedAt: product.category.deletedAt,
-          updatedAt: product.category.updatedAt,
-          products: [],
-        }),
-        reviews: [],
-      });
-      products.push(productToDomain);
-    }
-    return products;
+    return allProductsWithStock.map(productMapper.toDomain);
   }
   async getOfCategory(categoryId: string): Promise<Product[]> {
     const allProductsWithCategoryId = await prisma.product.findMany({
@@ -210,43 +103,10 @@ export class PrismaProductRepositories implements ProductRepositories {
         },
       },
       include: {
-        _count: true,
-        reviews: true,
         category: true,
       },
     });
     if (allProductsWithCategoryId.length === 0) return [];
-    const products: Product[] = [];
-    for (const product of allProductsWithCategoryId) {
-      const productToDomain = Product.restore(product.id, {
-        name: product.name,
-        description: product.description,
-        price: Number(product.price),
-        stock: new Stock(product.stock),
-        isDeleted: product.isDeleted,
-        createdAt: product.createdAt,
-        updatedAt: product.updatedAt,
-        deletedAt: product.deletedAt,
-        category: Category.restore(product.category.id, {
-          name: product.category.name,
-          isDeleted: product.category.isDeleted,
-          createdAt: product.category.createdAt,
-          deletedAt: product.category.deletedAt,
-          updatedAt: product.category.updatedAt,
-          products: [],
-        }),
-        reviews: product.reviews.map((review) => {
-          return Review.restore(review.id, {
-            rating: new Rating(review.rating),
-            isDeleted: review.isDeleted,
-            createdAt: review.createdAt,
-            updatedAt: review.updatedAt,
-            deletedAt: review.deletedAt,
-          });
-        }),
-      });
-      products.push(productToDomain);
-    }
-    return products;
+    return allProductsWithCategoryId.map(productMapper.toDomain);
   }
 }
