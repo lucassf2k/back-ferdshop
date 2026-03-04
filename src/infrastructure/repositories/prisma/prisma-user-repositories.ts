@@ -6,15 +6,7 @@ import { userMapper } from './mappers/user-mapper';
 export class PrismaUserRepositories implements UserRepositories {
   async save(data: User): Promise<boolean> {
     const newUser = await prisma.user.create({
-      data: {
-        id: data._id,
-        name: data.props.name,
-        email: data.props.email.value,
-        passwordValue: data.props.password.value,
-        passwordSalt: data.props.password.salt,
-        passwordAlgorithm: data.props.password.algorithm,
-        role: data.props.role,
-      },
+      data: userMapper.toSavePrisma(data),
     });
     return Boolean(newUser);
   }
@@ -33,7 +25,11 @@ export class PrismaUserRepositories implements UserRepositories {
   }
 
   async getAll(): Promise<User[]> {
-    const allUsers = await prisma.user.findMany();
+    const allUsers = await prisma.user.findMany({
+      where: {
+        isDeleted: false,
+      },
+    });
     if (allUsers.length === 0) return [];
     return allUsers.map(userMapper.toDomain);
   }
@@ -52,6 +48,9 @@ export class PrismaUserRepositories implements UserRepositories {
     const user = await prisma.user.findUnique({
       where: {
         email,
+        AND: {
+          isDeleted: false,
+        },
       },
     });
     if (!user) return undefined;

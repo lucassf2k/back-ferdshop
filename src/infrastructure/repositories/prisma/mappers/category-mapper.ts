@@ -2,6 +2,7 @@ import { Category } from '../../../../domain/category';
 import type { Prisma } from '../../../../prisma/client';
 
 type CategoryPrismaType = Prisma.CategoryGetPayload<object>;
+type CreateCategoryPrismaInput = Prisma.CategoryCreateInput;
 
 function toDomain(raw: CategoryPrismaType): Category {
   return Category.restore(raw.id, {
@@ -14,4 +15,11 @@ function toDomain(raw: CategoryPrismaType): Category {
   });
 }
 
-export const categoryMapper = { toDomain } as const;
+function toSavePrisma(category: Category): CreateCategoryPrismaInput {
+  return {
+    id: category._id,
+    name: category.props.name,
+  };
+}
+
+export const categoryMapper = { toDomain, toSavePrisma } as const;

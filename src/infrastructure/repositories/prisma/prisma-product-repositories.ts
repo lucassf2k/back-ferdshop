@@ -7,14 +7,7 @@ import { productMapper } from './mappers/product-mapper';
 export class PrismaProductRepositories implements ProductRepositories {
   async save(data: Product): Promise<boolean> {
     const newProduct = await prisma.product.create({
-      data: {
-        id: data._id,
-        name: data.props.name,
-        price: data.props.price,
-        stock: data.props.stock.value,
-        description: data.props.description,
-        category: { connect: { id: data.props.category._id } },
-      },
+      data: productMapper.toSavePrisma(data),
     });
     return Boolean(newProduct);
   }
@@ -22,6 +15,9 @@ export class PrismaProductRepositories implements ProductRepositories {
     const product = await prisma.product.findUnique({
       where: {
         id,
+        AND: {
+          isDeleted: false,
+        },
       },
       include: {
         category: true,
@@ -50,10 +46,7 @@ export class PrismaProductRepositories implements ProductRepositories {
       include: {
         category: true,
       },
-      data: {
-        isDeleted: true,
-        deletedAt: new Date().toISOString(),
-      },
+      data: productMapper.toDeletePrisma(),
     });
     if (!productDeleted) return undefined;
     return productMapper.toDomain(productDeleted);

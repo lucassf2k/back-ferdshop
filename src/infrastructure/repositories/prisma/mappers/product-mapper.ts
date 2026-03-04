@@ -6,6 +6,8 @@ import type { Prisma } from '../../../../prisma/client';
 type ProductPrismaOutput = Prisma.ProductGetPayload<{
   include: { category: true };
 }>;
+type SaveProductPrismaInput = Prisma.ProductCreateInput;
+type DeleteProductPrismaInput = Prisma.ProductUpdateInput;
 
 function toDomain(raw: ProductPrismaOutput): Product {
   return Product.restore(raw.id, {
@@ -29,4 +31,26 @@ function toDomain(raw: ProductPrismaOutput): Product {
   });
 }
 
-export const productMapper = { toDomain } as const;
+function toSavePrisma(product: Product): SaveProductPrismaInput {
+  return {
+    id: product._id,
+    name: product.props.name,
+    price: product.props.price,
+    stock: product.props.stock.value,
+    description: product.props.description,
+    category: { connect: { id: product.props.category._id } },
+  };
+}
+
+function toDeletePrisma(): DeleteProductPrismaInput {
+  return {
+    isDeleted: true,
+    deletedAt: new Date().toISOString(),
+  };
+}
+
+export const productMapper = {
+  toDomain,
+  toSavePrisma,
+  toDeletePrisma,
+} as const;

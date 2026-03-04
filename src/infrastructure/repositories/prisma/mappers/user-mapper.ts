@@ -5,6 +5,7 @@ import type { Prisma } from '../../../../prisma/client';
 import { ZodValidationService } from '../../../services/zod-validation-service';
 
 type UserPrismaType = Prisma.UserGetPayload<object>;
+type SaveUserPrismaInput = Prisma.UserCreateInput;
 
 function toDomain(raw: UserPrismaType): User {
   return User.restore(raw.id, {
@@ -19,4 +20,16 @@ function toDomain(raw: UserPrismaType): User {
   });
 }
 
-export const userMapper = { toDomain } as const;
+function toSavePrisma(user: User): SaveUserPrismaInput {
+  return {
+    id: user._id,
+    name: user.props.name,
+    email: user.props.email.value,
+    passwordValue: user.props.password.value,
+    passwordSalt: user.props.password.salt,
+    passwordAlgorithm: user.props.password.algorithm,
+    role: user.props.role,
+  };
+}
+
+export const userMapper = { toDomain, toSavePrisma } as const;
