@@ -3,7 +3,7 @@ import type { Prisma } from '../../../../prisma/client';
 
 type CategoryPrismaType = Prisma.CategoryGetPayload<object>;
 
-function toDmain(raw: CategoryPrismaType): Category {
+function toDomain(raw: CategoryPrismaType): Category {
   return Category.restore(raw.id, {
     name: raw.name,
     isDeleted: raw.isDeleted,
@@ -14,4 +14,4 @@ function toDmain(raw: CategoryPrismaType): Category {
   });
 }
 
-export const categoryMapper = { toDmain } as const;
+export const categoryMapper = { toDomain } as const;

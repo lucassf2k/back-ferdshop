@@ -22,13 +22,13 @@ export class PrismaCategoryRepositories implements CategoryRepositories {
       },
     });
     if (!category) return undefined;
-    return categoryMapper.toDmain(category);
+    return categoryMapper.toDomain(category);
   }
 
   async getAll(): Promise<Category[]> {
     const allCategories = await prisma.category.findMany();
     if (allCategories.length === 0) return [];
-    return allCategories.map(categoryMapper.toDmain);
+    return allCategories.map(categoryMapper.toDomain);
   }
 
   async delete(id: string): Promise<Category | undefined> {
@@ -38,7 +38,7 @@ export class PrismaCategoryRepositories implements CategoryRepositories {
       },
     });
     if (!categoryDeleted) return undefined;
-    return categoryMapper.toDmain(categoryDeleted);
+    return categoryMapper.toDomain(categoryDeleted);
   }
 
   async getOfName(name: string): Promise<Category | undefined> {
@@ -48,6 +48,6 @@ export class PrismaCategoryRepositories implements CategoryRepositories {
       },
     });
     if (!category) return undefined;
-    return categoryMapper.toDmain(category);
+    return categoryMapper.toDomain(category);
   }
 }
