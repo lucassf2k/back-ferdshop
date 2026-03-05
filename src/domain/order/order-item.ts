@@ -4,12 +4,11 @@ import type { Product } from '../product';
 
 export type OrderItemProps = {
   quantity: number;
-  unitPrice: number;
   isDeleted: boolean;
-  products?: Product[];
+  product: Product;
   createdAt?: Date;
   updatedAt?: Date;
-  deleteAt?: Date | null;
+  deletedAt?: Date | null;
 };
 
 export class OrderItem extends Entity<OrderItemProps> {

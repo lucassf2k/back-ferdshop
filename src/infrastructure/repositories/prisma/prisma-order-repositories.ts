@@ -58,7 +58,7 @@ export class PrismaOrderRepositories implements OrderRepositories {
     if (allOrders.length === 0) return [];
     return allOrders.map(orderMapper.toDomain);
   }
-  async delete(id: string): Promise<Order | undefined> {
+  async softDelete(id: string): Promise<Order | undefined> {
     const order = await prisma.order.update({
       where: {
         id,
@@ -66,10 +66,31 @@ export class PrismaOrderRepositories implements OrderRepositories {
           isDeleted: false,
         },
       },
-      data: {
-        isDeleted: true,
-        deletedAt: new Date().toISOString(),
+      data: orderMapper.toSoftDeletePrisma(),
+      include: {
+        items: {
+          include: {
+            product: {
+              include: {
+                category: true,
+                reviews: true,
+              },
+            },
+          },
+        },
+        user: true,
       },
+    });
+    if (!order) return undefined;
+    return orderMapper.toDomain(order);
+  }
+
+  async undelete(id: string): Promise<Order | undefined> {
+    const order = await prisma.order.update({
+      where: {
+        id,
+      },
+      data: orderMapper.toUndeletePrisma(),
       include: {
         items: {
           include: {

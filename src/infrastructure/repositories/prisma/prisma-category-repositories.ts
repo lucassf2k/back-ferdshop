@@ -34,14 +34,26 @@ export class PrismaCategoryRepositories implements CategoryRepositories {
     return allCategories.map(categoryMapper.toDomain);
   }
 
-  async delete(id: string): Promise<Category | undefined> {
-    const categoryDeleted = await prisma.category.delete({
+  async softDelete(id: string): Promise<Category | undefined> {
+    const categoryDeleted = await prisma.category.update({
       where: {
         id,
       },
+      data: categoryMapper.toSoftDeletePrisma(),
     });
     if (!categoryDeleted) return undefined;
     return categoryMapper.toDomain(categoryDeleted);
+  }
+
+  async undelete(id: string): Promise<Category | undefined> {
+    const category = await prisma.category.update({
+      where: {
+        id,
+      },
+      data: categoryMapper.toUndeletePrisma(),
+    });
+    if (!category) return undefined;
+    return categoryMapper.toDomain(category);
   }
 
   async getOfName(name: string): Promise<Category | undefined> {

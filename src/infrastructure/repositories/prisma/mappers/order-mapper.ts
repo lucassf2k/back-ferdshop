@@ -26,8 +26,8 @@ type OrderPrismaOutput = Prisma.OrderGetPayload<{
     user: true;
   };
 }>;
-
 type SaveOrderPrismaInput = Prisma.OrderCreateInput;
+type UpdateOrderPrismaInput = Prisma.OrderUpdateInput;
 
 function toDomain(raw: OrderPrismaOutput): Order {
   return Order.restore(raw.id, {
@@ -107,4 +107,23 @@ function toSavePrisma(order: Order): SaveOrderPrismaInput {
   };
 }
 
-export const orderMapper = { toDomain, toSavePrisma } as const;
+function toSoftDeletePrisma(): UpdateOrderPrismaInput {
+  return {
+    isDeleted: true,
+    deletedAt: new Date().toISOString(),
+  };
+}
+
+function toUndeletePrisma(): UpdateOrderPrismaInput {
+  return {
+    isDeleted: false,
+    deletedAt: null,
+  };
+}
+
+export const orderMapper = {
+  toDomain,
+  toSavePrisma,
+  toSoftDeletePrisma,
+  toUndeletePrisma,
+} as const;

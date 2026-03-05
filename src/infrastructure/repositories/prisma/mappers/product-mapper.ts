@@ -7,7 +7,7 @@ type ProductPrismaOutput = Prisma.ProductGetPayload<{
   include: { category: true };
 }>;
 type SaveProductPrismaInput = Prisma.ProductCreateInput;
-type DeleteProductPrismaInput = Prisma.ProductUpdateInput;
+type UpdateProductPrismaInput = Prisma.ProductUpdateInput;
 
 function toDomain(raw: ProductPrismaOutput): Product {
   return Product.restore(raw.id, {
@@ -42,15 +42,23 @@ function toSavePrisma(product: Product): SaveProductPrismaInput {
   };
 }
 
-function toDeletePrisma(): DeleteProductPrismaInput {
+function toSoftDeletePrisma(): UpdateProductPrismaInput {
   return {
     isDeleted: true,
     deletedAt: new Date().toISOString(),
   };
 }
 
+function toUndeletePrisma(): UpdateProductPrismaInput {
+  return {
+    isDeleted: false,
+    deletedAt: null,
+  };
+}
+
 export const productMapper = {
   toDomain,
   toSavePrisma,
-  toDeletePrisma,
+  toSoftDeletePrisma,
+  toUndeletePrisma,
 } as const;

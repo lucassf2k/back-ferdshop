@@ -42,7 +42,7 @@ model Product {
   id          String  @id
   name        String
   description String?
-  price       Decimal
+  price       Decimal @db.Decimal(10, 2)
   stock       Int
   isDeleted   Boolean @default(false) @map("is_deleted")
 
@@ -81,7 +81,7 @@ model User {
 
 model Order {
   id              String      @id
-  totalPrice      Decimal     @map("total_price")
+  totalPrice      Decimal     @map("total_price") @db.Decimal(10, 2)
   status          OrderStatus
   deliveryAddress String      @map("delivery_address")
   isDeleted       Boolean     @default(false) @map("is_deleted")
@@ -100,7 +100,7 @@ model Order {
 model OrderItem {
   id        String  @id
   quantity  Int
-  unitPrice Decimal @map("unit_price")
+  unitPrice Decimal @map("unit_price") @db.Decimal(10, 2)
   isDeleted Boolean @default(false) @map("is_deleted")
 
   orderId String @map("order_id")

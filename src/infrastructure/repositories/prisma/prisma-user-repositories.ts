@@ -34,11 +34,23 @@ export class PrismaUserRepositories implements UserRepositories {
     return allUsers.map(userMapper.toDomain);
   }
 
-  async delete(id: string): Promise<User | undefined> {
-    const user = await prisma.user.delete({
+  async softDelete(id: string): Promise<User | undefined> {
+    const user = await prisma.user.update({
       where: {
         id,
       },
+      data: userMapper.toSoftDeletePrisma(),
+    });
+    if (!user) return undefined;
+    return userMapper.toDomain(user);
+  }
+
+  async undelete(id: string): Promise<User | undefined> {
+    const user = await prisma.user.update({
+      where: {
+        id,
+      },
+      data: userMapper.toUndeletePrisma(),
     });
     if (!user) return undefined;
     return userMapper.toDomain(user);

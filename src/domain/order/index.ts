@@ -1,6 +1,8 @@
+import { BadRequestApiError } from '../../common/api-erros';
 import { getUUIDV7 } from '../../infrastructure/services/id-services';
 import { Entity } from '../entity';
-import type { OrderStatusEnum } from '../enums/order-status-enum';
+import { OrderStatusEnum } from '../enums/order-status-enum';
+import type { User } from '../user';
 import type { OrderItem } from './order-item';
 
 export type OrderProps = {
@@ -8,7 +10,8 @@ export type OrderProps = {
   status: OrderStatusEnum;
   deliveryAddress: string;
   isDeleted: boolean;
-  orderItems?: OrderItem[];
+  orderItems: OrderItem[];
+  user: User;
   createdAt?: Date;
   updatedAt?: Date;
   deleteAt?: Date | null;
@@ -26,5 +29,14 @@ export class Order extends Entity<OrderProps> {
 
   static restore(id: string, props: OrderProps): Order {
     return new Order(id, props);
+  }
+
+  static getOrderStatusFromString(input: string): OrderStatusEnum {
+    if (input === OrderStatusEnum.CANCELED) return OrderStatusEnum.CANCELED;
+    if (input === OrderStatusEnum.DELIVERED) return OrderStatusEnum.DELIVERED;
+    if (input === OrderStatusEnum.PAID) return OrderStatusEnum.PAID;
+    if (input === OrderStatusEnum.PENDING) return OrderStatusEnum.PENDING;
+    if (input === OrderStatusEnum.SHIPPED) return OrderStatusEnum.SHIPPED;
+    throw new BadRequestApiError('invalid order status');
   }
 }

@@ -3,6 +3,7 @@ import type { Prisma } from '../../../../prisma/client';
 
 type CategoryPrismaType = Prisma.CategoryGetPayload<object>;
 type CreateCategoryPrismaInput = Prisma.CategoryCreateInput;
+type UpdateCategoryPrismaInput = Prisma.CategoryUpdateInput;
 
 function toDomain(raw: CategoryPrismaType): Category {
   return Category.restore(raw.id, {
@@ -22,4 +23,23 @@ function toSavePrisma(category: Category): CreateCategoryPrismaInput {
   };
 }
 
-export const categoryMapper = { toDomain, toSavePrisma } as const;
+function toSoftDeletePrisma(): UpdateCategoryPrismaInput {
+  return {
+    isDeleted: true,
+    deletedAt: new Date().toISOString(),
+  };
+}
+
+function toUndeletePrisma(): UpdateCategoryPrismaInput {
+  return {
+    isDeleted: false,
+    deletedAt: null,
+  };
+}
+
+export const categoryMapper = {
+  toDomain,
+  toSavePrisma,
+  toSoftDeletePrisma,
+  toUndeletePrisma,
+} as const;

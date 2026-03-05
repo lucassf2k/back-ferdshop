@@ -4,10 +4,11 @@ import { PBKDF2Password } from '../../../../domain/user/password/pbkdf2-password
 import type { Prisma } from '../../../../prisma/client';
 import { ZodValidationService } from '../../../services/zod-validation-service';
 
-type UserPrismaType = Prisma.UserGetPayload<object>;
+type SaveUserPrismaOutput = Prisma.UserGetPayload<object>;
 type SaveUserPrismaInput = Prisma.UserCreateInput;
+type UpdateUserPrismaInput = Prisma.UserUpdateInput;
 
-function toDomain(raw: UserPrismaType): User {
+function toDomain(raw: SaveUserPrismaOutput): User {
   return User.restore(raw.id, {
     name: raw.name,
     email: new Email(raw.email, new ZodValidationService()),
@@ -32,4 +33,23 @@ function toSavePrisma(user: User): SaveUserPrismaInput {
   };
 }
 
-export const userMapper = { toDomain, toSavePrisma } as const;
+function toSoftDeletePrisma(): UpdateUserPrismaInput {
+  return {
+    isDeleted: true,
+    deletedAt: new Date().toISOString(),
+  };
+}
+
+function toUndeletePrisma(): UpdateUserPrismaInput {
+  return {
+    isDeleted: false,
+    deletedAt: null,
+  };
+}
+
+export const userMapper = {
+  toDomain,
+  toSavePrisma,
+  toSoftDeletePrisma,
+  toUndeletePrisma,
+} as const;

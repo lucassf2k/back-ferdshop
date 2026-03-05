@@ -38,18 +38,32 @@ export class PrismaProductRepositories implements ProductRepositories {
     if (allProducts.length === 0) return [];
     return allProducts.map(productMapper.toDomain);
   }
-  async delete(id: string): Promise<Product | undefined> {
+  async softDelete(id: string): Promise<Product | undefined> {
     const productDeleted = await prisma.product.update({
       where: {
         id,
       },
+      data: productMapper.toSoftDeletePrisma(),
       include: {
         category: true,
       },
-      data: productMapper.toDeletePrisma(),
     });
     if (!productDeleted) return undefined;
     return productMapper.toDomain(productDeleted);
+  }
+
+  async undelete(id: string): Promise<Product | undefined> {
+    const product = await prisma.product.update({
+      where: {
+        id,
+      },
+      data: productMapper.toUndeletePrisma(),
+      include: {
+        category: true,
+      },
+    });
+    if (!product) return undefined;
+    return productMapper.toDomain(product);
   }
 
   async getOfName(name: string): Promise<Product[]> {
