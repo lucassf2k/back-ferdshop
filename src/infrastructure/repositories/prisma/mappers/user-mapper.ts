@@ -16,7 +16,7 @@ function toDomain(raw: SaveUserPrismaOutput): User {
     isDeleted: raw.isDeleted,
     role: User.userRoleFromStringToEnum(raw.role),
     createdAt: raw.createdAt,
-    deleteAt: raw.deletedAt,
+    deletedAt: raw.deletedAt,
     updatedAt: raw.updatedAt,
   });
 }

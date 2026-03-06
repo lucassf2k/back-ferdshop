@@ -1,10 +1,14 @@
+import type { Product } from '.';
 import { getUUIDV7 } from '../../infrastructure/services/id-services';
 import { Entity } from '../entity';
+import type { User } from '../user';
 import type { Rating } from './rating';
 
 export type ReviewProps = {
   rating: Rating;
   isDeleted: boolean;
+  product: Product;
+  user: User;
   createdAt?: Date;
   updatedAt?: Date;
   deletedAt?: Date | null;

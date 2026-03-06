@@ -14,7 +14,7 @@ export type UserProps = {
   orders?: Order[];
   createdAt?: Date;
   updatedAt?: Date;
-  deleteAt?: Date | null;
+  deletedAt?: Date | null;
 };
 
 export class User {
