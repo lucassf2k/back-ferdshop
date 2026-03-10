@@ -5,11 +5,14 @@ import { prisma } from '../../database/prisma';
 import { productMapper } from './mappers/product-mapper';
 
 export class PrismaProductRepositories implements ProductRepositories {
-  async save(data: Product): Promise<boolean> {
+  async save(data: Product): Promise<Product> {
     const newProduct = await prisma.product.create({
       data: productMapper.toSavePrisma(data),
+      include: {
+        category: true,
+      },
     });
-    return Boolean(newProduct);
+    return productMapper.toDomain(newProduct);
   }
   async getOfId(id: string): Promise<Product | undefined> {
     const product = await prisma.product.findUnique({

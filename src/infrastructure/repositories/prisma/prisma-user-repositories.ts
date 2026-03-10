@@ -4,11 +4,11 @@ import { prisma } from '../../database/prisma';
 import { userMapper } from './mappers/user-mapper';
 
 export class PrismaUserRepositories implements UserRepositories {
-  async save(data: User): Promise<boolean> {
+  async save(data: User): Promise<User> {
     const newUser = await prisma.user.create({
       data: userMapper.toSavePrisma(data),
     });
-    return Boolean(newUser);
+    return userMapper.toDomain(newUser);
   }
 
   async getOfId(id: string): Promise<User | undefined> {

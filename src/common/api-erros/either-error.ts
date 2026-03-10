@@ -23,7 +23,7 @@ export class Right<R> {
 }
 
 export type Either<L, R> = Left<L> | Right<R>;
-export const either = {
+export const eitherUtils = {
   left<L, R>(l: L): Either<L, R> {
     return new Left(l);
   },
@@ -32,3 +32,5 @@ export const either = {
     return new Right(r);
   },
 } as const;
+
+export type EitherUtils = typeof eitherUtils;

@@ -1,7 +1,7 @@
 import { pbkdf2Sync, randomBytes } from 'node:crypto';
 import type { PasswordProtocol } from './password-protocol';
 
-const MAX_ITERATIONS = 100;
+const MAX_ITERATIONS = 31000;
 const KEY_LENGTH = 64;
 
 export class PBKDF2Password implements PasswordProtocol {

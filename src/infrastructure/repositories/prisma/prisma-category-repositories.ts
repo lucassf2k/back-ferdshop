@@ -4,11 +4,11 @@ import { prisma } from '../../database/prisma';
 import { categoryMapper } from './mappers/category-mapper';
 
 export class PrismaCategoryRepositories implements CategoryRepositories {
-  async save(data: Category): Promise<boolean> {
+  async save(data: Category): Promise<Category> {
     const newCategory = await prisma.category.create({
       data: categoryMapper.toSavePrisma(data),
     });
-    return Boolean(newCategory);
+    return categoryMapper.toDomain(newCategory);
   }
 
   async getOfId(id: string): Promise<Category | undefined> {

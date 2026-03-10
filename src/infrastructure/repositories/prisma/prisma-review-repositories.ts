@@ -4,7 +4,7 @@ import { prisma } from '../../database/prisma';
 import { reviewMapper } from './mappers/review-mapper';
 
 export class PrismaReviewRepositories implements ReviewRepositories {
-  async save(data: Review): Promise<boolean> {
+  async save(data: Review): Promise<Review> {
     const newReview = await prisma.review.create({
       data: {
         id: data._id,
@@ -13,8 +13,16 @@ export class PrismaReviewRepositories implements ReviewRepositories {
         user: { connect: { id: data.props.user._id } },
         product: { connect: { id: data.props.product._id } },
       },
+      include: {
+        product: {
+          include: {
+            category: true,
+          },
+        },
+        user: true,
+      },
     });
-    return Boolean(newReview);
+    return reviewMapper.toDomain(newReview);
   }
 
   async getOfId(id: string): Promise<Review | undefined> {

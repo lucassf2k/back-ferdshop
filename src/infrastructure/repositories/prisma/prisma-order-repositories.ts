@@ -5,11 +5,24 @@ import { prisma } from '../../database/prisma';
 import { orderMapper } from './mappers/order-mapper';
 
 export class PrismaOrderRepositories implements OrderRepositories {
-  async save(data: Order): Promise<boolean> {
+  async save(data: Order): Promise<Order> {
     const newOrder = await prisma.order.create({
       data: orderMapper.toSavePrisma(data),
+      include: {
+        user: true,
+        items: {
+          include: {
+            product: {
+              include: {
+                category: true,
+                reviews: true,
+              },
+            },
+          },
+        },
+      },
     });
-    return Boolean(newOrder);
+    return orderMapper.toDomain(newOrder);
   }
   async getOfId(id: string): Promise<Order | undefined> {
     const order = await prisma.order.findUnique({
