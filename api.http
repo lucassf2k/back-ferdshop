@@ -7,3 +7,12 @@ Content-Type: application/json
   "password": "23452324234",
   "role": ""
 }
+
+###
+GET http://localhost:3001/api/v1/users
+
+
+
+###
+GET http://localhost:3001/api/v1/users/sadasa
+Content-Type: application/json

@@ -1,15 +1,15 @@
-import { BadRequestApiError } from '../../../common/api-erros';
-import type { BaseApiError } from '../../../common/api-erros/base-api-error';
+import { BadRequestApiError } from '../../../../common/api-erros';
+import type { BaseApiError } from '../../../../common/api-erros/base-api-error';
 import {
   type Either,
   type EitherUtils,
-} from '../../../common/api-erros/either-error';
-import type { EmailValidationProtocol } from '../../../domain/protocols/validation-protocol';
-import { User } from '../../../domain/user';
-import { Email } from '../../../domain/user/email';
-import { PBKDF2Password } from '../../../domain/user/password/pbkdf2-password';
-import type { UserRepositories } from '../../repositories/user-repositories';
-import type { CreateUserUseCaseProtocol } from '../protocols/create-user-use-case-protocol';
+} from '../../../../common/api-erros/either-error';
+import type { EmailValidationProtocol } from '../../../../domain/protocols/validation-protocol';
+import { User } from '../../../../domain/user';
+import { Email } from '../../../../domain/user/email';
+import { PBKDF2Password } from '../../../../domain/user/password/pbkdf2-password';
+import type { UserRepositories } from '../../../repositories/user-repositories';
+import type { CreateUserUseCaseProtocol } from '../../protocols/users/create-user-use-case-protocol';
 
 export class CreateUserUseCase implements CreateUserUseCaseProtocol.Interface {
   constructor(
