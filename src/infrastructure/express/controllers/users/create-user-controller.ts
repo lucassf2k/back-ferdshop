@@ -1,7 +1,7 @@
 import type { Request, Response } from 'express';
 import z from 'zod';
-import type { CreateUserUseCaseProtocol } from '../../../application/use-case/protocols/users/create-user-use-case-protocol';
-import { StatusCodeEnum } from '../../../common/status-code-enum';
+import type { CreateUserUseCaseProtocol } from '../../../../application/use-case/protocols/users/create-user-use-case-protocol';
+import { StatusCodeEnum } from '../../../../common/status-code-enum';
 
 const zodCreateUserRequestValidation = z.object({
   name: z
