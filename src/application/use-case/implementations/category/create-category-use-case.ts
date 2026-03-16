@@ -1,5 +1,9 @@
-import { InternalServerErrorApiError } from '../../../../common/api-erros';
+import {
+  BadRequestApiError,
+  InternalServerErrorApiError,
+} from '../../../../common/api-erros';
 import { eitherUtils } from '../../../../common/api-erros/either-error';
+import { Category } from '../../../../domain/category';
 import type { CategoryRepositories } from '../../../repositories/category-repositories';
 import type { CreateCategoryUseCaseProtocol } from '../../protocols/category/create-category-use-case-protocol';
 
@@ -11,7 +15,20 @@ export class CreateCategoryUseCase
   async execute(
     input: CreateCategoryUseCaseProtocol.Input,
   ): CreateCategoryUseCaseProtocol.Output {
-    const category = await this.categoryRepositories.save(input);
+    const categoryAlreadyExists = await this.categoryRepositories.getOfName(
+      input.name,
+    );
+    if (categoryAlreadyExists) {
+      return eitherUtils.left(
+        new BadRequestApiError('category already exists'),
+      );
+    }
+    const newCategory = Category.create({
+      name: input.name,
+      isDeleted: false,
+      products: [],
+    });
+    const category = await this.categoryRepositories.save(newCategory);
     if (!category) {
       return eitherUtils.left(
         new InternalServerErrorApiError('category not created'),
