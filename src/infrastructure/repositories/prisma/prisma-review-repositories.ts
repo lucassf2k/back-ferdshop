@@ -3,7 +3,7 @@ import { Review } from '../../../domain/product/review';
 import { prisma } from '../../database/prisma';
 import { reviewMapper } from './mappers/review-mapper';
 
-export class PrismaReviewRepositories implements ReviewRepositories {
+class PrismaReviewRepositories implements ReviewRepositories {
   async save(data: Review): Promise<Review> {
     const newReview = await prisma.review.create({
       data: {
@@ -101,3 +101,5 @@ export class PrismaReviewRepositories implements ReviewRepositories {
     return reviewMapper.toDomain(review);
   }
 }
+
+export const prismaReviewRepositories = new PrismaReviewRepositories();

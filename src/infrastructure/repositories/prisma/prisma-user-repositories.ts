@@ -3,7 +3,7 @@ import { User } from '../../../domain/user';
 import { prisma } from '../../database/prisma';
 import { userMapper } from './mappers/user-mapper';
 
-export class PrismaUserRepositories implements UserRepositories {
+class PrismaUserRepositories implements UserRepositories {
   async save(data: User): Promise<User> {
     const newUser = await prisma.user.create({
       data: userMapper.toSavePrisma(data),
@@ -69,3 +69,5 @@ export class PrismaUserRepositories implements UserRepositories {
     return userMapper.toDomain(user);
   }
 }
+
+export const prismaUserRepositories = new PrismaUserRepositories();

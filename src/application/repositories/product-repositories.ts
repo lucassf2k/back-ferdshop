@@ -7,7 +7,8 @@ export interface ProductRepositories extends Repository<
   Product,
   string
 > {
-  getOfName(name: string): Promise<Product[]>;
+  getOfName(name: string): Promise<Product | undefined>;
   getOfStock(stock: Stock): Promise<Product[]>;
   getOfCategory(categoryId: string): Promise<Product[]>;
+  searchByName(name: string): Promise<Product[]>;
 }

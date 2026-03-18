@@ -4,7 +4,7 @@ import { Stock } from '../../../domain/product/stock';
 import { prisma } from '../../database/prisma';
 import { productMapper } from './mappers/product-mapper';
 
-export class PrismaProductRepositories implements ProductRepositories {
+class PrismaProductRepositories implements ProductRepositories {
   async save(data: Product): Promise<Product> {
     const newProduct = await prisma.product.create({
       data: productMapper.toSavePrisma(data),
@@ -69,7 +69,23 @@ export class PrismaProductRepositories implements ProductRepositories {
     return productMapper.toDomain(product);
   }
 
-  async getOfName(name: string): Promise<Product[]> {
+  async getOfName(name: string): Promise<Product | undefined> {
+    const product = await prisma.product.findFirst({
+      where: {
+        name,
+        AND: {
+          isDeleted: false,
+        },
+      },
+      include: {
+        category: true,
+      },
+    });
+    if (!product) return undefined;
+    return productMapper.toDomain(product);
+  }
+
+  async searchByName(name: string): Promise<Product[]> {
     const products = await prisma.product.findMany({
       where: {
         name: {
@@ -87,6 +103,7 @@ export class PrismaProductRepositories implements ProductRepositories {
     if (products.length === 0) return [];
     return products.map(productMapper.toDomain);
   }
+
   async getOfStock(stock: Stock): Promise<Product[]> {
     const allProductsWithStock = await prisma.product.findMany({
       where: {
@@ -120,3 +137,5 @@ export class PrismaProductRepositories implements ProductRepositories {
     return allProductsWithCategoryId.map(productMapper.toDomain);
   }
 }
+
+export const prismaProductRepositories = new PrismaProductRepositories();

@@ -4,7 +4,7 @@ import { Order } from '../../../domain/order';
 import { prisma } from '../../database/prisma';
 import { orderMapper } from './mappers/order-mapper';
 
-export class PrismaOrderRepositories implements OrderRepositories {
+class PrismaOrderRepositories implements OrderRepositories {
   async save(data: Order): Promise<Order> {
     const newOrder = await prisma.order.create({
       data: orderMapper.toSavePrisma(data),
@@ -146,3 +146,5 @@ export class PrismaOrderRepositories implements OrderRepositories {
     return allOrders.map(orderMapper.toDomain);
   }
 }
+
+export const prismaOrderRepositories = new PrismaOrderRepositories();

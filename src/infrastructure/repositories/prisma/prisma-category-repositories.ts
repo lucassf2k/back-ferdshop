@@ -3,7 +3,7 @@ import { Category } from '../../../domain/category';
 import { prisma } from '../../database/prisma';
 import { categoryMapper } from './mappers/category-mapper';
 
-export class PrismaCategoryRepositories implements CategoryRepositories {
+class PrismaCategoryRepositories implements CategoryRepositories {
   async save(data: Category): Promise<Category> {
     const newCategory = await prisma.category.create({
       data: categoryMapper.toSavePrisma(data),
@@ -69,3 +69,5 @@ export class PrismaCategoryRepositories implements CategoryRepositories {
     return categoryMapper.toDomain(category);
   }
 }
+
+export const prismaCategoryRepositories = new PrismaCategoryRepositories();
