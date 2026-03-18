@@ -1,4 +1,11 @@
-POST http://localhost:3001/api/v1/users
+@HOST = localhost
+@PORT = 3001
+@VERSION = v1
+@URL = http://{{HOST}}:{{PORT}}/api/{{VERSION}}
+@TOKEN =
+
+### Create User
+POST {{URL}}/users
 Content-Type: application/json
 
 {
@@ -8,40 +15,39 @@ Content-Type: application/json
   "role": ""
 }
 
-###
-GET http://localhost:3001/api/v1/users
+### List Users
+GET {{URL}}/users
 
 
-
-###
-GET http://localhost:3001/api/v1/users/sadasa
+### Get Of Id
+GET {{URL}}/users/:id
 Content-Type: application/json
 
-###
-DELETE http://localhost:3001/api/v1/users/sadasa
+### Softdelete User
+DELETE {{URL}}/users/:id
 
-###
-PATCH http://localhost:3001/api/v1/users/:id/restore
+### Undelete User
+PATCH {{URL}}/users/:id/restore
 
-###
-POST http://localhost:3001/api/v1/categories
+### Create Category
+POST {{URL}}/categories
 Content-Type: application/json
 
 {
   "name": "asf"
 }
 
-###
-GET http://localhost:3001/api/v1/categories
+### List Category
+GET {{URL}}/categories
 
-###
-GET http://localhost:3001/api/v1/categories/:id
+### Get Category Of ID
+GET {{URL}}/categories/:id
 
-###
-GET http://localhost:3001/api/v1/categories/search?name=
+### Search by Name
+GET {{URL}}/categories/search?name=
 
-###
-DELETE  http://localhost:3001/api/v1/categories/:id
+### Softdelete Category
+DELETE  {{URL}}/categories/:id
 
-###
-PATCH http://localhost:3001/api/v1/categories/:id/restore
+### Undelete Category
+PATCH {{URL}}/categories/:id/restore
