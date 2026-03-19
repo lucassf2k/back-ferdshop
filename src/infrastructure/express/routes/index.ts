@@ -1,9 +1,11 @@
 import { Router } from 'express';
-import { usersRoute } from './users-route';
+import { usersRouter } from './user';
 import { categoriesRoute } from './category';
+import { productRouter } from './product';
 
 const routes = Router();
-routes.use('/users', usersRoute.router);
+routes.use('/users', usersRouter.router);
 routes.use('/categories', categoriesRoute.router);
+routes.use('/products', productRouter.router);
 
 export { routes };

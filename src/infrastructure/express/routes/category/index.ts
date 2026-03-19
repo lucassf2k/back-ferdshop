@@ -4,7 +4,7 @@ import { GetCategoryOfIdUseCase } from '../../../../application/use-case/impleme
 import { GetCategoryOfNameUseCase } from '../../../../application/use-case/implementations/category/get-category-of-name-use-case';
 import { SoftDeleteCategoryOfIdUseCase } from '../../../../application/use-case/implementations/category/soft-delete-category-of-id-use-case';
 import { UndeleteCategoryOfIdUseCase } from '../../../../application/use-case/implementations/category/undelete-category-of-id-use-case';
-import { PrismaCategoryRepositories } from '../../../repositories/prisma/prisma-category-repositories';
+import { prismaCategoryRepositories } from '../../../repositories/prisma/prisma-category-repositories';
 import { CreateCategoryController } from '../../controllers/category/create-category-controller';
 import { GetAllCategoryController } from '../../controllers/category/get-all-category-controller';
 import { GetCategoryOfIdController } from '../../controllers/category/get-category-of-id-controller';
@@ -13,39 +13,43 @@ import { SoftDeleteCategoryOfIdController } from '../../controllers/category/sof
 import { UndeleteCategoryOfIdController } from '../../controllers/category/undelete-category-of-id-controller';
 import { CategoryRouter } from './category-router.';
 
-const categoryRepositories = new PrismaCategoryRepositories();
-
-const createCategoryUseCase = new CreateCategoryUseCase(categoryRepositories);
+const createCategoryUseCase = new CreateCategoryUseCase(
+  prismaCategoryRepositories,
+);
 const createCategoryController = new CreateCategoryController(
   createCategoryUseCase,
 );
 
-const getAllCategoryUseCase = new GetAllCategoryUseCase(categoryRepositories);
+const getAllCategoryUseCase = new GetAllCategoryUseCase(
+  prismaCategoryRepositories,
+);
 const getAllCategoryController = new GetAllCategoryController(
   getAllCategoryUseCase,
 );
 
-const getCategoryOfIdUseCase = new GetCategoryOfIdUseCase(categoryRepositories);
+const getCategoryOfIdUseCase = new GetCategoryOfIdUseCase(
+  prismaCategoryRepositories,
+);
 const getCategoryOfIdController = new GetCategoryOfIdController(
   getCategoryOfIdUseCase,
 );
 
 const getCategoryOfNameUseCase = new GetCategoryOfNameUseCase(
-  categoryRepositories,
+  prismaCategoryRepositories,
 );
 const getCategoryOfNameController = new GetCategoryOfNameController(
   getCategoryOfNameUseCase,
 );
 
 const softDeleteCategoryOfIdUseCase = new SoftDeleteCategoryOfIdUseCase(
-  categoryRepositories,
+  prismaCategoryRepositories,
 );
 const softDeleteCategoryOfIdController = new SoftDeleteCategoryOfIdController(
   softDeleteCategoryOfIdUseCase,
 );
 
 const undeleteCategoryOfIdUseCase = new UndeleteCategoryOfIdUseCase(
-  categoryRepositories,
+  prismaCategoryRepositories,
 );
 const undeleteCategoryOfIdController = new UndeleteCategoryOfIdController(
   undeleteCategoryOfIdUseCase,

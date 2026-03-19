@@ -29,6 +29,8 @@ DELETE {{URL}}/users/:id
 ### Undelete User
 PATCH {{URL}}/users/:id/restore
 
+# CATEGORY
+
 ### Create Category
 POST {{URL}}/categories
 Content-Type: application/json
@@ -51,3 +53,28 @@ DELETE  {{URL}}/categories/:id
 
 ### Undelete Category
 PATCH {{URL}}/categories/:id/restore
+
+# PRODUCT
+
+### Create Product
+POST {{URL}}/products
+Content-Type: application/json
+
+{
+  "name": "",
+  "price": 9.3,
+  "categoryId": "",
+  "description": "",
+}
+
+### List Products
+GET {{URL}}/products
+
+### Get Product of ID
+GET {{URL}}/products/:id
+
+### Soft Delete Product
+DELETE {{URL}}/products/:id
+
+### Undelete Product
+PATCH {{URL}}/products/:id/restore
