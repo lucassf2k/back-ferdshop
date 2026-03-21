@@ -5,6 +5,7 @@ import type { GetAllProductsController } from '../../controllers/product/get-all
 import type { GetProductOfIdController } from '../../controllers/product/get-product-of-id-controller';
 import type { SoftDeleteProductOfIdController } from '../../controllers/product/soft-delete-product-of-id-controller';
 import type { UndeleteProductOfIdController } from '../../controllers/product/undelete-product-of-id-controller';
+import type { SearchProductController } from '../../controllers/product/search-product-controller';
 
 export class ProductRouter {
   readonly router = Router();
@@ -15,6 +16,7 @@ export class ProductRouter {
     private readonly getProductOfIdController: GetProductOfIdController,
     private readonly softDeleteProductOfIdController: SoftDeleteProductOfIdController,
     private readonly undeleteProductOfIdController: UndeleteProductOfIdController,
+    private readonly searchProductController: SearchProductController,
   ) {
     this.run();
   }
@@ -52,6 +54,13 @@ export class ProductRouter {
       '/:id/restore',
       asyncRouteHandler(async (request, response) => {
         await this.undeleteProductOfIdController.handle(request, response);
+      }),
+    );
+
+    this.router.get(
+      '/search',
+      asyncRouteHandler(async (request, response) => {
+        await this.searchProductController.handle(request, response);
       }),
     );
   }
