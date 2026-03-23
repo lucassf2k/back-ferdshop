@@ -1,7 +1,6 @@
 import { BadRequestApiError } from '../../common/api-erros';
 import { getUUIDV7 } from '../../infrastructure/services/id-services';
 import { UserRole } from '../enums/user-role';
-import type { Order } from '../order';
 import type { Email } from './email';
 import type { PasswordProtocol } from './password/password-protocol';
 
@@ -10,11 +9,6 @@ export type UserProps = {
   email: Email;
   password: PasswordProtocol;
   role: UserRole;
-  isDeleted: boolean;
-  orders?: Order[];
-  createdAt?: Date;
-  updatedAt?: Date;
-  deletedAt?: Date | null;
 };
 
 export class User {

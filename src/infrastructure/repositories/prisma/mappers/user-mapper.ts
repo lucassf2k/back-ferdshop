@@ -1,3 +1,4 @@
+import type { UserModel } from '../../../../application/repositories/user-repositories';
 import { User } from '../../../../domain/user';
 import { Email } from '../../../../domain/user/email';
 import { PBKDF2Password } from '../../../../domain/user/password/pbkdf2-password';
@@ -8,17 +9,16 @@ type SaveUserPrismaOutput = Prisma.UserGetPayload<object>;
 type SaveUserPrismaInput = Prisma.UserCreateInput;
 type UpdateUserPrismaInput = Prisma.UserUpdateInput;
 
-function toDomain(raw: SaveUserPrismaOutput): User {
-  return User.restore(raw.id, {
+function toDomain(raw: SaveUserPrismaOutput): UserModel {
+  return {
+    id: raw.id,
     name: raw.name,
     email: new Email(raw.email, new ZodValidationService()),
     password: PBKDF2Password.restore(raw.passwordValue, raw.passwordSalt),
-    isDeleted: raw.isDeleted,
     role: User.userRoleFromStringToEnum(raw.role),
     createdAt: raw.createdAt,
-    deletedAt: raw.deletedAt,
     updatedAt: raw.updatedAt,
-  });
+  };
 }
 
 function toSavePrisma(user: User): SaveUserPrismaInput {

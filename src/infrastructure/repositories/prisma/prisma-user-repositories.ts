@@ -1,17 +1,20 @@
-import type { UserRepositories } from '../../../application/repositories/user-repositories';
+import type {
+  UserModel,
+  UserRepositories,
+} from '../../../application/repositories/user-repositories';
 import { User } from '../../../domain/user';
 import { prisma } from '../../database/prisma';
 import { userMapper } from './mappers/user-mapper';
 
 class PrismaUserRepositories implements UserRepositories {
-  async save(data: User): Promise<User> {
+  async save(data: User): Promise<UserModel> {
     const newUser = await prisma.user.create({
       data: userMapper.toSavePrisma(data),
     });
     return userMapper.toDomain(newUser);
   }
 
-  async getOfId(id: string): Promise<User | undefined> {
+  async getOfId(id: string): Promise<UserModel | undefined> {
     const user = await prisma.user.findUnique({
       where: {
         id,
@@ -24,7 +27,7 @@ class PrismaUserRepositories implements UserRepositories {
     return userMapper.toDomain(user);
   }
 
-  async getAll(): Promise<User[]> {
+  async getAll(): Promise<UserModel[]> {
     const allUsers = await prisma.user.findMany({
       where: {
         isDeleted: false,
@@ -34,7 +37,7 @@ class PrismaUserRepositories implements UserRepositories {
     return allUsers.map(userMapper.toDomain);
   }
 
-  async softDelete(id: string): Promise<User | undefined> {
+  async softDelete(id: string): Promise<UserModel | undefined> {
     const user = await prisma.user.update({
       where: {
         id,
@@ -45,7 +48,7 @@ class PrismaUserRepositories implements UserRepositories {
     return userMapper.toDomain(user);
   }
 
-  async undelete(id: string): Promise<User | undefined> {
+  async undelete(id: string): Promise<UserModel | undefined> {
     const user = await prisma.user.update({
       where: {
         id,
@@ -56,7 +59,7 @@ class PrismaUserRepositories implements UserRepositories {
     return userMapper.toDomain(user);
   }
 
-  async getOfEmail(email: string): Promise<User | undefined> {
+  async getOfEmail(email: string): Promise<UserModel | undefined> {
     const user = await prisma.user.findUnique({
       where: {
         email,

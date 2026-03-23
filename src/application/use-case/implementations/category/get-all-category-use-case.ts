@@ -1,15 +1,14 @@
 import { eitherUtils } from '../../../../common/api-erros/either-error';
-import type { CategoryRepositories } from '../../../repositories/category-repositories';
-import type { GetAllCategoryUseCaseProtocol } from '../../protocols/category/get-all-category-use-case-protocol';
-import type { GetAllUserUseCaseProtocol } from '../../protocols/users/get-of-all-use-case-protocol';
+import type { UserRepositories } from '../../../repositories/user-repositories';
+import type { GetAllUsersUseCaseProtocol } from '../../protocols/users/get-all-users-use-case-protocol';
 
 export class GetAllCategoryUseCase
-  implements GetAllCategoryUseCaseProtocol.Interface
+  implements GetAllUsersUseCaseProtocol.Interface
 {
-  constructor(private readonly categoryRepositories: CategoryRepositories) {}
+  constructor(private readonly userRepositories: UserRepositories) {}
 
-  async execute(): GetAllUserUseCaseProtocol.Output {
-    const categories = await this.categoryRepositories.getAll();
+  async execute(): GetAllUsersUseCaseProtocol.Output {
+    const categories = await this.userRepositories.getAll();
     return eitherUtils.right(categories);
   }
 }

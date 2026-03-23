@@ -1,11 +1,13 @@
 import { eitherUtils } from '../../../../common/api-erros/either-error';
 import type { UserRepositories } from '../../../repositories/user-repositories';
-import type { GetAllUserUseCaseProtocol } from '../../protocols/users/get-of-all-use-case-protocol';
+import type { GetAllUsersUseCaseProtocol } from '../../protocols/users/get-all-users-use-case-protocol';
 
-export class GetAllUserUseCase implements GetAllUserUseCaseProtocol.Interface {
+export class GetAllUsersUseCase
+  implements GetAllUsersUseCaseProtocol.Interface
+{
   constructor(private readonly userRepositories: UserRepositories) {}
 
-  async execute(): GetAllUserUseCaseProtocol.Output {
+  async execute(): GetAllUsersUseCaseProtocol.Output {
     const users = await this.userRepositories.getAll();
     return eitherUtils.right(users);
   }

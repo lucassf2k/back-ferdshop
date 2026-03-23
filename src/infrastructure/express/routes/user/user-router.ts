@@ -1,6 +1,6 @@
 import { Router } from 'express';
-import type { GetAllUserController } from '../../controllers/users/get-all-user-controller';
 import type { CreateUserController } from '../../controllers/users/create-user-controller';
+import type { GetAllUsersController } from '../../controllers/users/get-all-users-controller';
 import type { GetOfIdUserController } from '../../controllers/users/get-of-id-user-controller';
 import type { SoftDeleteUserOfIdController } from '../../controllers/users/soft-delete-user-of-id-controller';
 import type { UndeleteUserOfIdController } from '../../controllers/users/undelete-user-of-id-controller';
@@ -9,7 +9,7 @@ import { asyncRouteHandler } from '../async-route';
 export class UsersRouter {
   readonly router = Router();
   constructor(
-    private readonly getAllUserController: GetAllUserController,
+    private readonly getAllUsersController: GetAllUsersController,
     private readonly createUserController: CreateUserController,
     private readonly getOfIdUserController: GetOfIdUserController,
     private readonly softDeleteUserOfIdController: SoftDeleteUserOfIdController,
@@ -22,7 +22,7 @@ export class UsersRouter {
     this.router.get(
       '/',
       asyncRouteHandler(async (request, response) => {
-        await this.getAllUserController.handle(request, response);
+        await this.getAllUsersController.handle(request, response);
       }),
     );
 
