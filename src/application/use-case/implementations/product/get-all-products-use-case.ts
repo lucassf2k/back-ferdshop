@@ -1,6 +1,6 @@
 import { eitherUtils } from '../../../../common/api-erros/either-error';
 import type { ProductRepositories } from '../../../repositories/product-repositories';
-import type { GetAllProductsUseCaseProtocol } from '../../protocols/products/get-all-product-use-case-protocol';
+import type { GetAllProductsUseCaseProtocol } from '../../protocols/products/get-all-products-use-case-protocol';
 
 export class GetAllProductsUseCase
   implements GetAllProductsUseCaseProtocol.Interface

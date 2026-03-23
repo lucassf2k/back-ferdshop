@@ -78,3 +78,18 @@ DELETE {{URL}}/products/:id
 
 ### Undelete Product
 PATCH {{URL}}/products/:id/restore
+
+# REVIEWS
+
+### Create Review
+POST {{URL}}/reviews
+Content-Type: application/json
+
+{
+  "rating": 3,
+  "userId": "",
+  "productId": ""
+}
+
+### Soft Delete Review
+DELETE {{URL}}/reviews/:id
