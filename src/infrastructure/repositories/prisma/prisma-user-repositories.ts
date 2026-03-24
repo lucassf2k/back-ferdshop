@@ -11,7 +11,7 @@ class PrismaUserRepositories implements UserRepositories {
     const newUser = await prisma.user.create({
       data: userMapper.toSavePrisma(data),
     });
-    return userMapper.toDomain(newUser);
+    return userMapper.toUserModel(newUser);
   }
 
   async getOfId(id: string): Promise<UserModel | undefined> {
@@ -24,7 +24,7 @@ class PrismaUserRepositories implements UserRepositories {
       },
     });
     if (!user) return undefined;
-    return userMapper.toDomain(user);
+    return userMapper.toUserModel(user);
   }
 
   async getAll(): Promise<UserModel[]> {
@@ -34,7 +34,7 @@ class PrismaUserRepositories implements UserRepositories {
       },
     });
     if (allUsers.length === 0) return [];
-    return allUsers.map(userMapper.toDomain);
+    return allUsers.map(userMapper.toUserModel);
   }
 
   async softDelete(id: string): Promise<UserModel | undefined> {
@@ -45,7 +45,7 @@ class PrismaUserRepositories implements UserRepositories {
       data: userMapper.toSoftDeletePrisma(),
     });
     if (!user) return undefined;
-    return userMapper.toDomain(user);
+    return userMapper.toUserModel(user);
   }
 
   async undelete(id: string): Promise<UserModel | undefined> {
@@ -56,7 +56,7 @@ class PrismaUserRepositories implements UserRepositories {
       data: userMapper.toUndeletePrisma(),
     });
     if (!user) return undefined;
-    return userMapper.toDomain(user);
+    return userMapper.toUserModel(user);
   }
 
   async getOfEmail(email: string): Promise<UserModel | undefined> {
@@ -69,7 +69,7 @@ class PrismaUserRepositories implements UserRepositories {
       },
     });
     if (!user) return undefined;
-    return userMapper.toDomain(user);
+    return userMapper.toUserModel(user);
   }
 }
 

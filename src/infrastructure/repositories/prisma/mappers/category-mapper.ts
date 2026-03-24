@@ -6,7 +6,7 @@ type CategoryPrismaType = Prisma.CategoryGetPayload<object>;
 type CreateCategoryPrismaInput = Prisma.CategoryCreateInput;
 type UpdateCategoryPrismaInput = Prisma.CategoryUpdateInput;
 
-function toDomain(raw: CategoryPrismaType): CategoryModel {
+function toCategoryModel(raw: CategoryPrismaType): CategoryModel {
   return {
     id: raw.id,
     name: raw.name,
@@ -37,7 +37,7 @@ function toUndeletePrisma(): UpdateCategoryPrismaInput {
 }
 
 export const categoryMapper = {
-  toDomain,
+  toCategoryModel,
   toSavePrisma,
   toSoftDeletePrisma,
   toUndeletePrisma,

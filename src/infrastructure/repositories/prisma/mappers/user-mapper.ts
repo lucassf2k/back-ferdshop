@@ -9,7 +9,7 @@ type SaveUserPrismaOutput = Prisma.UserGetPayload<object>;
 type SaveUserPrismaInput = Prisma.UserCreateInput;
 type UpdateUserPrismaInput = Prisma.UserUpdateInput;
 
-function toDomain(raw: SaveUserPrismaOutput): UserModel {
+function toUserModel(raw: SaveUserPrismaOutput): UserModel {
   return {
     id: raw.id,
     name: raw.name,
@@ -48,7 +48,7 @@ function toUndeletePrisma(): UpdateUserPrismaInput {
 }
 
 export const userMapper = {
-  toDomain,
+  toUserModel,
   toSavePrisma,
   toSoftDeletePrisma,
   toUndeletePrisma,

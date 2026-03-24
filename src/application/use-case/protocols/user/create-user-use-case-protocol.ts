@@ -1,6 +1,6 @@
 import type { BaseApiError } from '../../../../common/api-erros/base-api-error';
 import type { Either } from '../../../../common/api-erros/either-error';
-import type { UserModel } from '../../../repositories/user-repositories';
+import type { UserResponse } from './user-response';
 
 export namespace CreateUserUseCaseProtocol {
   export type Input = {
@@ -9,11 +9,11 @@ export namespace CreateUserUseCaseProtocol {
     password: string;
     role: string;
   };
-  export type Output = Promise<Either<BaseApiError, UserModel>>;
+  export type Output = UserResponse;
 
   export interface Interface {
     execute(
       input: CreateUserUseCaseProtocol.Input,
-    ): CreateUserUseCaseProtocol.Output;
+    ): Promise<Either<BaseApiError, CreateUserUseCaseProtocol.Output>>;
   }
 }

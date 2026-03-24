@@ -1,5 +1,5 @@
 import type { Request, Response } from 'express';
-import type { UndeleteUserOfIdUseCaseProtocol } from '../../../../application/use-case/protocols/users/undelete-user-of-id-use-case-protocol';
+import type { UndeleteUserOfIdUseCaseProtocol } from '../../../../application/use-case/protocols/user/undelete-user-of-id-use-case-protocol';
 import { StatusCodeEnum } from '../../../../common/status-code-enum';
 import z from 'zod';
 

@@ -11,7 +11,7 @@ class PrismaCategoryRepositories implements CategoryRepositories {
     const newCategory = await prisma.category.create({
       data: categoryMapper.toSavePrisma(data),
     });
-    return categoryMapper.toDomain(newCategory);
+    return categoryMapper.toCategoryModel(newCategory);
   }
 
   async getOfId(id: string): Promise<CategoryModel | undefined> {
@@ -24,7 +24,7 @@ class PrismaCategoryRepositories implements CategoryRepositories {
       },
     });
     if (!category) return undefined;
-    return categoryMapper.toDomain(category);
+    return categoryMapper.toCategoryModel(category);
   }
 
   async getAll(): Promise<CategoryModel[]> {
@@ -34,7 +34,7 @@ class PrismaCategoryRepositories implements CategoryRepositories {
       },
     });
     if (allCategories.length === 0) return [];
-    return allCategories.map(categoryMapper.toDomain);
+    return allCategories.map(categoryMapper.toCategoryModel);
   }
 
   async softDelete(id: string): Promise<CategoryModel | undefined> {
@@ -45,7 +45,7 @@ class PrismaCategoryRepositories implements CategoryRepositories {
       data: categoryMapper.toSoftDeletePrisma(),
     });
     if (!categoryDeleted) return undefined;
-    return categoryMapper.toDomain(categoryDeleted);
+    return categoryMapper.toCategoryModel(categoryDeleted);
   }
 
   async undelete(id: string): Promise<CategoryModel | undefined> {
@@ -56,7 +56,7 @@ class PrismaCategoryRepositories implements CategoryRepositories {
       data: categoryMapper.toUndeletePrisma(),
     });
     if (!category) return undefined;
-    return categoryMapper.toDomain(category);
+    return categoryMapper.toCategoryModel(category);
   }
 
   async getOfName(name: string): Promise<CategoryModel | undefined> {
@@ -69,7 +69,7 @@ class PrismaCategoryRepositories implements CategoryRepositories {
       },
     });
     if (!category) return undefined;
-    return categoryMapper.toDomain(category);
+    return categoryMapper.toCategoryModel(category);
   }
 }
 

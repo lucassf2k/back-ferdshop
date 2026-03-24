@@ -1,5 +1,5 @@
 import type { Request, Response } from 'express';
-import type { SoftDeleteUserOfIdUseCaseProtocol } from '../../../../application/use-case/protocols/users/soft-delete-user-of-id-use-case-protocol';
+import type { SoftDeleteUserOfIdUseCaseProtocol } from '../../../../application/use-case/protocols/user/soft-delete-user-of-id-use-case-protocol';
 import z from 'zod';
 import { StatusCodeEnum } from '../../../../common/status-code-enum';
 

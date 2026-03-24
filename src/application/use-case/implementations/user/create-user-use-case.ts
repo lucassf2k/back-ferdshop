@@ -1,11 +1,18 @@
 import { BadRequestApiError } from '../../../../common/api-erros';
-import { type EitherUtils } from '../../../../common/api-erros/either-error';
+import type { BaseApiError } from '../../../../common/api-erros/base-api-error';
+import {
+  type Either,
+  type EitherUtils,
+} from '../../../../common/api-erros/either-error';
 import type { EmailValidationProtocol } from '../../../../domain/protocols/validation-protocol';
 import { User } from '../../../../domain/user';
 import { Email } from '../../../../domain/user/email';
 import { PBKDF2Password } from '../../../../domain/user/password/pbkdf2-password';
-import type { UserRepositories } from '../../../repositories/user-repositories';
-import type { CreateUserUseCaseProtocol } from '../../protocols/users/create-user-use-case-protocol';
+import type {
+  UserModel,
+  UserRepositories,
+} from '../../../repositories/user-repositories';
+import type { CreateUserUseCaseProtocol } from '../../protocols/user/create-user-use-case-protocol';
 
 export class CreateUserUseCase implements CreateUserUseCaseProtocol.Interface {
   constructor(
@@ -16,7 +23,7 @@ export class CreateUserUseCase implements CreateUserUseCaseProtocol.Interface {
 
   async execute(
     input: CreateUserUseCaseProtocol.Input,
-  ): CreateUserUseCaseProtocol.Output {
+  ): Promise<Either<BaseApiError, CreateUserUseCaseProtocol.Output>> {
     const userAlreadyExists = await this.userRepository.getOfEmail(input.email);
     if (userAlreadyExists) {
       return this.eitherUtils.left(
@@ -30,6 +37,17 @@ export class CreateUserUseCase implements CreateUserUseCaseProtocol.Interface {
       role: User.userRoleFromStringToEnum(input.role),
     });
     const output = await this.userRepository.save(newUser);
-    return this.eitherUtils.right(output);
+    return this.eitherUtils.right(CreateUserUseCase.output(output));
+  }
+
+  static output(input: UserModel): CreateUserUseCaseProtocol.Output {
+    return {
+      id: input.id,
+      name: input.name,
+      email: input.email.value,
+      role: input.role,
+      createdAt: input.createdAt,
+      updatedAt: input.updatedAt,
+    };
   }
 }

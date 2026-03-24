@@ -1,9 +1,9 @@
 import { Router } from 'express';
-import type { CreateUserController } from '../../controllers/users/create-user-controller';
-import type { GetAllUsersController } from '../../controllers/users/get-all-users-controller';
-import type { GetOfIdUserController } from '../../controllers/users/get-of-id-user-controller';
-import type { SoftDeleteUserOfIdController } from '../../controllers/users/soft-delete-user-of-id-controller';
-import type { UndeleteUserOfIdController } from '../../controllers/users/undelete-user-of-id-controller';
+import type { CreateUserController } from '../../controllers/user/create-user-controller';
+import type { GetAllUsersController } from '../../controllers/user/get-all-users-controller';
+import type { GetUserOfIdController } from '../../controllers/user/get-user-of-id-controller';
+import type { SoftDeleteUserOfIdController } from '../../controllers/user/soft-delete-user-of-id-controller';
+import type { UndeleteUserOfIdController } from '../../controllers/user/undelete-user-of-id-controller';
 import { asyncRouteHandler } from '../async-route';
 
 export class UsersRouter {
@@ -11,7 +11,7 @@ export class UsersRouter {
   constructor(
     private readonly getAllUsersController: GetAllUsersController,
     private readonly createUserController: CreateUserController,
-    private readonly getOfIdUserController: GetOfIdUserController,
+    private readonly getUserOfIdController: GetUserOfIdController,
     private readonly softDeleteUserOfIdController: SoftDeleteUserOfIdController,
     private readonly undeleteUserOfIdController: UndeleteUserOfIdController,
   ) {
@@ -36,7 +36,7 @@ export class UsersRouter {
     this.router.get(
       '/:id',
       asyncRouteHandler(async (request, response) => {
-        await this.getOfIdUserController.handle(request, response);
+        await this.getUserOfIdController.handle(request, response);
       }),
     );
 

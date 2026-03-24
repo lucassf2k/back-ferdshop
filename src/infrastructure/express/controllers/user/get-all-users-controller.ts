@@ -1,6 +1,6 @@
 import type { Request, Response } from 'express';
 import { StatusCodeEnum } from '../../../../common/status-code-enum';
-import type { GetAllUsersUseCaseProtocol } from '../../../../application/use-case/protocols/users/get-all-users-use-case-protocol';
+import type { GetAllUsersUseCaseProtocol } from '../../../../application/use-case/protocols/user/get-all-users-use-case-protocol';
 
 export class GetAllUsersController {
   constructor(
