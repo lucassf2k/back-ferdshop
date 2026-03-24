@@ -1,5 +1,9 @@
 import { NotFoundApiError } from '../../../../common/api-erros';
-import { eitherUtils } from '../../../../common/api-erros/either-error';
+import type { BaseApiError } from '../../../../common/api-erros/base-api-error';
+import {
+  eitherUtils,
+  type Either,
+} from '../../../../common/api-erros/either-error';
 import type { CategoryRepositories } from '../../../repositories/category-repositories';
 import type { UndeleteCategoryOfIdUseCaseProtocol } from '../../protocols/category/undelete-category-of-id-use-case-protocol';
 
@@ -10,7 +14,7 @@ export class UndeleteCategoryOfIdUseCase
 
   async execute(
     input: UndeleteCategoryOfIdUseCaseProtocol.Input,
-  ): UndeleteCategoryOfIdUseCaseProtocol.Output {
+  ): Promise<Either<BaseApiError, UndeleteCategoryOfIdUseCaseProtocol.Output>> {
     const category = await this.categoryRespositories.undelete(input.id);
     if (!category) {
       return eitherUtils.left(new NotFoundApiError('category not found'));

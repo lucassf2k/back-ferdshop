@@ -6,11 +6,11 @@ export namespace GetCategoryOfNameUseCaseProtocol {
   export type Input = {
     name: string;
   };
-  export type Output = Promise<Either<BaseApiError, CategoryModel>>;
+  export type Output = CategoryModel;
 
   export interface Interface {
     execute(
       input: GetCategoryOfNameUseCaseProtocol.Input,
-    ): GetCategoryOfNameUseCaseProtocol.Output;
+    ): Promise<Either<BaseApiError, GetCategoryOfNameUseCaseProtocol.Output>>;
   }
 }

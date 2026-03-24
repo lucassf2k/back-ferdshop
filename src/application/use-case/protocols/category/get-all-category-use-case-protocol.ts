@@ -2,9 +2,9 @@ import type { Either } from '../../../../common/api-erros/either-error';
 import type { CategoryModel } from '../../../repositories/category-repositories';
 
 export namespace GetAllCategoryUseCaseProtocol {
-  export type Output = Promise<Either<void, CategoryModel[]>>;
+  export type Output = CategoryModel[];
 
   export interface Interface {
-    execute(): GetAllCategoryUseCaseProtocol.Output;
+    execute(): Promise<Either<void, GetAllCategoryUseCaseProtocol.Output>>;
   }
 }

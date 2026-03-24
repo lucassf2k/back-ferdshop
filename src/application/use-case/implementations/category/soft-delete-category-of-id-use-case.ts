@@ -1,5 +1,9 @@
 import { NotFoundApiError } from '../../../../common/api-erros';
-import { eitherUtils } from '../../../../common/api-erros/either-error';
+import type { BaseApiError } from '../../../../common/api-erros/base-api-error';
+import {
+  eitherUtils,
+  type Either,
+} from '../../../../common/api-erros/either-error';
 import type { CategoryRepositories } from '../../../repositories/category-repositories';
 import type { SoftDeleteCategoryOfIdUseCaseProtocol } from '../../protocols/category/soft-delete-category-of-id-use-case-protocol';
 
@@ -10,7 +14,9 @@ export class SoftDeleteCategoryOfIdUseCase
 
   async execute(
     input: SoftDeleteCategoryOfIdUseCaseProtocol.Input,
-  ): SoftDeleteCategoryOfIdUseCaseProtocol.Output {
+  ): Promise<
+    Either<BaseApiError, SoftDeleteCategoryOfIdUseCaseProtocol.Output>
+  > {
     const category = await this.categoryRespositories.softDelete(input.id);
     if (!category) {
       return eitherUtils.left(new NotFoundApiError('category not found'));

@@ -1,5 +1,9 @@
 import { NotFoundApiError } from '../../../../common/api-erros';
-import { eitherUtils } from '../../../../common/api-erros/either-error';
+import type { BaseApiError } from '../../../../common/api-erros/base-api-error';
+import {
+  eitherUtils,
+  type Either,
+} from '../../../../common/api-erros/either-error';
 import type { CategoryRepositories } from '../../../repositories/category-repositories';
 import type { GetCategoryOfIdUseCaseProtocol } from '../../protocols/category/get-category-of-id-use-case-protocol';
 
@@ -10,7 +14,7 @@ export class GetCategoryOfIdUseCase
 
   async execute(
     input: GetCategoryOfIdUseCaseProtocol.Input,
-  ): GetCategoryOfIdUseCaseProtocol.Output {
+  ): Promise<Either<BaseApiError, GetCategoryOfIdUseCaseProtocol.Output>> {
     const category = await this.categoryRepositories.getOfId(input.id);
     if (!category) {
       return eitherUtils.left(new NotFoundApiError('category not found'));

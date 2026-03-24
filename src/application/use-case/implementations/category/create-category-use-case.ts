@@ -2,7 +2,11 @@ import {
   BadRequestApiError,
   InternalServerErrorApiError,
 } from '../../../../common/api-erros';
-import { eitherUtils } from '../../../../common/api-erros/either-error';
+import type { BaseApiError } from '../../../../common/api-erros/base-api-error';
+import {
+  eitherUtils,
+  type Either,
+} from '../../../../common/api-erros/either-error';
 import { Category } from '../../../../domain/category';
 import type { CategoryRepositories } from '../../../repositories/category-repositories';
 import type { CreateCategoryUseCaseProtocol } from '../../protocols/category/create-category-use-case-protocol';
@@ -14,7 +18,7 @@ export class CreateCategoryUseCase
 
   async execute(
     input: CreateCategoryUseCaseProtocol.Input,
-  ): CreateCategoryUseCaseProtocol.Output {
+  ): Promise<Either<BaseApiError, CreateCategoryUseCaseProtocol.Output>> {
     const categoryAlreadyExists = await this.categoryRepositories.getOfName(
       input.name,
     );

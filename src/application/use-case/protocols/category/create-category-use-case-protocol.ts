@@ -7,11 +7,11 @@ export namespace CreateCategoryUseCaseProtocol {
     name: string;
   };
 
-  export type Output = Promise<Either<BaseApiError, CategoryModel>>;
+  export type Output = CategoryModel;
 
   export interface Interface {
     execute(
       input: CreateCategoryUseCaseProtocol.Input,
-    ): CreateCategoryUseCaseProtocol.Output;
+    ): Promise<Either<BaseApiError, CreateCategoryUseCaseProtocol.Output>>;
   }
 }

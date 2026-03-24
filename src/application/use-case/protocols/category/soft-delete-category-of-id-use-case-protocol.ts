@@ -7,11 +7,13 @@ export namespace SoftDeleteCategoryOfIdUseCaseProtocol {
     id: string;
   };
 
-  export type Output = Promise<Either<BaseApiError, CategoryModel>>;
+  export type Output = CategoryModel;
 
   export interface Interface {
     execute(
       input: SoftDeleteCategoryOfIdUseCaseProtocol.Input,
-    ): SoftDeleteCategoryOfIdUseCaseProtocol.Output;
+    ): Promise<
+      Either<BaseApiError, SoftDeleteCategoryOfIdUseCaseProtocol.Output>
+    >;
   }
 }

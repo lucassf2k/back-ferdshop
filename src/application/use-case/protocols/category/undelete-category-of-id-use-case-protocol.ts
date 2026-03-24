@@ -7,11 +7,13 @@ export namespace UndeleteCategoryOfIdUseCaseProtocol {
     id: string;
   };
 
-  export type Output = Promise<Either<BaseApiError, CategoryModel>>;
+  export type Output = CategoryModel;
 
   export interface Interface {
     execute(
       input: UndeleteCategoryOfIdUseCaseProtocol.Input,
-    ): UndeleteCategoryOfIdUseCaseProtocol.Output;
+    ): Promise<
+      Either<BaseApiError, UndeleteCategoryOfIdUseCaseProtocol.Output>
+    >;
   }
 }
