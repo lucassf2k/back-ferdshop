@@ -1,5 +1,9 @@
 import { BadRequestApiError } from '../../../../common/api-erros';
-import { eitherUtils } from '../../../../common/api-erros/either-error';
+import type { BaseApiError } from '../../../../common/api-erros/base-api-error';
+import {
+  eitherUtils,
+  type Either,
+} from '../../../../common/api-erros/either-error';
 import { Stock } from '../../../../domain/product/stock';
 import type {
   ProductModel,
@@ -14,7 +18,7 @@ export class SearchProductUseCase
 
   async execute(
     input: SearchProductUseCaseProtocol.Input,
-  ): SearchProductUseCaseProtocol.Output {
+  ): Promise<Either<BaseApiError, SearchProductUseCaseProtocol.Output>> {
     const { name, categoryId, stock } = input;
     let products: ProductModel[];
     if (name !== undefined) {

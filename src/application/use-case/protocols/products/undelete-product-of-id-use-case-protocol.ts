@@ -7,11 +7,11 @@ export namespace UndeleteProductOfIdUseCaseProtocol {
     id: string;
   };
 
-  export type Output = Promise<Either<BaseApiError, ProductModel>>;
+  export type Output = ProductModel;
 
   export interface Interface {
     execute(
       input: UndeleteProductOfIdUseCaseProtocol.Input,
-    ): UndeleteProductOfIdUseCaseProtocol.Output;
+    ): Promise<Either<BaseApiError, UndeleteProductOfIdUseCaseProtocol.Output>>;
   }
 }

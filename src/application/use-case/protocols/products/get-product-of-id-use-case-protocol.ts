@@ -7,11 +7,11 @@ export namespace GetProductOfIdUseCaseProtocol {
     id: string;
   };
 
-  export type Output = Promise<Either<BaseApiError, ProductModel>>;
+  export type Output = ProductModel;
 
   export interface Interface {
     execute(
       input: GetProductOfIdUseCaseProtocol.Input,
-    ): GetProductOfIdUseCaseProtocol.Output;
+    ): Promise<Either<BaseApiError, GetProductOfIdUseCaseProtocol.Output>>;
   }
 }

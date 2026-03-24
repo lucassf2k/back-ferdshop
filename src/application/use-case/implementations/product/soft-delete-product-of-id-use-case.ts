@@ -1,5 +1,9 @@
 import { NotFoundApiError } from '../../../../common/api-erros';
-import { eitherUtils } from '../../../../common/api-erros/either-error';
+import type { BaseApiError } from '../../../../common/api-erros/base-api-error';
+import {
+  eitherUtils,
+  type Either,
+} from '../../../../common/api-erros/either-error';
 import type { ProductRepositories } from '../../../repositories/product-repositories';
 import type { SoftDeleteProductOfIdUseCaseProtocol } from '../../protocols/products/soft-delete-product-of-id-use-case-protocol';
 
@@ -10,7 +14,9 @@ export class SoftDeleteProductOfIdUseCase
 
   async execute(
     input: SoftDeleteProductOfIdUseCaseProtocol.Input,
-  ): SoftDeleteProductOfIdUseCaseProtocol.Output {
+  ): Promise<
+    Either<BaseApiError, SoftDeleteProductOfIdUseCaseProtocol.Output>
+  > {
     const productSoftDeleted = await this.productRepositories.softDelete(
       input.id,
     );

@@ -9,11 +9,11 @@ export namespace SearchProductUseCaseProtocol {
     stock?: number | undefined;
   };
 
-  export type Output = Promise<Either<BaseApiError, ProductModel[]>>;
+  export type Output = ProductModel[];
 
   export interface Interface {
     execute(
       input: SearchProductUseCaseProtocol.Input,
-    ): SearchProductUseCaseProtocol.Output;
+    ): Promise<Either<BaseApiError, SearchProductUseCaseProtocol.Output>>;
   }
 }
