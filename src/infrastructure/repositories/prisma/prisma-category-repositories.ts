@@ -1,17 +1,20 @@
-import type { CategoryRepositories } from '../../../application/repositories/category-repositories';
+import type {
+  CategoryModel,
+  CategoryRepositories,
+} from '../../../application/repositories/category-repositories';
 import { Category } from '../../../domain/category';
 import { prisma } from '../../database/prisma';
 import { categoryMapper } from './mappers/category-mapper';
 
 class PrismaCategoryRepositories implements CategoryRepositories {
-  async save(data: Category): Promise<Category> {
+  async save(data: Category): Promise<CategoryModel> {
     const newCategory = await prisma.category.create({
       data: categoryMapper.toSavePrisma(data),
     });
     return categoryMapper.toDomain(newCategory);
   }
 
-  async getOfId(id: string): Promise<Category | undefined> {
+  async getOfId(id: string): Promise<CategoryModel | undefined> {
     const category = await prisma.category.findUnique({
       where: {
         id,
@@ -24,7 +27,7 @@ class PrismaCategoryRepositories implements CategoryRepositories {
     return categoryMapper.toDomain(category);
   }
 
-  async getAll(): Promise<Category[]> {
+  async getAll(): Promise<CategoryModel[]> {
     const allCategories = await prisma.category.findMany({
       where: {
         isDeleted: false,
@@ -34,7 +37,7 @@ class PrismaCategoryRepositories implements CategoryRepositories {
     return allCategories.map(categoryMapper.toDomain);
   }
 
-  async softDelete(id: string): Promise<Category | undefined> {
+  async softDelete(id: string): Promise<CategoryModel | undefined> {
     const categoryDeleted = await prisma.category.update({
       where: {
         id,
@@ -45,7 +48,7 @@ class PrismaCategoryRepositories implements CategoryRepositories {
     return categoryMapper.toDomain(categoryDeleted);
   }
 
-  async undelete(id: string): Promise<Category | undefined> {
+  async undelete(id: string): Promise<CategoryModel | undefined> {
     const category = await prisma.category.update({
       where: {
         id,
@@ -56,7 +59,7 @@ class PrismaCategoryRepositories implements CategoryRepositories {
     return categoryMapper.toDomain(category);
   }
 
-  async getOfName(name: string): Promise<Category | undefined> {
+  async getOfName(name: string): Promise<CategoryModel | undefined> {
     const category = await prisma.category.findUnique({
       where: {
         name,

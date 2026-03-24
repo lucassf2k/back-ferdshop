@@ -1,20 +1,23 @@
-import type { ProductRepositories } from '../../../application/repositories/product-repositories';
+import type {
+  ProductModel,
+  ProductRepositories,
+} from '../../../application/repositories/product-repositories';
 import { Product } from '../../../domain/product';
 import { Stock } from '../../../domain/product/stock';
 import { prisma } from '../../database/prisma';
 import { productMapper } from './mappers/product-mapper';
 
 class PrismaProductRepositories implements ProductRepositories {
-  async save(data: Product): Promise<Product> {
+  async save(data: Product): Promise<ProductModel> {
     const newProduct = await prisma.product.create({
       data: productMapper.toSavePrisma(data),
       include: {
-        category: true,
+        reviews: true,
       },
     });
-    return productMapper.toDomain(newProduct);
+    return productMapper.toProductModel(newProduct);
   }
-  async getOfId(id: string): Promise<Product | undefined> {
+  async getOfId(id: string): Promise<ProductModel | undefined> {
     const product = await prisma.product.findUnique({
       where: {
         id,
@@ -23,53 +26,53 @@ class PrismaProductRepositories implements ProductRepositories {
         },
       },
       include: {
-        category: true,
+        reviews: true,
       },
     });
     if (!product) return undefined;
-    return productMapper.toDomain(product);
+    return productMapper.toProductModel(product);
   }
-  async getAll(): Promise<Product[]> {
+  async getAll(): Promise<ProductModel[]> {
     const allProducts = await prisma.product.findMany({
       where: {
         isDeleted: false,
       },
       include: {
-        category: true,
+        reviews: true,
       },
     });
     if (allProducts.length === 0) return [];
-    return allProducts.map(productMapper.toDomain);
+    return allProducts.map(productMapper.toProductModel);
   }
-  async softDelete(id: string): Promise<Product | undefined> {
+  async softDelete(id: string): Promise<ProductModel | undefined> {
     const productDeleted = await prisma.product.update({
       where: {
         id,
       },
       data: productMapper.toSoftDeletePrisma(),
       include: {
-        category: true,
+        reviews: true,
       },
     });
     if (!productDeleted) return undefined;
-    return productMapper.toDomain(productDeleted);
+    return productMapper.toProductModel(productDeleted);
   }
 
-  async undelete(id: string): Promise<Product | undefined> {
+  async undelete(id: string): Promise<ProductModel | undefined> {
     const product = await prisma.product.update({
       where: {
         id,
       },
       data: productMapper.toUndeletePrisma(),
       include: {
-        category: true,
+        reviews: true,
       },
     });
     if (!product) return undefined;
-    return productMapper.toDomain(product);
+    return productMapper.toProductModel(product);
   }
 
-  async getOfName(name: string): Promise<Product | undefined> {
+  async getOfName(name: string): Promise<ProductModel | undefined> {
     const product = await prisma.product.findFirst({
       where: {
         name,
@@ -78,14 +81,14 @@ class PrismaProductRepositories implements ProductRepositories {
         },
       },
       include: {
-        category: true,
+        reviews: true,
       },
     });
     if (!product) return undefined;
-    return productMapper.toDomain(product);
+    return productMapper.toProductModel(product);
   }
 
-  async searchByName(name: string): Promise<Product[]> {
+  async searchByName(name: string): Promise<ProductModel[]> {
     const products = await prisma.product.findMany({
       where: {
         name: {
@@ -97,14 +100,14 @@ class PrismaProductRepositories implements ProductRepositories {
         },
       },
       include: {
-        category: true,
+        reviews: true,
       },
     });
     if (products.length === 0) return [];
-    return products.map(productMapper.toDomain);
+    return products.map(productMapper.toProductModel);
   }
 
-  async getOfStock(stock: Stock): Promise<Product[]> {
+  async getOfStock(stock: Stock): Promise<ProductModel[]> {
     const allProductsWithStock = await prisma.product.findMany({
       where: {
         stock: {
@@ -115,13 +118,13 @@ class PrismaProductRepositories implements ProductRepositories {
         },
       },
       include: {
-        category: true,
+        reviews: true,
       },
     });
     if (allProductsWithStock.length === 0) return [];
-    return allProductsWithStock.map(productMapper.toDomain);
+    return allProductsWithStock.map(productMapper.toProductModel);
   }
-  async getOfCategory(categoryId: string): Promise<Product[]> {
+  async getOfCategory(categoryId: string): Promise<ProductModel[]> {
     const allProductsWithCategoryId = await prisma.product.findMany({
       where: {
         categoryId,
@@ -130,11 +133,11 @@ class PrismaProductRepositories implements ProductRepositories {
         },
       },
       include: {
-        category: true,
+        reviews: true,
       },
     });
     if (allProductsWithCategoryId.length === 0) return [];
-    return allProductsWithCategoryId.map(productMapper.toDomain);
+    return allProductsWithCategoryId.map(productMapper.toProductModel);
   }
 }
 

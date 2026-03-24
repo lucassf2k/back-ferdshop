@@ -25,8 +25,6 @@ export class CreateCategoryUseCase
     }
     const newCategory = Category.create({
       name: input.name,
-      isDeleted: false,
-      products: [],
     });
     const category = await this.categoryRepositories.save(newCategory);
     if (!category) {

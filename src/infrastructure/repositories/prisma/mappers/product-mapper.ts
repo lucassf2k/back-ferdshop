@@ -1,34 +1,44 @@
-import { Category } from '../../../../domain/category';
+import type { ProductModel } from '../../../../application/repositories/product-repositories';
 import { Product } from '../../../../domain/product';
-import { Stock } from '../../../../domain/product/stock';
+import { Rating } from '../../../../domain/product/rating';
 import type { Prisma } from '../../../../prisma/client';
 
 type ProductPrismaOutput = Prisma.ProductGetPayload<{
-  include: { category: true };
+  include: { reviews: true };
 }>;
 type SaveProductPrismaInput = Prisma.ProductCreateInput;
 type UpdateProductPrismaInput = Prisma.ProductUpdateInput;
 
-function toDomain(raw: ProductPrismaOutput): Product {
-  return Product.restore(raw.id, {
+function toProductModel(raw: ProductPrismaOutput): ProductModel {
+  const reviews =
+    raw.reviews.length > 0
+      ? raw.reviews.map((r) => ({
+          id: r.id,
+          rating: new Rating(r.rating),
+          userId: r.userId,
+        }))
+      : [];
+
+  let review = 0;
+  if (raw.reviews.length > 0) {
+    const accReview = raw.reviews.reduce(
+      (acc, review) => acc + review.rating,
+      0,
+    );
+    review = Math.round(accReview / raw.reviews.length);
+  }
+
+  return {
+    id: raw.name,
     name: raw.name,
-    description: raw.description,
     price: Number(raw.price),
-    stock: new Stock(raw.stock),
-    isDeleted: raw.isDeleted,
-    reviews: [],
+    stock: Number(raw.stock),
+    description: raw.description,
     createdAt: raw.createdAt,
     updatedAt: raw.updatedAt,
-    deletedAt: raw.deletedAt,
-    category: Category.restore(raw.category.id, {
-      name: raw.category.name,
-      isDeleted: raw.category.isDeleted,
-      createdAt: raw.category.createdAt,
-      deletedAt: raw.category.deletedAt,
-      updatedAt: raw.category.updatedAt,
-      products: [],
-    }),
-  });
+    reviews,
+    reviewCount: review,
+  };
 }
 
 function toSavePrisma(product: Product): SaveProductPrismaInput {
@@ -38,7 +48,7 @@ function toSavePrisma(product: Product): SaveProductPrismaInput {
     price: product.props.price,
     stock: product.props.stock.value,
     description: product.props.description,
-    category: { connect: { id: product.props.category._id } },
+    category: { connect: { id: product.props.categoryId } },
   };
 }
 
@@ -57,7 +67,7 @@ function toUndeletePrisma(): UpdateProductPrismaInput {
 }
 
 export const productMapper = {
-  toDomain,
+  toProductModel,
   toSavePrisma,
   toSoftDeletePrisma,
   toUndeletePrisma,

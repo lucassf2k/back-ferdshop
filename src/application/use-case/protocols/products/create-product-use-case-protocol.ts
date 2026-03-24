@@ -1,6 +1,6 @@
 import type { BaseApiError } from '../../../../common/api-erros/base-api-error';
 import type { Either } from '../../../../common/api-erros/either-error';
-import type { Product } from '../../../../domain/product';
+import type { ProductModel } from '../../../repositories/product-repositories';
 
 export namespace CreateProductUseCaseProtocol {
   export type Input = {
@@ -10,11 +10,11 @@ export namespace CreateProductUseCaseProtocol {
     description?: string | undefined;
   };
 
-  export type Output = Promise<Either<BaseApiError, Product>>;
+  export type Output = ProductModel;
 
   export interface Interface {
     execute(
       input: CreateProductUseCaseProtocol.Input,
-    ): CreateProductUseCaseProtocol.Output;
+    ): Promise<Either<BaseApiError, CreateProductUseCaseProtocol.Output>>;
   }
 }

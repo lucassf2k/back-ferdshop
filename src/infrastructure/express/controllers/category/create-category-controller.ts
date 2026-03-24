@@ -18,10 +18,10 @@ export class CreateCategoryController {
     const input = zodRequestValidation.parse(request.body);
     const output = await this.createCategoryUseCase.execute(input);
     if (output.isLeft()) throw output.value;
-    const url = `${request.baseUrl}/${output.value._id}`;
+    const url = `${request.baseUrl}/${output.value.id}`;
     return response
       .status(StatusCodeEnum.CREATED)
       .location(url)
-      .json({ id: output.value._id });
+      .json({ id: output.value.id });
   }
 }

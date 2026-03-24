@@ -1,3 +1,4 @@
+import type { CategoryModel } from '../../../../application/repositories/category-repositories';
 import { Category } from '../../../../domain/category';
 import type { Prisma } from '../../../../prisma/client';
 
@@ -5,15 +6,13 @@ type CategoryPrismaType = Prisma.CategoryGetPayload<object>;
 type CreateCategoryPrismaInput = Prisma.CategoryCreateInput;
 type UpdateCategoryPrismaInput = Prisma.CategoryUpdateInput;
 
-function toDomain(raw: CategoryPrismaType): Category {
-  return Category.restore(raw.id, {
+function toDomain(raw: CategoryPrismaType): CategoryModel {
+  return {
+    id: raw.id,
     name: raw.name,
-    isDeleted: raw.isDeleted,
     createdAt: raw.createdAt,
-    deletedAt: raw.deletedAt,
     updatedAt: raw.updatedAt,
-    products: [],
-  });
+  };
 }
 
 function toSavePrisma(category: Category): CreateCategoryPrismaInput {

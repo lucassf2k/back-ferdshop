@@ -1,31 +1,26 @@
-import type { ReviewRepositories } from '../../../application/repositories/review-repositories';
+import type {
+  ReviewModel,
+  ReviewRepositories,
+} from '../../../application/repositories/review-repositories';
 import { Review } from '../../../domain/product/review';
 import { prisma } from '../../database/prisma';
 import { reviewMapper } from './mappers/review-mapper';
 
 class PrismaReviewRepositories implements ReviewRepositories {
-  async save(data: Review): Promise<Review> {
+  async save(data: Review): Promise<ReviewModel> {
     const newReview = await prisma.review.create({
       data: {
         id: data._id,
         rating: data.props.rating.value,
         isDeleted: false,
-        user: { connect: { id: data.props.user._id } },
-        product: { connect: { id: data.props.product._id } },
-      },
-      include: {
-        product: {
-          include: {
-            category: true,
-          },
-        },
-        user: true,
+        user: { connect: { id: data.props.userId } },
+        product: { connect: { id: data.props.productId } },
       },
     });
-    return reviewMapper.toDomain(newReview);
+    return reviewMapper.toReviewModel(newReview);
   }
 
-  async getOfId(id: string): Promise<Review | undefined> {
+  async getOfId(id: string): Promise<ReviewModel | undefined> {
     const review = await prisma.review.findUnique({
       where: {
         id,
@@ -33,72 +28,40 @@ class PrismaReviewRepositories implements ReviewRepositories {
           isDeleted: true,
         },
       },
-      include: {
-        product: {
-          include: {
-            category: true,
-          },
-        },
-        user: true,
-      },
     });
     if (!review) return undefined;
-    return reviewMapper.toDomain(review);
+    return reviewMapper.toReviewModel(review);
   }
 
-  async getAll(): Promise<Review[]> {
+  async getAll(): Promise<ReviewModel[]> {
     const allReviews = await prisma.review.findMany({
       where: {
         isDeleted: false,
       },
-      include: {
-        product: {
-          include: {
-            category: true,
-          },
-        },
-        user: true,
-      },
     });
-    return allReviews.map(reviewMapper.toDomain);
+    return allReviews.map(reviewMapper.toReviewModel);
   }
 
-  async softDelete(id: string): Promise<Review | undefined> {
+  async softDelete(id: string): Promise<ReviewModel | undefined> {
     const review = await prisma.review.update({
       where: {
         id,
       },
       data: reviewMapper.toDeletePrisma(),
-      include: {
-        product: {
-          include: {
-            category: true,
-          },
-        },
-        user: true,
-      },
     });
     if (!review) return undefined;
-    return reviewMapper.toDomain(review);
+    return reviewMapper.toReviewModel(review);
   }
 
-  async undelete(id: string): Promise<Review | undefined> {
+  async undelete(id: string): Promise<ReviewModel | undefined> {
     const review = await prisma.review.update({
       where: {
         id,
       },
       data: reviewMapper.toUndeletePrisma(),
-      include: {
-        product: {
-          include: {
-            category: true,
-          },
-        },
-        user: true,
-      },
     });
     if (!review) return undefined;
-    return reviewMapper.toDomain(review);
+    return reviewMapper.toReviewModel(review);
   }
 }
 

@@ -1,4 +1,18 @@
-import type { Review, ReviewProps } from '../../domain/product/review';
-import type { Repository } from './repository';
+import type { Review } from '../../domain/product/review';
 
-export type ReviewRepositories = Repository<ReviewProps, Review, string>;
+export type ReviewModel = {
+  id: string;
+  rating: number;
+  productId: string;
+  userId: string;
+  createdAt: Date;
+  updatedAt: Date;
+};
+
+export interface ReviewRepositories {
+  save(data: Review): Promise<ReviewModel>;
+  getOfId(id: string): Promise<ReviewModel | undefined>;
+  getAll(): Promise<ReviewModel[]>;
+  softDelete(id: string): Promise<ReviewModel | undefined>;
+  undelete(id: string): Promise<ReviewModel | undefined>;
+}

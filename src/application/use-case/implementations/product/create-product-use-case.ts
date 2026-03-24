@@ -2,7 +2,11 @@ import {
   BadRequestApiError,
   NotFoundApiError,
 } from '../../../../common/api-erros';
-import { eitherUtils } from '../../../../common/api-erros/either-error';
+import type { BaseApiError } from '../../../../common/api-erros/base-api-error';
+import {
+  eitherUtils,
+  type Either,
+} from '../../../../common/api-erros/either-error';
 import { Product } from '../../../../domain/product';
 import { Stock } from '../../../../domain/product/stock';
 import type { CategoryRepositories } from '../../../repositories/category-repositories';
@@ -19,7 +23,7 @@ export class CreateProductUseCase
 
   async execute(
     input: CreateProductUseCaseProtocol.Input,
-  ): CreateProductUseCaseProtocol.Output {
+  ): Promise<Either<BaseApiError, CreateProductUseCaseProtocol.Output>> {
     const productAlreadyExists = await this.productRepositories.getOfName(
       input.name,
     );
@@ -38,9 +42,7 @@ export class CreateProductUseCase
       description: description,
       price: input.price,
       stock: new Stock(0),
-      isDeleted: false,
-      category: categoryExists,
-      reviews: [],
+      categoryId: categoryExists.id,
     });
     const productSaved = await this.productRepositories.save(newProduct);
     return eitherUtils.right(productSaved);
