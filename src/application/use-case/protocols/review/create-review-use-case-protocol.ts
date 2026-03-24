@@ -9,11 +9,11 @@ export namespace CreateReviewUseCaseProtocol {
     productId: string;
   };
 
-  export type Output = Promise<Either<BaseApiError, ReviewModel>>;
+  export type Output = ReviewModel;
 
   export interface Interface {
     execute(
       input: CreateReviewUseCaseProtocol.Input,
-    ): CreateReviewUseCaseProtocol.Output;
+    ): Promise<Either<BaseApiError, CreateReviewUseCaseProtocol.Output>>;
   }
 }

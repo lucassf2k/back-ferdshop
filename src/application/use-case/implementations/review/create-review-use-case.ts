@@ -1,5 +1,9 @@
 import { NotFoundApiError } from '../../../../common/api-erros';
-import { eitherUtils } from '../../../../common/api-erros/either-error';
+import type { BaseApiError } from '../../../../common/api-erros/base-api-error';
+import {
+  eitherUtils,
+  type Either,
+} from '../../../../common/api-erros/either-error';
 import { Rating } from '../../../../domain/product/rating';
 import { Review } from '../../../../domain/product/review';
 import type { ProductRepositories } from '../../../repositories/product-repositories';
@@ -18,7 +22,7 @@ export class CreateReviewUseCase
 
   async execute(
     input: CreateReviewUseCaseProtocol.Input,
-  ): CreateReviewUseCaseProtocol.Output {
+  ): Promise<Either<BaseApiError, CreateReviewUseCaseProtocol.Output>> {
     const { rating, userId, productId } = input;
     const [user, product] = await Promise.all([
       this.userRepositories.getOfId(userId),
@@ -32,9 +36,8 @@ export class CreateReviewUseCase
     }
     const newReview = Review.create({
       rating: new Rating(rating),
-      isDeleted: false,
-      user: user,
-      product: product,
+      userId: user.id,
+      productId: product.id,
     });
     const savedReview = await this.reviewRepositories.save(newReview);
     return eitherUtils.right(savedReview);

@@ -7,11 +7,13 @@ export namespace SoftDeleteReviewOfIdUseCaseProtocol {
     id: string;
   };
 
-  export type Output = Promise<Either<BaseApiError, ReviewModel>>;
+  export type Output = ReviewModel;
 
   export interface Interface {
     execute(
       input: SoftDeleteReviewOfIdUseCaseProtocol.Input,
-    ): SoftDeleteReviewOfIdUseCaseProtocol.Output;
+    ): Promise<
+      Either<BaseApiError, SoftDeleteReviewOfIdUseCaseProtocol.Output>
+    >;
   }
 }
