@@ -2,19 +2,14 @@ import { BadRequestApiError } from '../../common/api-erros';
 import { getUUIDV7 } from '../../infrastructure/services/id-services';
 import { Entity } from '../entity';
 import { OrderStatusEnum } from '../enums/order-status-enum';
-import type { User } from '../user';
 import type { OrderItem } from './order-item';
 
 export type OrderProps = {
   totalPrice: number;
   status: OrderStatusEnum;
   deliveryAddress: string;
-  isDeleted: boolean;
   orderItems: OrderItem[];
-  user: User;
-  createdAt?: Date;
-  updatedAt?: Date;
-  deleteAt?: Date | null;
+  userId: string;
 };
 
 export class Order extends Entity<OrderProps> {

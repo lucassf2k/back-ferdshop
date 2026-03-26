@@ -1,14 +1,10 @@
 import { getUUIDV7 } from '../../infrastructure/services/id-services';
 import { Entity } from '../entity';
-import type { Product } from '../product';
 
 export type OrderItemProps = {
   quantity: number;
-  isDeleted: boolean;
-  product: Product;
-  createdAt?: Date;
-  updatedAt?: Date;
-  deletedAt?: Date | null;
+  unitPrice: number;
+  productId: string;
 };
 
 export class OrderItem extends Entity<OrderItemProps> {
