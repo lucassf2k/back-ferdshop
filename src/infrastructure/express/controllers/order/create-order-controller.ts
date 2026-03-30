@@ -1,4 +1,7 @@
+import type { Request, Response } from 'express';
 import z from 'zod';
+import type { CreateOrderUseCaseProtocol } from '../../../../application/use-case/protocols/order/create-order-use-case-protocol';
+import { StatusCodeEnum } from '../../../../common/status-code-enum';
 
 const zodOrderItemValidation = z.object({
   quantity: z
@@ -17,3 +20,20 @@ const zodRequestValidation = z.object({
   orderItems: z.array(zodOrderItemValidation),
   userId: z.uuid({ error: 'userId must be uuid and is required' }),
 });
+
+export class CreateOrderController {
+  constructor(
+    private readonly createOrderUseCase: CreateOrderUseCaseProtocol.Interface,
+  ) {}
+
+  async handle(request: Request, response: Response): Promise<Response> {
+    const input = zodRequestValidation.parse(request.body);
+    const output = await this.createOrderUseCase.execute(input);
+    if (output.isLeft()) throw output.value;
+    const url = `${request.baseUrl}/${output.value.id}`;
+    return response
+      .status(StatusCodeEnum.CREATED)
+      .location(url)
+      .json({ id: output.value.id });
+  }
+}
