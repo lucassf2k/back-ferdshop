@@ -88,6 +88,22 @@ class PrismaOrderRepositories implements OrderRepositories {
     if (allOrders.length === 0) return [];
     return allOrders.map(orderMapper.toOrderModel);
   }
+
+  async getOfUserId(id: string): Promise<OrderModel[]> {
+    const orders = await prisma.order.findMany({
+      where: {
+        userId: id,
+        AND: {
+          isDeleted: false,
+        },
+      },
+      include: {
+        items: true,
+      },
+    });
+    if (orders.length === 0) return [];
+    return orders.map(orderMapper.toOrderModel);
+  }
 }
 
 export const prismaOrderRepositories = new PrismaOrderRepositories();

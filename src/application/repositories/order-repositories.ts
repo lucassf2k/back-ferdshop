@@ -26,4 +26,5 @@ export interface OrderRepositories {
   softDelete(id: string): Promise<OrderModel | undefined>;
   undelete(id: string): Promise<OrderModel | undefined>;
   getOfStatus(status: OrderStatusEnum): Promise<OrderModel[]>;
+  getOfUserId(id: string): Promise<OrderModel[]>;
 }
