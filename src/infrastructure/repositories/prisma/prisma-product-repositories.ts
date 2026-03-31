@@ -1,3 +1,4 @@
+import type { PaginationOptions } from '../../../application/repositories/common-types';
 import type {
   ProductModel,
   ProductRepositories,
@@ -32,11 +33,13 @@ class PrismaProductRepositories implements ProductRepositories {
     if (!product) return undefined;
     return productMapper.toProductModel(product);
   }
-  async getAll(): Promise<ProductModel[]> {
+  async getAll(option: PaginationOptions): Promise<ProductModel[]> {
     const allProducts = await prisma.product.findMany({
       where: {
         isDeleted: false,
       },
+      skip: option.skip,
+      take: option.take,
       include: {
         reviews: true,
       },
@@ -88,7 +91,10 @@ class PrismaProductRepositories implements ProductRepositories {
     return productMapper.toProductModel(product);
   }
 
-  async searchByName(name: string): Promise<ProductModel[]> {
+  async searchByName(
+    name: string,
+    option: PaginationOptions,
+  ): Promise<ProductModel[]> {
     const products = await prisma.product.findMany({
       where: {
         name: {
@@ -99,6 +105,8 @@ class PrismaProductRepositories implements ProductRepositories {
           isDeleted: false,
         },
       },
+      skip: option.skip,
+      take: option.take,
       include: {
         reviews: true,
       },
@@ -107,7 +115,10 @@ class PrismaProductRepositories implements ProductRepositories {
     return products.map(productMapper.toProductModel);
   }
 
-  async getOfStock(stock: Stock): Promise<ProductModel[]> {
+  async getOfStock(
+    stock: Stock,
+    option: PaginationOptions,
+  ): Promise<ProductModel[]> {
     const allProductsWithStock = await prisma.product.findMany({
       where: {
         stock: {
@@ -117,6 +128,8 @@ class PrismaProductRepositories implements ProductRepositories {
           isDeleted: false,
         },
       },
+      skip: option.skip,
+      take: option.take,
       include: {
         reviews: true,
       },
@@ -124,7 +137,10 @@ class PrismaProductRepositories implements ProductRepositories {
     if (allProductsWithStock.length === 0) return [];
     return allProductsWithStock.map(productMapper.toProductModel);
   }
-  async getOfCategory(categoryId: string): Promise<ProductModel[]> {
+  async getOfCategory(
+    categoryId: string,
+    option: PaginationOptions,
+  ): Promise<ProductModel[]> {
     const allProductsWithCategoryId = await prisma.product.findMany({
       where: {
         categoryId,
@@ -132,6 +148,8 @@ class PrismaProductRepositories implements ProductRepositories {
           isDeleted: false,
         },
       },
+      skip: option.skip,
+      take: option.take,
       include: {
         reviews: true,
       },

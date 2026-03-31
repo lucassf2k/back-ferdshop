@@ -1,6 +1,7 @@
 import type { Product } from '../../domain/product';
 import type { Rating } from '../../domain/product/rating';
 import type { Stock } from '../../domain/product/stock';
+import type { PaginationOptions } from './common-types';
 
 type Review = {
   id: string;
@@ -23,11 +24,17 @@ export type ProductModel = {
 export interface ProductRepositories {
   save(data: Product): Promise<ProductModel>;
   getOfId(id: string): Promise<ProductModel | undefined>;
-  getAll(): Promise<ProductModel[]>;
+  getAll(options: PaginationOptions): Promise<ProductModel[]>;
   softDelete(id: string): Promise<ProductModel | undefined>;
   undelete(id: string): Promise<ProductModel | undefined>;
   getOfName(name: string): Promise<ProductModel | undefined>;
-  getOfStock(stock: Stock): Promise<ProductModel[]>;
-  getOfCategory(categoryId: string): Promise<ProductModel[]>;
-  searchByName(name: string): Promise<ProductModel[]>;
+  getOfStock(stock: Stock, options: PaginationOptions): Promise<ProductModel[]>;
+  getOfCategory(
+    categoryId: string,
+    options: PaginationOptions,
+  ): Promise<ProductModel[]>;
+  searchByName(
+    name: string,
+    options: PaginationOptions,
+  ): Promise<ProductModel[]>;
 }

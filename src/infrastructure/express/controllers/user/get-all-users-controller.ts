@@ -1,6 +1,12 @@
 import type { Request, Response } from 'express';
-import { StatusCodeEnum } from '../../../../common/status-code-enum';
+import z from 'zod';
 import type { GetAllUsersUseCaseProtocol } from '../../../../application/use-case/protocols/user/get-all-users-use-case-protocol';
+import { StatusCodeEnum } from '../../../../common/status-code-enum';
+
+const zodRequestValidation = z.object({
+  page: z.number({ error: 'page must be number' }),
+  pageSize: z.number({ error: 'skip must be number' }),
+});
 
 export class GetAllUsersController {
   constructor(
@@ -8,7 +14,8 @@ export class GetAllUsersController {
   ) {}
 
   async handle(request: Request, response: Response): Promise<Response> {
-    const output = await this.getAllUsersUseCase.execute();
+    const input = zodRequestValidation.parse(request.query);
+    const output = await this.getAllUsersUseCase.execute(input);
     return response.status(StatusCodeEnum.OK).json(output.value);
   }
 }

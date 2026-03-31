@@ -9,6 +9,7 @@ import type {
   ProductModel,
   ProductRepositories,
 } from '../../../repositories/product-repositories';
+import { getPagination } from '../../protocols/pagination';
 import type { SearchProductUseCaseProtocol } from '../../protocols/products/search-product-use-case-protocol';
 
 export class SearchProductUseCase
@@ -21,16 +22,26 @@ export class SearchProductUseCase
   ): Promise<Either<BaseApiError, SearchProductUseCaseProtocol.Output>> {
     const { name, categoryId, stock } = input;
     let products: ProductModel[];
+    const pagination = getPagination({
+      page: input.pagiantion.page,
+      pageSize: input.pagiantion.pageSize,
+    });
     if (name !== undefined) {
-      products = await this.productRespositories.searchByName(name);
+      products = await this.productRespositories.searchByName(name, pagination);
       return eitherUtils.right(products);
     }
     if (categoryId !== undefined) {
-      products = await this.productRespositories.getOfCategory(categoryId);
+      products = await this.productRespositories.getOfCategory(
+        categoryId,
+        pagination,
+      );
       return eitherUtils.right(products);
     }
     if (stock !== undefined) {
-      products = await this.productRespositories.getOfStock(new Stock(stock));
+      products = await this.productRespositories.getOfStock(
+        new Stock(stock),
+        pagination,
+      );
       return eitherUtils.right(products);
     }
     return eitherUtils.left(

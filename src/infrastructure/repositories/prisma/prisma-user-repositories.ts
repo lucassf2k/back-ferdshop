@@ -1,3 +1,4 @@
+import type { PaginationOptions } from '../../../application/repositories/common-types';
 import type {
   UserModel,
   UserRepositories,
@@ -27,11 +28,13 @@ class PrismaUserRepositories implements UserRepositories {
     return userMapper.toUserModel(user);
   }
 
-  async getAll(): Promise<UserModel[]> {
+  async getAll(option: PaginationOptions): Promise<UserModel[]> {
     const allUsers = await prisma.user.findMany({
       where: {
         isDeleted: false,
       },
+      skip: option.skip,
+      take: option.take,
     });
     if (allUsers.length === 0) return [];
     return allUsers.map(userMapper.toUserModel);

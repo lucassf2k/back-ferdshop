@@ -1,4 +1,5 @@
 import type { Review } from '../../domain/product/review';
+import type { PaginationOptions } from './common-types';
 
 export type ReviewModel = {
   id: string;
@@ -12,7 +13,7 @@ export type ReviewModel = {
 export interface ReviewRepositories {
   save(data: Review): Promise<ReviewModel>;
   getOfId(id: string): Promise<ReviewModel | undefined>;
-  getAll(): Promise<ReviewModel[]>;
+  getAll(options: PaginationOptions): Promise<ReviewModel[]>;
   softDelete(id: string): Promise<ReviewModel | undefined>;
   undelete(id: string): Promise<ReviewModel | undefined>;
 }

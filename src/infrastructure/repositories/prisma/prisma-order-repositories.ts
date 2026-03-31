@@ -1,3 +1,4 @@
+import type { PaginationOptions } from '../../../application/repositories/common-types';
 import type {
   OrderModel,
   OrderRepositories,
@@ -32,11 +33,13 @@ class PrismaOrderRepositories implements OrderRepositories {
     if (!order) return undefined;
     return orderMapper.toOrderModel(order);
   }
-  async getAll(): Promise<OrderModel[]> {
+  async getAll(option: PaginationOptions): Promise<OrderModel[]> {
     const allOrders = await prisma.order.findMany({
       where: {
         isDeleted: false,
       },
+      skip: option.skip,
+      take: option.take,
       include: {
         items: true,
       },
@@ -75,12 +78,17 @@ class PrismaOrderRepositories implements OrderRepositories {
     return orderMapper.toOrderModel(order);
   }
 
-  async getOfStatus(status: OrderStatusEnum): Promise<OrderModel[]> {
+  async getOfStatus(
+    status: OrderStatusEnum,
+    option: PaginationOptions,
+  ): Promise<OrderModel[]> {
     const allOrders = await prisma.order.findMany({
       where: {
         status,
         isDeleted: false,
       },
+      skip: option.skip,
+      take: option.take,
       include: {
         items: true,
       },
@@ -89,7 +97,10 @@ class PrismaOrderRepositories implements OrderRepositories {
     return allOrders.map(orderMapper.toOrderModel);
   }
 
-  async getOfUserId(id: string): Promise<OrderModel[]> {
+  async getOfUserId(
+    id: string,
+    option: PaginationOptions,
+  ): Promise<OrderModel[]> {
     const orders = await prisma.order.findMany({
       where: {
         userId: id,
@@ -97,6 +108,8 @@ class PrismaOrderRepositories implements OrderRepositories {
           isDeleted: false,
         },
       },
+      skip: option.skip,
+      take: option.take,
       include: {
         items: true,
       },

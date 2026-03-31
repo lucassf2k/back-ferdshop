@@ -1,5 +1,6 @@
 import type { OrderStatusEnum } from '../../domain/enums/order-status-enum';
 import type { Order } from '../../domain/order';
+import type { PaginationOptions } from './common-types';
 
 type OrderItemModel = {
   id: string;
@@ -22,9 +23,12 @@ export type OrderModel = {
 export interface OrderRepositories {
   save(data: Order): Promise<OrderModel>;
   getOfId(id: string): Promise<OrderModel | undefined>;
-  getAll(): Promise<OrderModel[]>;
+  getAll(options: PaginationOptions): Promise<OrderModel[]>;
   softDelete(id: string): Promise<OrderModel | undefined>;
   undelete(id: string): Promise<OrderModel | undefined>;
-  getOfStatus(status: OrderStatusEnum): Promise<OrderModel[]>;
-  getOfUserId(id: string): Promise<OrderModel[]>;
+  getOfStatus(
+    status: OrderStatusEnum,
+    options: PaginationOptions,
+  ): Promise<OrderModel[]>;
+  getOfUserId(id: string, options: PaginationOptions): Promise<OrderModel[]>;
 }

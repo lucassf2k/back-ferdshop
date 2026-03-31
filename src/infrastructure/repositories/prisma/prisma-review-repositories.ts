@@ -1,3 +1,4 @@
+import type { PaginationOptions } from '../../../application/repositories/common-types';
 import type {
   ReviewModel,
   ReviewRepositories,
@@ -33,11 +34,13 @@ class PrismaReviewRepositories implements ReviewRepositories {
     return reviewMapper.toReviewModel(review);
   }
 
-  async getAll(): Promise<ReviewModel[]> {
+  async getAll(option: PaginationOptions): Promise<ReviewModel[]> {
     const allReviews = await prisma.review.findMany({
       where: {
         isDeleted: false,
       },
+      skip: option.skip,
+      take: option.take,
     });
     return allReviews.map(reviewMapper.toReviewModel);
   }
