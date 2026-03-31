@@ -4,6 +4,8 @@ import type { CreateOrderController } from '../../controllers/order/create-order
 import type { GetAllOrdersController } from '../../controllers/order/get-all-orders-controller';
 import type { GetAllOrdersOfUserIdController } from '../../controllers/order/get-all-orders-of-user-id-controller';
 import type { GetOrderOfIdController } from '../../controllers/order/get-order-of-id-controller';
+import type { DeleteOrderOfIdController } from '../../controllers/order/delete-order-of-id-controller';
+import type { UndeleteOrderOfIdController } from '../../controllers/order/undelete-order-of-id-controller';
 
 export class OrderRouter {
   readonly router = Router();
@@ -13,6 +15,8 @@ export class OrderRouter {
     private readonly getAllOrdersController: GetAllOrdersController,
     private readonly getOrderOfIdController: GetOrderOfIdController,
     private readonly getAllOrdersOfUserIdController: GetAllOrdersOfUserIdController,
+    private readonly deleteOrderOfIdController: DeleteOrderOfIdController,
+    private readonly undeleteOrderOfIdController: UndeleteOrderOfIdController,
   ) {
     this.run();
   }
@@ -29,6 +33,20 @@ export class OrderRouter {
       '/:id',
       asyncRouteHandler(async (request, response) => {
         await this.getOrderOfIdController.handle(request, response);
+      }),
+    );
+
+    this.router.delete(
+      '/:id',
+      asyncRouteHandler(async (request, response) => {
+        await this.deleteOrderOfIdController.handle(request, response);
+      }),
+    );
+
+    this.router.patch(
+      '/:id/restore',
+      asyncRouteHandler(async (request, response) => {
+        await this.undeleteOrderOfIdController.handle(request, response);
       }),
     );
 

@@ -93,3 +93,30 @@ Content-Type: application/json
 
 ### Soft Delete Review
 DELETE {{URL}}/reviews/:id
+
+# ORDER
+
+### Create Order
+POST {{URL}}/orders
+Content-Type: application/json
+
+{
+  "quantity": 8,
+  "unitPrice": 6.8,
+  "productId": "",
+}
+
+### Get All Orders
+GET {{URL}}/orders
+
+### Get Order of Id
+GET {{URL}}/orders/id
+
+### Get All Order of User
+GET {{URL}}/orders/id/user
+
+### Soft Delete Order
+DELETE {{URL}}/orders/id
+
+### Undelete Order
+PATCH {{URL}}/orders/id/restore

@@ -3,11 +3,13 @@ import { usersRouter } from './user';
 import { categoriesRoute } from './category';
 import { productRouter } from './product';
 import { reviewRouter } from './review';
+import { orderRouter } from './order';
 
 const routes = Router();
 routes.use('/users', usersRouter.router);
 routes.use('/categories', categoriesRoute.router);
 routes.use('/products', productRouter.router);
 routes.use('/reviews', reviewRouter.router);
+routes.use('/orders', orderRouter.router);
 
 export { routes };
