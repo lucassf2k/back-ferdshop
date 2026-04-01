@@ -1,5 +1,6 @@
+import type { NextFunction, Request, Response } from 'express';
+import { JsonWebTokenError } from 'jsonwebtoken';
 import { ZodError } from 'zod';
-import type { Request, Response, NextFunction } from 'express';
 import { BaseApiError } from '../../../common/api-erros/base-api-error';
 import { StatusCodeEnum } from '../../../common/status-code-enum';
 
@@ -16,6 +17,11 @@ export function errorHandler(
   if (error instanceof ZodError) {
     const errors = error.issues.map((err) => err.message);
     return response.status(StatusCodeEnum.BAD_REQUEST).json({ errors });
+  }
+  if (error instanceof JsonWebTokenError) {
+    return response
+      .status(StatusCodeEnum.UNAUTHORIZED)
+      .json({ error: error.message });
   }
   console.log(error);
   return response
