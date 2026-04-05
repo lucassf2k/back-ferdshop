@@ -6,6 +6,8 @@ import type { GetCategoryOfIdController } from '../../controllers/category/get-c
 import type { GetCategoryOfNameController } from '../../controllers/category/get-category-of-name-controller';
 import type { SoftDeleteCategoryOfIdController } from '../../controllers/category/soft-delete-category-of-id-controller';
 import type { UndeleteCategoryOfIdController } from '../../controllers/category/undelete-category-of-id-controller';
+import { allowRoles, authMiddleware } from '../../middlewares/authentication';
+import { UserRole } from '../../../../domain/enums/user-role';
 
 export class CategoryRouter {
   readonly router = Router();
@@ -31,6 +33,8 @@ export class CategoryRouter {
 
     this.router.post(
       '/',
+      authMiddleware,
+      allowRoles(UserRole.ADMIN),
       asyncRouteHandler(async (request, response) => {
         await this.createCategoryController.handle(request, response);
       }),
@@ -52,6 +56,8 @@ export class CategoryRouter {
 
     this.router.delete(
       '/:id',
+      authMiddleware,
+      allowRoles(UserRole.ADMIN),
       asyncRouteHandler(async (request, response) => {
         await this.softDeleteCategoryOfIdController.handle(request, response);
       }),
@@ -59,6 +65,8 @@ export class CategoryRouter {
 
     this.router.patch(
       '/:id/restore',
+      authMiddleware,
+      allowRoles(UserRole.ADMIN),
       asyncRouteHandler(async (request, response) => {
         await this.undeleteCategoryOfIdController.handle(request, response);
       }),

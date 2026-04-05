@@ -6,6 +6,8 @@ import type { GetProductOfIdController } from '../../controllers/product/get-pro
 import type { SoftDeleteProductOfIdController } from '../../controllers/product/soft-delete-product-of-id-controller';
 import type { UndeleteProductOfIdController } from '../../controllers/product/undelete-product-of-id-controller';
 import type { SearchProductController } from '../../controllers/product/search-product-controller';
+import { allowRoles, authMiddleware } from '../../middlewares/authentication';
+import { UserRole } from '../../../../domain/enums/user-role';
 
 export class ProductRouter {
   readonly router = Router();
@@ -31,6 +33,8 @@ export class ProductRouter {
 
     this.router.post(
       '/',
+      authMiddleware,
+      allowRoles(UserRole.ADMIN),
       asyncRouteHandler(async (request, response) => {
         await this.createProductController.handle(request, response);
       }),
@@ -45,6 +49,8 @@ export class ProductRouter {
 
     this.router.delete(
       '/:id',
+      authMiddleware,
+      allowRoles(UserRole.ADMIN),
       asyncRouteHandler(async (request, response) => {
         await this.softDeleteProductOfIdController.handle(request, response);
       }),
@@ -52,6 +58,8 @@ export class ProductRouter {
 
     this.router.patch(
       '/:id/restore',
+      authMiddleware,
+      allowRoles(UserRole.ADMIN),
       asyncRouteHandler(async (request, response) => {
         await this.undeleteProductOfIdController.handle(request, response);
       }),

@@ -5,6 +5,8 @@ import type { GetUserOfIdController } from '../../controllers/user/get-user-of-i
 import type { SoftDeleteUserOfIdController } from '../../controllers/user/soft-delete-user-of-id-controller';
 import type { UndeleteUserOfIdController } from '../../controllers/user/undelete-user-of-id-controller';
 import { asyncRouteHandler } from '../async-route';
+import { allowRoles, authMiddleware } from '../../middlewares/authentication';
+import { UserRole } from '../../../../domain/enums/user-role';
 
 export class UsersRouter {
   readonly router = Router();
@@ -21,6 +23,8 @@ export class UsersRouter {
   private run(): void {
     this.router.get(
       '/',
+      authMiddleware,
+      allowRoles(UserRole.ADMIN),
       asyncRouteHandler(async (request, response) => {
         await this.getAllUsersController.handle(request, response);
       }),
@@ -42,6 +46,8 @@ export class UsersRouter {
 
     this.router.delete(
       '/:id',
+      authMiddleware,
+      allowRoles(UserRole.CUSTOMER),
       asyncRouteHandler(async (request, response) => {
         await this.softDeleteUserOfIdController.handle(request, response);
       }),

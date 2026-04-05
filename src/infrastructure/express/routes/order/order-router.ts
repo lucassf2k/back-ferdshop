@@ -6,6 +6,8 @@ import type { GetAllOrdersOfUserIdController } from '../../controllers/order/get
 import type { GetOrderOfIdController } from '../../controllers/order/get-order-of-id-controller';
 import type { DeleteOrderOfIdController } from '../../controllers/order/delete-order-of-id-controller';
 import type { UndeleteOrderOfIdController } from '../../controllers/order/undelete-order-of-id-controller';
+import { allowRoles, authMiddleware } from '../../middlewares/authentication';
+import { UserRole } from '../../../../domain/enums/user-role';
 
 export class OrderRouter {
   readonly router = Router();
@@ -24,6 +26,8 @@ export class OrderRouter {
   private run() {
     this.router.post(
       '/',
+      authMiddleware,
+      allowRoles(UserRole.ADMIN, UserRole.CUSTOMER),
       asyncRouteHandler(async (request, response) => {
         await this.createOrderController.handle(request, response);
       }),
@@ -38,6 +42,8 @@ export class OrderRouter {
 
     this.router.delete(
       '/:id',
+      authMiddleware,
+      allowRoles(UserRole.ADMIN),
       asyncRouteHandler(async (request, response) => {
         await this.deleteOrderOfIdController.handle(request, response);
       }),
@@ -45,6 +51,8 @@ export class OrderRouter {
 
     this.router.patch(
       '/:id/restore',
+      authMiddleware,
+      allowRoles(UserRole.ADMIN),
       asyncRouteHandler(async (request, response) => {
         await this.undeleteOrderOfIdController.handle(request, response);
       }),
@@ -52,6 +60,8 @@ export class OrderRouter {
 
     this.router.get(
       '/:id/user',
+      authMiddleware,
+      allowRoles(UserRole.CUSTOMER),
       asyncRouteHandler(async (request, response) => {
         await this.getAllOrdersOfUserIdController.handle(request, response);
       }),
