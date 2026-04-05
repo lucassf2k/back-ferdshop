@@ -8,6 +8,14 @@ export const AuthorizationValidation = z.jwt({
   error: 'Authorization is required',
 });
 
+function extractBearerToken(token: string) {
+  const [scheme, credentials] = token.split(' ');
+  if (scheme !== 'Bearer' || !credentials) {
+    throw new UnauthorizedApiError('Invalid authorization format');
+  }
+  return credentials;
+}
+
 export function authMiddleware(
   req: Request,
   res: Response,
@@ -15,7 +23,7 @@ export function authMiddleware(
 ) {
   const { authorization } = req.headers;
   const authorizationValid = AuthorizationValidation.parse(authorization);
-  const [, token] = authorizationValid.split(' ');
+  const token = extractBearerToken(authorizationValid);
   if (!token) {
     throw new UnauthorizedApiError('token not found');
   }
