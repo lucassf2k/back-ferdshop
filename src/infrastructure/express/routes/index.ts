@@ -4,8 +4,10 @@ import { categoriesRoute } from './category';
 import { productRouter } from './product';
 import { reviewRouter } from './review';
 import { orderRouter } from './order';
+import { authRouter } from './auth';
 
 const routes = Router();
+routes.use('/sign-in', authRouter.router);
 routes.use('/users', usersRouter.router);
 routes.use('/categories', categoriesRoute.router);
 routes.use('/products', productRouter.router);
