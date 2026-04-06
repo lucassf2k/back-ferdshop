@@ -18,7 +18,6 @@ const zodRequestValidation = z.object({
     .string({ error: 'deliveryAddress must be string' })
     .min(1, { error: 'deliveryAddress is required' }),
   orderItems: z.array(zodOrderItemValidation),
-  userId: z.uuid({ error: 'userId must be uuid and is required' }),
 });
 
 export class CreateOrderController {
@@ -27,8 +26,9 @@ export class CreateOrderController {
   ) {}
 
   async handle(request: Request, response: Response): Promise<Response> {
+    const userId = request.user.id;
     const input = zodRequestValidation.parse(request.body);
-    const output = await this.createOrderUseCase.execute(input);
+    const output = await this.createOrderUseCase.execute({ userId, ...input });
     if (output.isLeft()) throw output.value;
     const url = `${request.baseUrl}/${output.value.id}`;
     return response
