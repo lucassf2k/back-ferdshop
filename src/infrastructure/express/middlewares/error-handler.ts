@@ -1,5 +1,5 @@
 import type { NextFunction, Request, Response } from 'express';
-import { JsonWebTokenError } from 'jsonwebtoken';
+import * as JWT from 'jsonwebtoken';
 import { ZodError } from 'zod';
 import { BaseApiError } from '../../../common/api-erros/base-api-error';
 import { StatusCodeEnum } from '../../../common/status-code-enum';
@@ -18,7 +18,7 @@ export function errorHandler(
     const errors = error.issues.map((err) => err.message);
     return response.status(StatusCodeEnum.BAD_REQUEST).json({ errors });
   }
-  if (error instanceof JsonWebTokenError) {
+  if (error instanceof JWT.JsonWebTokenError) {
     return response
       .status(StatusCodeEnum.UNAUTHORIZED)
       .json({ error: error.message });

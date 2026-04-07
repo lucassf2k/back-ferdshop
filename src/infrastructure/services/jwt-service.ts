@@ -1,4 +1,4 @@
-import { sign, verify } from 'jsonwebtoken';
+import * as JWT from 'jsonwebtoken';
 
 export type UserPayload = {
   user: {
@@ -7,10 +7,9 @@ export type UserPayload = {
     role: string;
   };
 };
-
 export type JwtPayload = UserPayload & { iat: number; exp: number };
 
 export const JwtService = Object.freeze({
-  sign,
-  verify,
+  sign: JWT.sign,
+  verify: JWT.verify,
 });
