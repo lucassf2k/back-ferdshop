@@ -11,7 +11,7 @@ const zodCreateUserRequestValidation = z.object({
   password: z
     .string({ error: 'password must be string' })
     .min(8, { error: 'password must be at least 8 characters long' }),
-  role: z.enum(['ADMIN', 'CUSTOMER'], { error: 'role should be CUSTOMER' }),
+  role: z.enum(['CUSTOMER'], { error: 'role should be CUSTOMER' }),
 });
 
 export class CreateUserController {

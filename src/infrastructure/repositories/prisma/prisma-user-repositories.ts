@@ -30,9 +30,6 @@ class PrismaUserRepositories implements UserRepositories {
 
   async getAll(option: PaginationOptions): Promise<UserModel[]> {
     const allUsers = await prisma.user.findMany({
-      where: {
-        isDeleted: false,
-      },
       skip: option.skip,
       take: option.take,
     });
@@ -66,9 +63,6 @@ class PrismaUserRepositories implements UserRepositories {
     const user = await prisma.user.findUnique({
       where: {
         email,
-        AND: {
-          isDeleted: false,
-        },
       },
     });
     if (!user) return undefined;
