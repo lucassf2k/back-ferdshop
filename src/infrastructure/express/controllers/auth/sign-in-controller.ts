@@ -2,6 +2,7 @@ import type { Request, Response } from 'express';
 import type { SignInUseCaseProtocol } from '../../../../application/use-case/protocols/auth/sign-in-use-case-protocol';
 import z from 'zod';
 import { StatusCodeEnum } from '../../../../common/status-code-enum';
+import { HttpResponse } from '../../../../application/response';
 
 const zodRequestValidation = z.object({
   email: z.string({ error: 'email is required' }),
@@ -17,6 +18,7 @@ export class SignInController {
     const input = zodRequestValidation.parse(request.body);
     const output = await this.signInUseCase.execute(input);
     if (output.isLeft()) throw output.value;
-    return response.status(StatusCodeEnum.OK).json(output.value);
+    const httpResponse = HttpResponse.ok({ token: output.value.token });
+    return response.status(StatusCodeEnum.OK).json(httpResponse);
   }
 }

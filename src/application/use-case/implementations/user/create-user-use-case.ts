@@ -1,9 +1,9 @@
-import { BadRequestApiError } from '../../../../common/api-erros';
-import type { BaseApiError } from '../../../../common/api-erros/base-api-error';
+import { BaseApiError } from '../../../../common/api-erros/base-api-error';
 import {
   type Either,
   type EitherUtils,
 } from '../../../../common/api-erros/either-error';
+import { appStatusCode } from '../../../../common/app-status-code';
 import type { EmailValidationProtocol } from '../../../../domain/protocols/validation-protocol';
 import { User } from '../../../../domain/user';
 import { Email } from '../../../../domain/user/email';
@@ -12,6 +12,7 @@ import type {
   UserModel,
   UserRepositories,
 } from '../../../repositories/user-repositories';
+import { HttpResponse } from '../../../response';
 import type { CreateUserUseCaseProtocol } from '../../protocols/user/create-user-use-case-protocol';
 
 export class CreateUserUseCase implements CreateUserUseCaseProtocol.Interface {
@@ -26,8 +27,12 @@ export class CreateUserUseCase implements CreateUserUseCaseProtocol.Interface {
   ): Promise<Either<BaseApiError, CreateUserUseCaseProtocol.Output>> {
     const userAlreadyExists = await this.userRepository.getOfEmail(input.email);
     if (userAlreadyExists) {
+      const httpResponse = HttpResponse.error(
+        'EMAIL_ALREADY_EXISTS',
+        'E-mail is already in use',
+      );
       return this.eitherUtils.left(
-        new BadRequestApiError('user already exists'),
+        new BaseApiError(httpResponse, appStatusCode.emailAlreadyExists.status),
       );
     }
     const newUser = User.create({

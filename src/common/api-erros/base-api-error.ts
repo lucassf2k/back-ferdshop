@@ -1,10 +1,12 @@
-import { StatusCodeEnum } from '../status-code-enum';
+import type { HttpError } from '../../application/response';
+import type { StatusCodeEnum } from '../status-code-enum';
 
-export abstract class BaseApiError extends Error {
+export class BaseApiError extends Error {
+  readonly httpError: HttpError;
   readonly code: StatusCodeEnum;
-  constructor(message: string, statusCode: StatusCodeEnum) {
-    super(message);
-    this.message = message;
-    this.code = statusCode;
+  constructor(httpError: HttpError, status: StatusCodeEnum) {
+    super(httpError.error.message);
+    this.httpError = httpError;
+    this.code = status;
   }
 }
