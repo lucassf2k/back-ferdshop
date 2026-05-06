@@ -44,6 +44,7 @@ model Product {
   description String?
   price       Decimal @db.Decimal(10, 2)
   stock       Int
+  imageUrl    String  @map("image_url")
   isDeleted   Boolean @default(false) @map("is_deleted")
 
   category   Category @relation(fields: [categoryId], references: [id])
