@@ -59,4 +59,8 @@ export const appStatusCode = {
     status: 401,
     code: 'JWT_ERROR',
   },
+  categoryNotCreated: {
+    status: 400,
+    code: 'CATEGORY_NOT_CREATED',
+  },
 } as const;
