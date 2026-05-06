@@ -7,6 +7,7 @@ export namespace CreateProductUseCaseProtocol {
     name: string;
     price: number;
     categoryId: string;
+    imageUrl: string;
     description?: string | undefined;
   };
 

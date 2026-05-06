@@ -7,6 +7,7 @@ export type ProductProps = {
   stock: Stock;
   description: string | null;
   categoryId: string;
+  imageUrl: string;
 };
 
 export class Product {
