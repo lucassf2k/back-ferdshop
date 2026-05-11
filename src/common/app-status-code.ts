@@ -63,4 +63,12 @@ export const appStatusCode = {
     status: 400,
     code: 'CATEGORY_NOT_CREATED',
   },
+  rateLimit: {
+    status: 429,
+    code: 'RATE_LIMIT',
+  },
+  searchParamsNotProvided: {
+    status: 400,
+    code: 'SEARCH_PARAMS_NOT_PROVIDED',
+  },
 } as const;

@@ -2,6 +2,7 @@ import type { Request, Response } from 'express';
 import z from 'zod';
 import type { SearchProductUseCaseProtocol } from '../../../../application/use-case/protocols/products/search-product-use-case-protocol';
 import { StatusCodeEnum } from '../../../../common/status-code-enum';
+import { HttpResponse } from '../../../../application/response';
 
 const zodRequestValidation = z.object({
   page: z.number({ error: 'page must be number' }),
@@ -25,6 +26,7 @@ export class SearchProductController {
       stock: input.stock,
     });
     if (output.isLeft()) throw output.value;
-    return response.status(StatusCodeEnum.OK).json(output.value);
+    const httpResponse = HttpResponse.ok(output.value);
+    return response.status(StatusCodeEnum.OK).json(httpResponse);
   }
 }

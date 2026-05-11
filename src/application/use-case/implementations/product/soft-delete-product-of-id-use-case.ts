@@ -5,6 +5,7 @@ import {
   type Either,
 } from '../../../../common/api-erros/either-error';
 import type { ProductRepositories } from '../../../repositories/product-repositories';
+import { HttpResponse } from '../../../response';
 import type { SoftDeleteProductOfIdUseCaseProtocol } from '../../protocols/products/soft-delete-product-of-id-use-case-protocol';
 
 export class SoftDeleteProductOfIdUseCase
@@ -21,7 +22,11 @@ export class SoftDeleteProductOfIdUseCase
       input.id,
     );
     if (!productSoftDeleted) {
-      return eitherUtils.left(new NotFoundApiError('product not found'));
+      const httpError = HttpResponse.error(
+        'PRODUCT_NOT_FOUND',
+        'product not found',
+      );
+      return eitherUtils.left(new NotFoundApiError(httpError));
     }
     return eitherUtils.right(productSoftDeleted);
   }

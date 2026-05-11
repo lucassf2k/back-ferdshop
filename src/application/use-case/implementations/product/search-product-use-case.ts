@@ -9,6 +9,7 @@ import type {
   ProductModel,
   ProductRepositories,
 } from '../../../repositories/product-repositories';
+import { HttpResponse } from '../../../response';
 import { getPagination } from '../../protocols/pagination';
 import type { SearchProductUseCaseProtocol } from '../../protocols/products/search-product-use-case-protocol';
 
@@ -44,10 +45,10 @@ export class SearchProductUseCase
       );
       return eitherUtils.right(products);
     }
-    return eitherUtils.left(
-      new BadRequestApiError(
-        'invalid input: name, categoryId or stock must be provided',
-      ),
+    const httpError = HttpResponse.error(
+      'SEARCH_PARAMS_NOT_PROVIDED',
+      'name, categoryId or stock must be provided',
     );
+    return eitherUtils.left(new BadRequestApiError(httpError));
   }
 }

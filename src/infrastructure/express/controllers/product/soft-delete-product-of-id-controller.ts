@@ -2,6 +2,7 @@ import type { Request, Response } from 'express';
 import type { SoftDeleteProductOfIdUseCaseProtocol } from '../../../../application/use-case/protocols/products/soft-delete-product-of-id-use-case-protocol';
 import z from 'zod';
 import { StatusCodeEnum } from '../../../../common/status-code-enum';
+import { HttpResponse } from '../../../../application/response';
 
 const zodRequestValidation = z.object({
   id: z.uuid({ error: 'id is required and must be uuid' }),
@@ -17,6 +18,7 @@ export class SoftDeleteProductOfIdController {
     const { isLeft, value } =
       await this.softDeleteProductOfIdUseCase.execute(input);
     if (isLeft()) throw value;
-    return response.status(StatusCodeEnum.OK).json(value);
+    const httpResponse = HttpResponse.ok(value);
+    return response.status(StatusCodeEnum.OK).json(httpResponse);
   }
 }
