@@ -14,6 +14,7 @@ export type ProductModel = {
   name: string;
   price: number;
   stock: number;
+  imageUrl: string;
   description: string | null;
   reviews: Review[];
   reviewCount: number;
@@ -21,10 +22,23 @@ export type ProductModel = {
   updatedAt: Date;
 };
 
+export type GetBestSellersModel = {
+  id: string;
+  name: string;
+  price: number;
+  stock: number;
+  imageUrl: string;
+  description: string | null;
+  reviewCount: number;
+  totalSold: number;
+};
+
 export interface ProductRepositories {
   save(data: Product): Promise<ProductModel>;
   getOfId(id: string): Promise<ProductModel | undefined>;
-  getAll(options: PaginationOptions): Promise<ProductModel[]>;
+  getAll(
+    options: PaginationOptions,
+  ): Promise<{ products: ProductModel[]; total: number }>;
   softDelete(id: string): Promise<ProductModel | undefined>;
   undelete(id: string): Promise<ProductModel | undefined>;
   getOfName(name: string): Promise<ProductModel | undefined>;
@@ -37,4 +51,5 @@ export interface ProductRepositories {
     name: string,
     options: PaginationOptions,
   ): Promise<ProductModel[]>;
+  getProductsOfIds(ids: Array<string>): Promise<Array<ProductModel>>;
 }

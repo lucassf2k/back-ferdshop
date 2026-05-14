@@ -1,13 +1,16 @@
 import { CreateProductUseCase } from '../../../../application/use-case/implementations/product/create-product-use-case';
 import { GetAllProductsUseCase } from '../../../../application/use-case/implementations/product/get-all-products-use-case';
+import { GetBestSellersUseCase } from '../../../../application/use-case/implementations/product/get-best-sellers-use-case';
 import { GetProductOfIdUseCase } from '../../../../application/use-case/implementations/product/get-product-of-id-use-case';
 import { SearchProductUseCase } from '../../../../application/use-case/implementations/product/search-product-use-case';
 import { SoftDeleteProductOfIdUseCase } from '../../../../application/use-case/implementations/product/soft-delete-product-of-id-use-case';
 import { UndeleteProductOfIdUseCase } from '../../../../application/use-case/implementations/product/undelete-product-of-id-use-case';
 import { prismaCategoryRepositories } from '../../../repositories/prisma/prisma-category-repositories';
+import { prismaOrderRepositories } from '../../../repositories/prisma/prisma-order-repositories';
 import { prismaProductRepositories } from '../../../repositories/prisma/prisma-product-repositories';
 import { CreateProductController } from '../../controllers/product/create-product-controller';
 import { GetAllProductsController } from '../../controllers/product/get-all-products-controller';
+import { GetBestSellersController } from '../../controllers/product/get-best-sellers-products-controller';
 import { GetProductOfIdController } from '../../controllers/product/get-product-of-id-controller';
 import { SearchProductController } from '../../controllers/product/search-product-controller';
 import { SoftDeleteProductOfIdController } from '../../controllers/product/soft-delete-product-of-id-controller';
@@ -57,6 +60,14 @@ const searchProductController = new SearchProductController(
   searchProductUseCase,
 );
 
+const getBestSellersUserCase = new GetBestSellersUseCase(
+  prismaOrderRepositories,
+  prismaProductRepositories,
+);
+const getBestSellersController = new GetBestSellersController(
+  getBestSellersUserCase,
+);
+
 export const productRouter = new ProductRouter(
   createProductController,
   getAllProductsController,
@@ -64,4 +75,5 @@ export const productRouter = new ProductRouter(
   softDeleteProductOfIdController,
   undeleteProductOfIdController,
   searchProductController,
+  getBestSellersController,
 );

@@ -20,6 +20,11 @@ export type OrderModel = {
   updatedAt: Date;
 };
 
+export type BestSellerProduct = {
+  productId: string;
+  totalSold: number;
+};
+
 export interface OrderRepositories {
   save(data: Order): Promise<OrderModel>;
   getOfId(id: string): Promise<OrderModel | undefined>;
@@ -31,4 +36,5 @@ export interface OrderRepositories {
     options: PaginationOptions,
   ): Promise<OrderModel[]>;
   getOfUserId(id: string, options: PaginationOptions): Promise<OrderModel[]>;
+  getBestSellersProductsIds(limit: number): Promise<Array<BestSellerProduct>>;
 }

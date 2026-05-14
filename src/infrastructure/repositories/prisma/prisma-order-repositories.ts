@@ -1,5 +1,6 @@
 import type { PaginationOptions } from '../../../application/repositories/common-types';
 import type {
+  BestSellerProduct,
   OrderModel,
   OrderRepositories,
 } from '../../../application/repositories/order-repositories';
@@ -116,6 +117,28 @@ class PrismaOrderRepositories implements OrderRepositories {
     });
     if (orders.length === 0) return [];
     return orders.map(orderMapper.toOrderModel);
+  }
+
+  async getBestSellersProductsIds(
+    limit: number,
+  ): Promise<Array<BestSellerProduct>> {
+    const bestSellers = await prisma.orderItem.groupBy({
+      by: ['productId'],
+      where: {
+        isDeleted: false,
+      },
+      _sum: {
+        quantity: true,
+      },
+      orderBy: {
+        _sum: {
+          quantity: 'desc',
+        },
+      },
+      take: limit,
+    });
+    if (bestSellers.length === 0) return [];
+    return bestSellers.map(orderMapper.toBestSellerProduct);
   }
 }
 

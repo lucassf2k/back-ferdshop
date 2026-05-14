@@ -8,6 +8,7 @@ import type { UndeleteProductOfIdController } from '../../controllers/product/un
 import type { SearchProductController } from '../../controllers/product/search-product-controller';
 import { allowRoles, authMiddleware } from '../../middlewares/authentication';
 import { UserRole } from '../../../../domain/enums/user-role';
+import type { GetBestSellersController } from '../../controllers/product/get-best-sellers-products-controller';
 
 export class ProductRouter {
   readonly router = Router();
@@ -19,6 +20,7 @@ export class ProductRouter {
     private readonly softDeleteProductOfIdController: SoftDeleteProductOfIdController,
     private readonly undeleteProductOfIdController: UndeleteProductOfIdController,
     private readonly searchProductController: SearchProductController,
+    private readonly getBestSellersController: GetBestSellersController,
   ) {
     this.run();
   }
@@ -37,6 +39,20 @@ export class ProductRouter {
       allowRoles(UserRole.ADMIN),
       asyncRouteHandler(async (request, response) => {
         await this.createProductController.handle(request, response);
+      }),
+    );
+
+    this.router.get(
+      '/search',
+      asyncRouteHandler(async (request, response) => {
+        await this.searchProductController.handle(request, response);
+      }),
+    );
+
+    this.router.get(
+      '/best-sellers',
+      asyncRouteHandler(async (request, response) => {
+        await this.getBestSellersController.handle(request, response);
       }),
     );
 
@@ -62,13 +78,6 @@ export class ProductRouter {
       allowRoles(UserRole.ADMIN),
       asyncRouteHandler(async (request, response) => {
         await this.undeleteProductOfIdController.handle(request, response);
-      }),
-    );
-
-    this.router.get(
-      '/search',
-      asyncRouteHandler(async (request, response) => {
-        await this.searchProductController.handle(request, response);
       }),
     );
   }

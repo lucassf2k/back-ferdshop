@@ -10,8 +10,8 @@ Content-Type: application/json
 
 {
   "name": "Pedro",
-  "email": "p.ed.ro@mail.com",
-  "password": "23452324234",
+  "email": "p.ed2.ro@mail.com",
+  "password": "2345",
   "role": ""
 }
 
@@ -64,11 +64,12 @@ Content-Type: application/json
   "name": "",
   "price": 9.3,
   "categoryId": "",
+  "imageUrl": "",
   "description": "",
 }
 
 ### List Products
-GET {{URL}}/products
+GET {{URL}}/products?page=1&pageSize=10
 
 ### Get Product of ID
 GET {{URL}}/products/:id
@@ -78,6 +79,9 @@ DELETE {{URL}}/products/:id
 
 ### Undelete Product
 PATCH {{URL}}/products/:id/restore
+
+### Get Best Sellers
+GET  {{URL}}/products/best-sellers?quantity=1
 
 # REVIEWS
 

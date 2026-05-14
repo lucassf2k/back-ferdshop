@@ -4,7 +4,7 @@ import type { Pagination } from '../pagination';
 
 export namespace GetAllProductsUseCaseProtocol {
   export type Input = Pagination;
-  export type Output = ProductModel[];
+  export type Output = { products: ProductModel[]; total: number };
 
   export interface Interface {
     execute(

@@ -33,8 +33,10 @@ class PrismaProductRepositories implements ProductRepositories {
     if (!product) return undefined;
     return productMapper.toProductModel(product);
   }
-  async getAll(option: PaginationOptions): Promise<ProductModel[]> {
-    const allProducts = await prisma.product.findMany({
+  async getAll(
+    option: PaginationOptions,
+  ): Promise<{ products: ProductModel[]; total: number }> {
+    const getAllProducts = prisma.product.findMany({
       where: {
         isDeleted: false,
       },
@@ -44,8 +46,20 @@ class PrismaProductRepositories implements ProductRepositories {
         reviews: true,
       },
     });
-    if (allProducts.length === 0) return [];
-    return allProducts.map(productMapper.toProductModel);
+    const getCountOfProducts = prisma.product.count({
+      where: {
+        isDeleted: false,
+      },
+    });
+    const [allProducts, total] = await Promise.all([
+      getAllProducts,
+      getCountOfProducts,
+    ]);
+    if (allProducts.length === 0) return { products: [], total: 0 };
+    return {
+      products: allProducts.map(productMapper.toProductModel),
+      total,
+    };
   }
   async softDelete(id: string): Promise<ProductModel | undefined> {
     const productDeleted = await prisma.product.update({
@@ -156,6 +170,22 @@ class PrismaProductRepositories implements ProductRepositories {
     });
     if (allProductsWithCategoryId.length === 0) return [];
     return allProductsWithCategoryId.map(productMapper.toProductModel);
+  }
+
+  async getProductsOfIds(ids: Array<string>): Promise<Array<ProductModel>> {
+    const products = await prisma.product.findMany({
+      where: {
+        id: {
+          in: ids,
+        },
+        isDeleted: false,
+      },
+      include: {
+        reviews: true,
+      },
+    });
+    if (products.length === 0) return [];
+    return products.map(productMapper.toProductModel);
   }
 }
 

@@ -1,6 +1,13 @@
-import type { OrderModel } from '../../../../application/repositories/order-repositories';
+import type {
+  BestSellerProduct,
+  OrderModel,
+} from '../../../../application/repositories/order-repositories';
 import { Order } from '../../../../domain/order';
 import type { Prisma } from '../../../../prisma/client';
+import type {
+  OrderItemGroupByOutputType,
+  PickEnumerable,
+} from '../../../../prisma/internal/prismaNamespace';
 
 type OrderPrismaOutput = Prisma.OrderGetPayload<{
   include: {
@@ -62,9 +69,26 @@ function toUndeletePrisma(): UpdateOrderPrismaInput {
   };
 }
 
+type BestSellerInput = PickEnumerable<
+  OrderItemGroupByOutputType,
+  'productId'[]
+> & {
+  _sum: {
+    quantity: number | null;
+  };
+};
+
+function toBestSellerProduct(raw: BestSellerInput): BestSellerProduct {
+  return {
+    productId: raw.productId,
+    totalSold: raw._sum.quantity ?? 0,
+  };
+}
+
 export const orderMapper = {
   toOrderModel,
   toSavePrisma,
   toSoftDeletePrisma,
   toUndeletePrisma,
+  toBestSellerProduct,
 } as const;
