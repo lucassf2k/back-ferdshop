@@ -1,4 +1,4 @@
-import * as JWT from 'jsonwebtoken';
+import JWT from 'jsonwebtoken';
 
 export type UserPayload = {
   user: {

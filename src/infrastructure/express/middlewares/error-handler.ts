@@ -1,5 +1,5 @@
 import type { NextFunction, Request, Response } from 'express';
-import * as JWT from 'jsonwebtoken';
+import JWT from 'jsonwebtoken';
 import { ZodError } from 'zod';
 import { BaseApiError } from '../../../common/api-erros/base-api-error';
 import { StatusCodeEnum } from '../../../common/status-code-enum';
@@ -10,7 +10,7 @@ export function errorHandler(
   request: Request,
   response: Response,
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  next?: NextFunction,
+  next: NextFunction,
 ): Response {
   if (error instanceof BaseApiError) {
     return response.status(error.code).json(error.httpError);

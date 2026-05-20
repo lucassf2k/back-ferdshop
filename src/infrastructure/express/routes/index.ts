@@ -7,7 +7,7 @@ import { orderRouter } from './order';
 import { authRouter } from './auth';
 
 const routes = Router();
-routes.use('/sign-in', authRouter.router);
+routes.use('/auth', authRouter.router);
 routes.use('/users', usersRouter.router);
 routes.use('/categories', categoriesRoute.router);
 routes.use('/products', productRouter.router);

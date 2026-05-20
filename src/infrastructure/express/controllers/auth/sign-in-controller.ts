@@ -3,9 +3,10 @@ import type { SignInUseCaseProtocol } from '../../../../application/use-case/pro
 import z from 'zod';
 import { StatusCodeEnum } from '../../../../common/status-code-enum';
 import { HttpResponse } from '../../../../application/response';
+import { TOKEN_KEY, TOKEN_MAX_AGE } from '../../../../common/constants';
 
 const zodRequestValidation = z.object({
-  email: z.string({ error: 'email is required' }),
+  email: z.email({ error: 'email is required' }),
   password: z.string({ error: 'password is required' }),
 });
 
@@ -18,7 +19,16 @@ export class SignInController {
     const input = zodRequestValidation.parse(request.body);
     const output = await this.signInUseCase.execute(input);
     if (output.isLeft()) throw output.value;
-    const httpResponse = HttpResponse.ok({ token: output.value.token });
+    const httpResponse = HttpResponse.ok({
+      code: 'SIGN_IN_SUCCESS',
+    });
+    const { token } = output.value;
+    response.cookie(TOKEN_KEY, token, {
+      httpOnly: true,
+      secure: false,
+      sameSite: 'lax',
+      maxAge: TOKEN_MAX_AGE,
+    });
     return response.status(StatusCodeEnum.OK).json(httpResponse);
   }
 }

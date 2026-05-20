@@ -11,8 +11,8 @@ Content-Type: application/json
 {
   "name": "Pedro",
   "email": "p.ed2.ro@mail.com",
-  "password": "2345",
-  "role": ""
+  "password": "12345678",
+  "role": "CUSTOMER"
 }
 
 ### List Users
@@ -28,6 +28,20 @@ DELETE {{URL}}/users/:id
 
 ### Undelete User
 PATCH {{URL}}/users/:id/restore
+
+# AUTH
+
+### Sign in
+POST {{URL}}/auth
+Content-Type: application/json
+
+{
+  "email": "p.ed2.ro@mail.com",
+  "password": "12345678"
+}
+
+### ME
+GET  {{URL}}/auth/me
 
 # CATEGORY
 

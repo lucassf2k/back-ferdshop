@@ -3,12 +3,19 @@ import cors from 'cors';
 import { routes } from './routes';
 import { errorHandler } from './middlewares/error-handler';
 import { swaggerConfig } from '../services/swagger';
+import cookieParser from 'cookie-parser';
 
 export class ExpressApplication {
   static run(): void {
     const app = express();
-    app.use(cors());
     app.use(express.json());
+    app.use(cookieParser());
+    app.use(
+      cors({
+        origin: 'http://localhost:5173/',
+        credentials: true,
+      }),
+    );
     swaggerConfig(app);
     app.use('/api/v1', routes);
     app.use(errorHandler);
