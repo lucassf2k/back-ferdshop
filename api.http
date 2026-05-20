@@ -43,6 +43,9 @@ Content-Type: application/json
 ### ME
 GET  {{URL}}/auth/me
 
+### Log Out
+POST {{URL}}/auth/logout
+
 # CATEGORY
 
 ### Create Category
