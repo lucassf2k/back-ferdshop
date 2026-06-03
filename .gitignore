@@ -8,3 +8,4 @@ coverage
 /generated/prisma
 /.postgres-data
 /postgres-data
+/uploads
