@@ -1,7 +1,7 @@
 import { getUUIDV7 } from '../../infrastructure/services/id-services';
 import { Entity } from '../entity';
 
-type Coordinates = {
+export type Coordinates = {
   latitude: number;
   longitude: number;
 };
@@ -14,6 +14,8 @@ type OrganizationProps = {
   coordinates: Coordinates;
   city: string;
   state: string;
+  whatsapp: string;
+  instagram: string;
 };
 
 export class Organization extends Entity<OrganizationProps> {

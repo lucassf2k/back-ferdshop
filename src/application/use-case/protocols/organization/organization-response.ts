@@ -10,6 +10,8 @@ export type OrganizationResponse = {
   };
   city: string;
   state: string;
+  whatsapp: string;
+  instagram: string;
   createdAt: Date;
   updatedAt: Date;
 };
