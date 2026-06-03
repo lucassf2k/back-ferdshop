@@ -80,6 +80,7 @@ Content-Type: application/json
 {
   "name": "",
   "price": 9.3,
+  "stock": 1,
   "categoryId": "",
   "imageUrl": "",
   "description": "",
@@ -141,3 +142,27 @@ DELETE {{URL}}/orders/id
 
 ### Undelete Order
 PATCH {{URL}}/orders/id/restore
+
+# ORGANIZATION
+
+### Uperst Organization
+POST {{URL}}/organizations
+Content-Type: application/json
+
+{
+  "name": "string",
+  "email": "string",
+  "phone": "string",
+  "address": "string",
+  "coordinates": {
+    "latitude": 2,
+    "longitude": 2,
+  },
+  "city": "string",
+  "state": "string",
+  "whatsapp": "string",
+  "instagram": "string",
+}
+
+### GET Organization
+GET {{URL}}/organizations

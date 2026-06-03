@@ -1,4 +1,5 @@
-import { BadRequestApiError } from '../../common/api-erros';
+import { HttpResponse } from '../../application/response';
+import { InternalServerErrorApiError } from '../../common/api-erros';
 import { getUUIDV7 } from '../../infrastructure/services/id-services';
 import { UserRole } from '../enums/user-role';
 import type { Email } from './email';
@@ -32,6 +33,10 @@ export class User {
   static userRoleFromStringToEnum(input: string): UserRole {
     if (input === UserRole.ADMIN) return UserRole.ADMIN;
     if (input === UserRole.CUSTOMER) return UserRole.CUSTOMER;
-    throw new BadRequestApiError('invalid user role');
+    const httpError = HttpResponse.error(
+      'INTERNAL_SERVER_ERROR',
+      'invalid user role',
+    );
+    throw new InternalServerErrorApiError(httpError);
   }
 }

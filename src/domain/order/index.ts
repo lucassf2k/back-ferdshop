@@ -1,4 +1,5 @@
-import { BadRequestApiError } from '../../common/api-erros';
+import { HttpResponse } from '../../application/response';
+import { InternalServerErrorApiError } from '../../common/api-erros';
 import { getUUIDV7 } from '../../infrastructure/services/id-services';
 import { Entity } from '../entity';
 import { OrderStatusEnum } from '../enums/order-status-enum';
@@ -32,6 +33,10 @@ export class Order extends Entity<OrderProps> {
     if (input === OrderStatusEnum.PAID) return OrderStatusEnum.PAID;
     if (input === OrderStatusEnum.PENDING) return OrderStatusEnum.PENDING;
     if (input === OrderStatusEnum.SHIPPED) return OrderStatusEnum.SHIPPED;
-    throw new BadRequestApiError('invalid order status');
+    const httpError = HttpResponse.error(
+      'INTERNAL_SERVER_ERROR',
+      'invalid order status',
+    );
+    throw new InternalServerErrorApiError(httpError);
   }
 }
