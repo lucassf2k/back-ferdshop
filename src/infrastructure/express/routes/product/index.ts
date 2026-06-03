@@ -15,6 +15,7 @@ import { GetProductOfIdController } from '../../controllers/product/get-product-
 import { SearchProductController } from '../../controllers/product/search-product-controller';
 import { SoftDeleteProductOfIdController } from '../../controllers/product/soft-delete-product-of-id-controller';
 import { UndeleteProductOfIdController } from '../../controllers/product/undelete-product-of-id-controller';
+import { UploadProductImageController } from '../../controllers/product/upload-product-image-controller';
 import { ProductRouter } from './product-router';
 
 const createProductUseCase = new CreateProductUseCase(
@@ -68,6 +69,8 @@ const getBestSellersController = new GetBestSellersController(
   getBestSellersUserCase,
 );
 
+const uploadProductImageController = new UploadProductImageController();
+
 export const productRouter = new ProductRouter(
   createProductController,
   getAllProductsController,
@@ -76,4 +79,5 @@ export const productRouter = new ProductRouter(
   undeleteProductOfIdController,
   searchProductController,
   getBestSellersController,
+  uploadProductImageController,
 );

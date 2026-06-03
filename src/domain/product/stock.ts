@@ -1,3 +1,4 @@
+import { HttpResponse } from '../../application/response';
 import { BadRequestApiError } from '../../common/api-erros';
 
 export class Stock {
@@ -5,9 +6,17 @@ export class Stock {
 
   constructor(value: number) {
     if (!Number.isInteger(value)) {
-      throw new BadRequestApiError('stock must be an interger');
+      const httpError = HttpResponse.error(
+        'VALIDATION_ERROR',
+        'stock must be an interger',
+      );
+      throw new BadRequestApiError(httpError);
     }
-    if (value < 0) throw new BadRequestApiError('stock cannot be negative');
+    const httpError = HttpResponse.error(
+      'VALIDATION_ERROR',
+      'stock must be greater than 0',
+    );
+    if (value < 0) throw new BadRequestApiError(httpError);
     this.value = value;
   }
 }

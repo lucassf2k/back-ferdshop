@@ -11,6 +11,11 @@ const zodRequestValidation = z.object({
   price: z
     .number({ error: 'price must be number' })
     .refine((value) => value > 0, { error: 'price must be greater than 0' }),
+  stock: z
+    .number({ error: 'stock must be number' })
+    .refine((value) => value > 0, {
+      error: 'stock must be greater than 0',
+    }),
   categoryId: z.uuid({ error: 'categoryId is required and must be uuid' }),
   imageUrl: z.string({ error: 'imageUrl is required' }),
   description: z.string().optional(),

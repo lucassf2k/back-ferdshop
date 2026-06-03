@@ -6,6 +6,7 @@ export namespace CreateProductUseCaseProtocol {
   export type Input = {
     name: string;
     price: number;
+    stock: number;
     categoryId: string;
     imageUrl: string;
     description?: string | undefined;

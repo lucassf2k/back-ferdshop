@@ -9,6 +9,8 @@ import type { SearchProductController } from '../../controllers/product/search-p
 import { allowRoles, authMiddleware } from '../../middlewares/authentication';
 import { UserRole } from '../../../../domain/enums/user-role';
 import type { GetBestSellersController } from '../../controllers/product/get-best-sellers-products-controller';
+import type { UploadProductImageController } from '../../controllers/product/upload-product-image-controller';
+import { upload } from '../../configurations/multer';
 
 export class ProductRouter {
   readonly router = Router();
@@ -21,6 +23,7 @@ export class ProductRouter {
     private readonly undeleteProductOfIdController: UndeleteProductOfIdController,
     private readonly searchProductController: SearchProductController,
     private readonly getBestSellersController: GetBestSellersController,
+    private readonly uploadProductImageController: UploadProductImageController,
   ) {
     this.run();
   }
@@ -79,6 +82,12 @@ export class ProductRouter {
       asyncRouteHandler(async (request, response) => {
         await this.undeleteProductOfIdController.handle(request, response);
       }),
+    );
+
+    this.router.post(
+      '/image',
+      upload.single('file'),
+      this.uploadProductImageController.handle,
     );
   }
 }

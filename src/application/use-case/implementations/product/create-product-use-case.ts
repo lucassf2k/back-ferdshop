@@ -51,7 +51,7 @@ export class CreateProductUseCase
       name: input.name,
       description: description,
       price: input.price,
-      stock: new Stock(0),
+      stock: new Stock(input.stock),
       imageUrl: input.imageUrl,
       categoryId: categoryExists.id,
     });

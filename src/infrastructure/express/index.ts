@@ -12,11 +12,12 @@ export class ExpressApplication {
     app.use(cookieParser());
     app.use(
       cors({
-        origin: 'http://localhost:5173/',
+        origin: 'http://localhost:5173',
         credentials: true,
       }),
     );
     swaggerConfig(app);
+    app.use('/files', express.static('uploads')); // Temporário
     app.use('/api/v1', routes);
     app.use(errorHandler);
     app.listen(3001, () => {

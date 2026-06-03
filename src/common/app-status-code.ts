@@ -71,4 +71,12 @@ export const appStatusCode = {
     status: 400,
     code: 'SEARCH_PARAMS_NOT_PROVIDED',
   },
+  typeFileNotSupported: {
+    status: 400,
+    code: 'TYPE_FILE_NOT_SUPPORTED',
+  },
+  fileNotProvided: {
+    status: 400,
+    code: 'FILE_NOT_PROVIDED',
+  },
 } as const;
