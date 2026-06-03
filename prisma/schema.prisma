@@ -132,3 +132,24 @@ model Review {
   updatedAt DateTime  @updatedAt
   deletedAt DateTime?
 }
+
+model Organization {
+  id      Boolean @id @default(true)
+  name    String
+  email   String  @unique
+  phone   String
+  address String
+  city    String
+  state   String
+
+  whatsapp  String
+  instagram String
+
+  latitude  Float
+  longitude Float
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("organizations")
+}
