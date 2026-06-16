@@ -20,6 +20,7 @@ export type ProductModel = {
   reviewCount: number;
   createdAt: Date;
   updatedAt: Date;
+  categoryId: string;
 };
 
 export type GetBestSellersModel = {
@@ -35,6 +36,7 @@ export type GetBestSellersModel = {
 
 export interface ProductRepositories {
   save(data: Product): Promise<ProductModel>;
+  update(data: Product): Promise<ProductModel>;
   getOfId(id: string): Promise<ProductModel | undefined>;
   getAll(
     options: PaginationOptions,
