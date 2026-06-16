@@ -82,7 +82,6 @@ Content-Type: application/json
   "price": 9.3,
   "stock": 1,
   "categoryId": "",
-  "imageUrl": "",
   "description": "",
 }
 

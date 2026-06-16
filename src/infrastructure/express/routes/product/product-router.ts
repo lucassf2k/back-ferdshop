@@ -9,8 +9,9 @@ import type { SearchProductController } from '../../controllers/product/search-p
 import { allowRoles, authMiddleware } from '../../middlewares/authentication';
 import { UserRole } from '../../../../domain/enums/user-role';
 import type { GetBestSellersController } from '../../controllers/product/get-best-sellers-products-controller';
-import type { UploadProductImageController } from '../../controllers/product/upload-product-image-controller';
 import { upload } from '../../configurations/multer';
+import type { UpdateProductController } from '../../controllers/product/update-product-controller';
+import type { UpdateProductFileController } from '../../controllers/product/update-product-file-controller';
 
 export class ProductRouter {
   readonly router = Router();
@@ -23,7 +24,8 @@ export class ProductRouter {
     private readonly undeleteProductOfIdController: UndeleteProductOfIdController,
     private readonly searchProductController: SearchProductController,
     private readonly getBestSellersController: GetBestSellersController,
-    private readonly uploadProductImageController: UploadProductImageController,
+    private readonly updateProductController: UpdateProductController,
+    private readonly updateProductFileController: UpdateProductFileController,
   ) {
     this.run();
   }
@@ -40,6 +42,7 @@ export class ProductRouter {
       '/',
       authMiddleware,
       allowRoles(UserRole.ADMIN),
+      upload.single('file'),
       asyncRouteHandler(async (request, response) => {
         await this.createProductController.handle(request, response);
       }),
@@ -84,10 +87,23 @@ export class ProductRouter {
       }),
     );
 
-    this.router.post(
-      '/image',
+    this.router.patch(
+      '/:id',
+      authMiddleware,
+      allowRoles(UserRole.ADMIN),
+      asyncRouteHandler(async (request, response) => {
+        await this.updateProductController.handle(request, response);
+      }),
+    );
+
+    this.router.patch(
+      '/:id/file',
+      authMiddleware,
+      allowRoles(UserRole.ADMIN),
       upload.single('file'),
-      this.uploadProductImageController.handle,
+      asyncRouteHandler(async (request, response) => {
+        await this.updateProductFileController.handle(request, response);
+      }),
     );
   }
 }

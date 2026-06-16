@@ -2,13 +2,13 @@ import type { BaseApiError } from '../../../../common/api-erros/base-api-error';
 import type { Either } from '../../../../common/api-erros/either-error';
 import type { ProductModel } from '../../../repositories/product-repositories';
 
-export namespace CreateProductUseCaseProtocol {
+export namespace UpdateProductUseCaseProtocol {
   export type Input = {
-    file: Express.Multer.File;
-    name: string;
-    price: number;
-    stock: number;
-    categoryId: string;
+    id: string;
+    name?: string | undefined;
+    price?: number | undefined;
+    stock?: number | undefined;
+    categoryId?: string | undefined;
     description?: string | undefined;
   };
 
@@ -16,7 +16,7 @@ export namespace CreateProductUseCaseProtocol {
 
   export interface Interface {
     execute(
-      input: CreateProductUseCaseProtocol.Input,
-    ): Promise<Either<BaseApiError, CreateProductUseCaseProtocol.Output>>;
+      input: UpdateProductUseCaseProtocol.Input,
+    ): Promise<Either<BaseApiError, UpdateProductUseCaseProtocol.Output>>;
   }
 }

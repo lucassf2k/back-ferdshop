@@ -1,28 +1,34 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
+import type { Request } from 'express';
 import multer from 'multer';
 import path from 'node:path';
 import { BaseApiError } from '../../../common/api-erros/base-api-error';
 import { HttpResponse } from '../../../application/response';
 import { appStatusCode } from '../../../common/app-status-code';
 
-const storage = multer.diskStorage({
-  destination: (req, file, cb) => {
-    cb(null, 'uploads/');
-  },
-  filename: (req, file, cb) => {
-    const uniqueName = `${Date.now()}${Math.round(Math.random() * 1e9)}`;
-    const fileName = uniqueName + path.extname(file.originalname);
-    cb(null, fileName);
-  },
-});
+// const storage = multer.diskStorage({
+//   destination: (req, file, cb) => {
+//     cb(null, 'uploads/');
+//   },
+//   filename: (req, file, cb) => {
+//     const uniqueName = `${Date.now()}${Math.round(Math.random() * 1e9)}`;
+//     const fileName = uniqueName + path.extname(file.originalname);
+//     cb(null, fileName);
+//   },
+// });
 
-const ALLOWED_TYPES = /jpeg|jpg|png|pdf/;
+const allowedExtension: string[] = ['.jpeg', '.jpg', '.png'] as const;
+const allowedMimetypes: string[] = [
+  'image/jpeg',
+  'image/jpg',
+  'image/png',
+] as const;
 
-const fileFilter = (req: any, file: any, cb: any) => {
-  const extname = ALLOWED_TYPES.test(
-    path.extname(file.originalname).toLowerCase(),
-  );
-  if (!extname) {
+const fileFilter = (req: Request, file: any, cb: any) => {
+  const extname = path.extname(file.originalname).toLowerCase();
+  const validExtension = allowedExtension.includes(extname);
+  const validMimetype = allowedMimetypes.includes(file.mimetype);
+  if (!validExtension || !validMimetype) {
     const httpError = HttpResponse.error(
       'TYPE_FILE_NOT_SUPPORTED',
       'type file not supported',
@@ -34,10 +40,10 @@ const fileFilter = (req: any, file: any, cb: any) => {
   return cb(null, true);
 };
 
-const LIMIT_SIZE_MB = 1024 * 1024 * 5; // 5MB
+const MAX_FILE_SIZE = 1024 * 1024 * 5; // 5MB
 
 export const upload = multer({
-  storage,
-  limits: { fileSize: LIMIT_SIZE_MB },
+  storage: multer.memoryStorage(),
+  limits: { fileSize: MAX_FILE_SIZE },
   fileFilter,
 });

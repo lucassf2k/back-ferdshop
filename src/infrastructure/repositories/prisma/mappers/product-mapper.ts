@@ -57,6 +57,7 @@ function toProductModel(raw: ProductPrismaOutput): ProductModel {
     updatedAt: raw.updatedAt,
     reviews,
     reviewCount: review,
+    categoryId: raw.categoryId,
   };
 }
 

@@ -18,6 +18,20 @@ class PrismaProductRepositories implements ProductRepositories {
     });
     return productMapper.toProductModel(newProduct);
   }
+
+  async update(data: Product): Promise<ProductModel> {
+    const updatedProduct = await prisma.product.update({
+      where: {
+        id: data._id,
+      },
+      data: productMapper.toSavePrisma(data),
+      include: {
+        reviews: true,
+      },
+    });
+    return productMapper.toProductModel(updatedProduct);
+  }
+
   async getOfId(id: string): Promise<ProductModel | undefined> {
     const product = await prisma.product.findUnique({
       where: {

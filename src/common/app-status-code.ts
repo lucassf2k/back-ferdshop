@@ -79,4 +79,16 @@ export const appStatusCode = {
     status: 400,
     code: 'FILE_NOT_PROVIDED',
   },
+  errorDeletingFile: {
+    status: 500,
+    code: 'ERROR_DELETING_FILE',
+  },
+  errorSavingFile: {
+    status: 500,
+    code: 'ERROR_SAVING_FILE',
+  },
+  errorCreateProductFailed: {
+    status: 500,
+    code: 'ERROR_CREATE_PRODUCT_FAILED',
+  },
 } as const;

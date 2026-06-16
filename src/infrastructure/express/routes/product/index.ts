@@ -1,3 +1,5 @@
+import { DeleteFileUseCase } from '../../../../application/use-case/implementations/file/delete-file';
+import { SaveFileUseCase } from '../../../../application/use-case/implementations/file/save-file';
 import { CreateProductUseCase } from '../../../../application/use-case/implementations/product/create-product-use-case';
 import { GetAllProductsUseCase } from '../../../../application/use-case/implementations/product/get-all-products-use-case';
 import { GetBestSellersUseCase } from '../../../../application/use-case/implementations/product/get-best-sellers-use-case';
@@ -5,6 +7,8 @@ import { GetProductOfIdUseCase } from '../../../../application/use-case/implemen
 import { SearchProductUseCase } from '../../../../application/use-case/implementations/product/search-product-use-case';
 import { SoftDeleteProductOfIdUseCase } from '../../../../application/use-case/implementations/product/soft-delete-product-of-id-use-case';
 import { UndeleteProductOfIdUseCase } from '../../../../application/use-case/implementations/product/undelete-product-of-id-use-case';
+import { UpdateProductFileUseCase } from '../../../../application/use-case/implementations/product/update-product-file-use-case';
+import { UpdateProductUseCase } from '../../../../application/use-case/implementations/product/update-product-use-case';
 import { prismaCategoryRepositories } from '../../../repositories/prisma/prisma-category-repositories';
 import { prismaOrderRepositories } from '../../../repositories/prisma/prisma-order-repositories';
 import { prismaProductRepositories } from '../../../repositories/prisma/prisma-product-repositories';
@@ -15,12 +19,17 @@ import { GetProductOfIdController } from '../../controllers/product/get-product-
 import { SearchProductController } from '../../controllers/product/search-product-controller';
 import { SoftDeleteProductOfIdController } from '../../controllers/product/soft-delete-product-of-id-controller';
 import { UndeleteProductOfIdController } from '../../controllers/product/undelete-product-of-id-controller';
-import { UploadProductImageController } from '../../controllers/product/upload-product-image-controller';
+import { UpdateProductController } from '../../controllers/product/update-product-controller';
+import { UpdateProductFileController } from '../../controllers/product/update-product-file-controller';
 import { ProductRouter } from './product-router';
 
+const saveFileUseCase = new SaveFileUseCase();
+const deleteFileUseCase = new DeleteFileUseCase();
 const createProductUseCase = new CreateProductUseCase(
   prismaProductRepositories,
   prismaCategoryRepositories,
+  saveFileUseCase,
+  deleteFileUseCase,
 );
 const createProductController = new CreateProductController(
   createProductUseCase,
@@ -69,7 +78,21 @@ const getBestSellersController = new GetBestSellersController(
   getBestSellersUserCase,
 );
 
-const uploadProductImageController = new UploadProductImageController();
+const updateProductUseCase = new UpdateProductUseCase(
+  prismaProductRepositories,
+);
+const updateProductController = new UpdateProductController(
+  updateProductUseCase,
+);
+
+const updateProductFileUseCase = new UpdateProductFileUseCase(
+  prismaProductRepositories,
+  saveFileUseCase,
+  deleteFileUseCase,
+);
+const updateProductFileController = new UpdateProductFileController(
+  updateProductFileUseCase,
+);
 
 export const productRouter = new ProductRouter(
   createProductController,
@@ -79,5 +102,6 @@ export const productRouter = new ProductRouter(
   undeleteProductOfIdController,
   searchProductController,
   getBestSellersController,
-  uploadProductImageController,
+  updateProductController,
+  updateProductFileController,
 );
