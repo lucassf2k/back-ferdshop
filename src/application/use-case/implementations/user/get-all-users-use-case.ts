@@ -8,6 +8,7 @@ import type {
 } from '../../../repositories/user-repositories';
 import { getPagination } from '../../protocols/pagination';
 import type { GetAllUsersUseCaseProtocol } from '../../protocols/user/get-all-users-use-case-protocol';
+import type { UserResponse } from '../../protocols/user/user-response';
 
 export class GetAllUsersUseCase
   implements GetAllUsersUseCaseProtocol.Interface
@@ -21,14 +22,15 @@ export class GetAllUsersUseCase
       page: input.page,
       pageSize: input.pageSize,
     });
-    const users = await this.userRepositories.getAll({
+    const output = await this.userRepositories.getAll({
       skip: pagination.skip,
       take: pagination.take,
     });
-    return eitherUtils.right(GetAllUsersUseCase.output(users));
+    const users = GetAllUsersUseCase.output(output.users);
+    return eitherUtils.right({ users, total: output.total });
   }
 
-  static output(input: UserModel[]): GetAllUsersUseCaseProtocol.Output {
+  static output(input: UserModel[]): UserResponse[] {
     return input.map((user) => ({
       id: user.id,
       name: user.name,

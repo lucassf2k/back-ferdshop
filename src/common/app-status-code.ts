@@ -91,4 +91,8 @@ export const appStatusCode = {
     status: 500,
     code: 'ERROR_CREATE_PRODUCT_FAILED',
   },
+  errorUpdatingUserFailed: {
+    status: 500,
+    code: 'ERROR_UPDATING_USER_FAILED',
+  },
 } as const;

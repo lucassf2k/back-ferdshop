@@ -16,8 +16,11 @@ export type UserModel = {
 
 export interface UserRepositories {
   save(data: User): Promise<UserModel>;
+  updateRole(id: string, role: UserRole): Promise<UserModel | undefined>;
   getOfId(id: string): Promise<UserModel | undefined>;
-  getAll(options: PaginationOptions): Promise<UserModel[]>;
+  getAll(
+    options: PaginationOptions,
+  ): Promise<{ users: UserModel[]; total: number }>;
   softDelete(id: string): Promise<UserModel | undefined>;
   undelete(id: string): Promise<UserModel | undefined>;
   getOfEmail(email: string): Promise<UserModel | undefined>;

@@ -7,6 +7,7 @@ import type { UndeleteUserOfIdController } from '../../controllers/user/undelete
 import { asyncRouteHandler } from '../async-route';
 import { allowRoles, authMiddleware } from '../../middlewares/authentication';
 import { UserRole } from '../../../../domain/enums/user-role';
+import type { UpdateUserRoleController } from '../../controllers/user/update-user-role-controller';
 
 export class UsersRouter {
   readonly router = Router();
@@ -16,6 +17,7 @@ export class UsersRouter {
     private readonly getUserOfIdController: GetUserOfIdController,
     private readonly softDeleteUserOfIdController: SoftDeleteUserOfIdController,
     private readonly undeleteUserOfIdController: UndeleteUserOfIdController,
+    private readonly updateUserRoleController: UpdateUserRoleController,
   ) {
     this.run();
   }
@@ -57,6 +59,15 @@ export class UsersRouter {
       '/:id/restore',
       asyncRouteHandler(async (request, response) => {
         await this.undeleteUserOfIdController.handle(request, response);
+      }),
+    );
+
+    this.router.put(
+      '/:id',
+      authMiddleware,
+      allowRoles(UserRole.ADMIN),
+      asyncRouteHandler(async (request, response) => {
+        await this.updateUserRoleController.handle(request, response);
       }),
     );
   }

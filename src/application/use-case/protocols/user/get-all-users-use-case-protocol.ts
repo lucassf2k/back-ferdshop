@@ -5,7 +5,7 @@ import type { UserResponse } from './user-response';
 export namespace GetAllUsersUseCaseProtocol {
   export type Input = Pagination;
 
-  export type Output = UserResponse[];
+  export type Output = { users: UserResponse[]; total: number };
 
   export interface Interface {
     execute(
