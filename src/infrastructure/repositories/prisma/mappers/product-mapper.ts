@@ -7,10 +7,10 @@ import { Rating } from '../../../../domain/product/rating';
 import type { Prisma } from '../../../../prisma/client';
 
 type ProductPrismaOutput = Prisma.ProductGetPayload<{
-  include: { reviews: true };
+  include: { reviews: true; category: true };
 }>;
 type ProductBestSellersPrismaOutput = Prisma.ProductGetPayload<{
-  include: { reviews: true; orderItems: true };
+  include: { reviews: true; category: true; orderItems: true };
 }>;
 type SaveProductPrismaInput = Prisma.ProductCreateInput;
 type UpdateProductPrismaInput = Prisma.ProductUpdateInput;
@@ -57,7 +57,10 @@ function toProductModel(raw: ProductPrismaOutput): ProductModel {
     updatedAt: raw.updatedAt,
     reviews,
     reviewCount: review,
-    categoryId: raw.categoryId,
+    category: {
+      id: raw.category.id,
+      name: raw.category.name,
+    },
   };
 }
 

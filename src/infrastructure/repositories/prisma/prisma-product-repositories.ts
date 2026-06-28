@@ -14,6 +14,7 @@ class PrismaProductRepositories implements ProductRepositories {
       data: productMapper.toSavePrisma(data),
       include: {
         reviews: true,
+        category: true,
       },
     });
     return productMapper.toProductModel(newProduct);
@@ -27,6 +28,7 @@ class PrismaProductRepositories implements ProductRepositories {
       data: productMapper.toSavePrisma(data),
       include: {
         reviews: true,
+        category: true,
       },
     });
     return productMapper.toProductModel(updatedProduct);
@@ -42,6 +44,7 @@ class PrismaProductRepositories implements ProductRepositories {
       },
       include: {
         reviews: true,
+        category: true,
       },
     });
     if (!product) return undefined;
@@ -58,6 +61,7 @@ class PrismaProductRepositories implements ProductRepositories {
       take: option.take,
       include: {
         reviews: true,
+        category: true,
       },
     });
     const getCountOfProducts = prisma.product.count({
@@ -83,6 +87,7 @@ class PrismaProductRepositories implements ProductRepositories {
       data: productMapper.toSoftDeletePrisma(),
       include: {
         reviews: true,
+        category: true,
       },
     });
     if (!productDeleted) return undefined;
@@ -97,6 +102,7 @@ class PrismaProductRepositories implements ProductRepositories {
       data: productMapper.toUndeletePrisma(),
       include: {
         reviews: true,
+        category: true,
       },
     });
     if (!product) return undefined;
@@ -113,6 +119,7 @@ class PrismaProductRepositories implements ProductRepositories {
       },
       include: {
         reviews: true,
+        category: true,
       },
     });
     if (!product) return undefined;
@@ -137,6 +144,7 @@ class PrismaProductRepositories implements ProductRepositories {
       take: option.take,
       include: {
         reviews: true,
+        category: true,
       },
     });
     if (products.length === 0) return [];
@@ -160,6 +168,7 @@ class PrismaProductRepositories implements ProductRepositories {
       take: option.take,
       include: {
         reviews: true,
+        category: true,
       },
     });
     if (allProductsWithStock.length === 0) return [];
@@ -180,6 +189,7 @@ class PrismaProductRepositories implements ProductRepositories {
       take: option.take,
       include: {
         reviews: true,
+        category: true,
       },
     });
     if (allProductsWithCategoryId.length === 0) return [];
@@ -196,6 +206,7 @@ class PrismaProductRepositories implements ProductRepositories {
       },
       include: {
         reviews: true,
+        category: true,
       },
     });
     if (products.length === 0) return [];

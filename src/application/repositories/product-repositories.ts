@@ -9,6 +9,11 @@ type Review = {
   userId: string;
 };
 
+type Category = {
+  id: string;
+  name: string;
+};
+
 export type ProductModel = {
   id: string;
   name: string;
@@ -20,7 +25,7 @@ export type ProductModel = {
   reviewCount: number;
   createdAt: Date;
   updatedAt: Date;
-  categoryId: string;
+  category: Category;
 };
 
 export type GetBestSellersModel = {

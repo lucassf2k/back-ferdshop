@@ -97,7 +97,7 @@ export class ProductRouter {
     );
 
     this.router.patch(
-      '/:id/file',
+      '/:id/image',
       authMiddleware,
       allowRoles(UserRole.ADMIN),
       upload.single('file'),
