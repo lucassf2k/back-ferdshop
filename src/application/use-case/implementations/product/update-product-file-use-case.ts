@@ -44,7 +44,7 @@ export class UpdateProductFileUseCase
       description: productToUpdate.description,
       price: productToUpdate.price,
       stock: new Stock(productToUpdate.stock),
-      categoryId: productToUpdate.categoryId,
+      categoryId: productToUpdate.category.id,
       imageUrl: filename,
     });
     const productUpdated = await this.productRepositories.update(product);

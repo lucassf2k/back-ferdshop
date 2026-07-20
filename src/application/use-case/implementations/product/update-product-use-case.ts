@@ -31,7 +31,7 @@ export class UpdateProductUseCase
       description: input.description || productToUpdate.description,
       price: input.price || productToUpdate.price,
       stock: new Stock(input.stock || productToUpdate.stock),
-      categoryId: input.categoryId || productToUpdate.categoryId,
+      categoryId: input.categoryId || productToUpdate.category.id,
       imageUrl: productToUpdate.imageUrl,
     });
     const updatedProduct =

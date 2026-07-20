@@ -17,11 +17,12 @@ import { appStatusCode } from '../../../common/app-status-code';
 //   },
 // });
 
-const allowedExtension: string[] = ['.jpeg', '.jpg', '.png'] as const;
+const allowedExtension: string[] = ['.jpeg', '.jpg', '.png', '.webp'] as const;
 const allowedMimetypes: string[] = [
   'image/jpeg',
   'image/jpg',
   'image/png',
+  'image/webp',
 ] as const;
 
 const fileFilter = (req: Request, file: any, cb: any) => {

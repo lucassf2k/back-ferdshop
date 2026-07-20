@@ -4,11 +4,7 @@ import {
   eitherUtils,
   type Either,
 } from '../../../../common/api-erros/either-error';
-import { Stock } from '../../../../domain/product/stock';
-import type {
-  ProductModel,
-  ProductRepositories,
-} from '../../../repositories/product-repositories';
+import type { ProductRepositories } from '../../../repositories/product-repositories';
 import { HttpResponse } from '../../../response';
 import { getPagination } from '../../protocols/pagination';
 import type { SearchProductUseCaseProtocol } from '../../protocols/products/search-product-use-case-protocol';
@@ -21,29 +17,24 @@ export class SearchProductUseCase
   async execute(
     input: SearchProductUseCaseProtocol.Input,
   ): Promise<Either<BaseApiError, SearchProductUseCaseProtocol.Output>> {
-    const { name, categoryId, stock } = input;
-    let products: ProductModel[];
+    const { name, categoryId } = input;
     const pagination = getPagination({
       page: input.pagiantion.page,
       pageSize: input.pagiantion.pageSize,
     });
     if (name !== undefined) {
-      products = await this.productRespositories.searchByName(name, pagination);
-      return eitherUtils.right(products);
+      const output = await this.productRespositories.searchByName(
+        name,
+        pagination,
+      );
+      return eitherUtils.right(output);
     }
     if (categoryId !== undefined) {
-      products = await this.productRespositories.getOfCategory(
+      const output = await this.productRespositories.getOfCategory(
         categoryId,
         pagination,
       );
-      return eitherUtils.right(products);
-    }
-    if (stock !== undefined) {
-      products = await this.productRespositories.getOfStock(
-        new Stock(stock),
-        pagination,
-      );
-      return eitherUtils.right(products);
+      return eitherUtils.right(output);
     }
     const httpError = HttpResponse.error(
       'SEARCH_PARAMS_NOT_PROVIDED',

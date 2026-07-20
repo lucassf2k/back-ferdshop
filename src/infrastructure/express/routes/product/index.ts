@@ -35,8 +35,12 @@ const createProductController = new CreateProductController(
   createProductUseCase,
 );
 
+const searchProductsUseCase = new SearchProductUseCase(
+  prismaProductRepositories,
+);
 const getAllProductsUseCase = new GetAllProductsUseCase(
   prismaProductRepositories,
+  searchProductsUseCase,
 );
 const getAllProductsController = new GetAllProductsController(
   getAllProductsUseCase,
