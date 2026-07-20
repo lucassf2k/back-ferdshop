@@ -10,7 +10,7 @@ const zodRequestParamsValidation = z.object({
 
 const zodRequestQueryValidation = z.object({
   role: z
-    .enum(['customer', 'admin'], { error: 'role should be CUSTOMER' })
+    .enum(['CUSTOMER', 'ADMIN'], { error: 'role should be CUSTOMER or ADMIN' })
     .transform((role) => User.userRoleFromStringToEnum(role)),
 });
 
