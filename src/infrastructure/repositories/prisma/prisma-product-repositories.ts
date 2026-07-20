@@ -1,4 +1,7 @@
-import type { PaginationOptions } from '../../../application/repositories/common-types';
+import type {
+  ModelWithPagination,
+  PaginationOptions,
+} from '../../../application/repositories/common-types';
 import type {
   ProductModel,
   ProductRepositories,
@@ -129,8 +132,8 @@ class PrismaProductRepositories implements ProductRepositories {
   async searchByName(
     name: string,
     option: PaginationOptions,
-  ): Promise<ProductModel[]> {
-    const products = await prisma.product.findMany({
+  ): Promise<ModelWithPagination<'products', ProductModel[]>> {
+    const productsPromise = prisma.product.findMany({
       where: {
         name: {
           contains: name,
@@ -147,8 +150,26 @@ class PrismaProductRepositories implements ProductRepositories {
         category: true,
       },
     });
-    if (products.length === 0) return [];
-    return products.map(productMapper.toProductModel);
+    const countOfNameProductsPromise = prisma.product.count({
+      where: {
+        name: {
+          contains: name,
+          mode: 'insensitive',
+        },
+        AND: {
+          isDeleted: false,
+        },
+      },
+    });
+    const [products, countOfProductsOfName] = await Promise.all([
+      productsPromise,
+      countOfNameProductsPromise,
+    ]);
+    if (products.length === 0) return { products: [], total: 0 };
+    return {
+      products: products.map(productMapper.toProductModel),
+      total: countOfProductsOfName,
+    };
   }
 
   async getOfStock(
@@ -177,8 +198,8 @@ class PrismaProductRepositories implements ProductRepositories {
   async getOfCategory(
     categoryId: string,
     option: PaginationOptions,
-  ): Promise<ProductModel[]> {
-    const allProductsWithCategoryId = await prisma.product.findMany({
+  ): Promise<ModelWithPagination<'products', ProductModel[]>> {
+    const allProductsPromise = prisma.product.findMany({
       where: {
         categoryId,
         AND: {
@@ -192,8 +213,25 @@ class PrismaProductRepositories implements ProductRepositories {
         category: true,
       },
     });
-    if (allProductsWithCategoryId.length === 0) return [];
-    return allProductsWithCategoryId.map(productMapper.toProductModel);
+    const countOfProductsProducts = prisma.product.count({
+      where: {
+        categoryId,
+        AND: {
+          isDeleted: false,
+        },
+      },
+    });
+    const [allProductsWithCategoryId, countOfProducts] = await Promise.all([
+      allProductsPromise,
+      countOfProductsProducts,
+    ]);
+    if (allProductsWithCategoryId.length === 0) {
+      return { products: [], total: 0 };
+    }
+    return {
+      products: allProductsWithCategoryId.map(productMapper.toProductModel),
+      total: countOfProducts,
+    };
   }
 
   async getProductsOfIds(ids: Array<string>): Promise<Array<ProductModel>> {

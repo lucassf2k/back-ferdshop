@@ -1,7 +1,7 @@
 import type { Product } from '../../domain/product';
 import type { Rating } from '../../domain/product/rating';
 import type { Stock } from '../../domain/product/stock';
-import type { PaginationOptions } from './common-types';
+import type { ModelWithPagination, PaginationOptions } from './common-types';
 
 type Review = {
   id: string;
@@ -53,10 +53,10 @@ export interface ProductRepositories {
   getOfCategory(
     categoryId: string,
     options: PaginationOptions,
-  ): Promise<ProductModel[]>;
+  ): Promise<ModelWithPagination<'products', ProductModel[]>>;
   searchByName(
     name: string,
     options: PaginationOptions,
-  ): Promise<ProductModel[]>;
+  ): Promise<ModelWithPagination<'products', ProductModel[]>>;
   getProductsOfIds(ids: Array<string>): Promise<Array<ProductModel>>;
 }
