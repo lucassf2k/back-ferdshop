@@ -7,4 +7,5 @@ export class UUIDService implements UUIDServiceProtocol {
   }
 }
 
-export const getUUIDV7 = (): string => new UUIDService().getV7();
+const uuidService = new UUIDService();
+export const getUUIDV7 = (): string => uuidService.getV7();

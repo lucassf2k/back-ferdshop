@@ -111,6 +111,9 @@ model Order {
   reference            String?
   notes                String?
 
+  latitude  Float?
+  longitude Float?
+
   paymentMethod       PaymentMethod        @map("payment_method")
   onlinePaymentMethod OnlinePaymentMethod? @map("online_payment_method")
   needChange          Boolean              @default(false) @map("need_change")

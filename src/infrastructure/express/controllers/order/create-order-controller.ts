@@ -2,6 +2,11 @@ import type { Request, Response } from 'express';
 import z from 'zod';
 import type { CreateOrderUseCaseProtocol } from '../../../../application/use-case/protocols/order/create-order-use-case-protocol';
 import { StatusCodeEnum } from '../../../../common/status-code-enum';
+import {
+  DeliveryOptionEnum,
+  OnlinePaymentMethodEnum,
+  PaymentMethodEnum,
+} from '../../../../domain/enums/order';
 
 const zodOrderItemValidation = z.object({
   quantity: z
@@ -14,10 +19,49 @@ const zodOrderItemValidation = z.object({
 });
 
 const zodRequestValidation = z.object({
+  orderItems: z
+    .array(zodOrderItemValidation)
+    .min(1, { error: 'orderItems is required' }),
+  customerName: z
+    .string({ error: 'customerName must be string' })
+    .min(1, { error: 'customerName is required' }),
+  customerPhone: z
+    .string({ error: 'customerPhone must be string' })
+    .min(1, { error: 'customerPhone is required' }),
+  deliveryOption: z.enum(DeliveryOptionEnum, {
+    error: 'deliveryOption is invalid',
+  }),
   deliveryAddress: z
     .string({ error: 'deliveryAddress must be string' })
-    .min(1, { error: 'deliveryAddress is required' }),
-  orderItems: z.array(zodOrderItemValidation),
+    .nullable(),
+  addressNumber: z.string({ error: 'addressNumber must be string' }).nullable(),
+  withoutAddressNumber: z.boolean({
+    error: 'withoutAddressNumber must be boolean',
+  }),
+  complement: z.string({ error: 'complement must be string' }).nullable(),
+  reference: z.string({ error: 'reference must be string' }).nullable(),
+  notes: z.string({ error: 'notes must be string' }).nullable(),
+  paymentMethod: z.enum(PaymentMethodEnum, {
+    error: 'paymentMethod is invalid',
+  }),
+  onlinePaymentMethod: z
+    .enum(OnlinePaymentMethodEnum, {
+      error: 'onlinePaymentMethod is invalid',
+    })
+    .nullable(),
+  needChange: z.boolean({
+    error: 'needChange must be boolean',
+  }),
+  changeFor: z.number({ error: 'changeFor must be number' }).nullable(),
+  scheduleOrder: z.boolean({
+    error: 'scheduleOrder must be boolean',
+  }),
+  scheduleDate: z.date({ error: 'scheduleDate must be date' }).nullable(),
+  sendWhastsapp: z.boolean({
+    error: 'sendWhastsapp must be boolean',
+  }),
+  latitude: z.number({ error: 'latitude must be number' }).nullable(),
+  longitude: z.number({ error: 'longitude must be number' }).nullable(),
 });
 
 export class CreateOrderController {

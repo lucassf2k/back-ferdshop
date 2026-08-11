@@ -23,6 +23,8 @@ function toOrderModel(raw: OrderPrismaOutput): OrderModel {
     totalPrice: Number(raw.totalPrice),
     deliveryAddress: raw.deliveryAddress,
     status: Order.getOrderStatusFromString(raw.status),
+    latitude: raw.latitude,
+    longitude: raw.longitude,
     orderItems: raw.items.map((item) => ({
       id: item.id,
       quantity: item.quantity,
@@ -56,6 +58,8 @@ function toSavePrisma(order: Order): SaveOrderPrismaInput {
     notes: order.props.notes,
     scheduleOrder: order.props.scheduleOrder,
     sendWhatsapp: order.props.sendWhastsapp,
+    latitude: order.props.latitude,
+    longitude: order.props.longitude,
     user: { connect: { id: order.props.userId } },
     items: {
       createMany: {

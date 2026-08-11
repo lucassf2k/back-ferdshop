@@ -13,7 +13,9 @@ export type OrderModel = {
   id: string;
   totalPrice: number;
   status: OrderStatusEnum;
-  deliveryAddress: string;
+  deliveryAddress: string | null;
+  latitude: number | null;
+  longitude: number | null;
   orderItems: OrderItemModel[];
   userId: string;
   createdAt: Date;

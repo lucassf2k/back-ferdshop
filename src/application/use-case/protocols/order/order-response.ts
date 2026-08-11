@@ -10,6 +10,8 @@ export type OrderResponse = {
   totalPrice: number;
   status: string;
   deliveryAddress: string;
+  latitude: number | null;
+  longitude: number | null;
   orderItems: OrderItemResponse[];
   userId: string;
   createdAt: Date;
