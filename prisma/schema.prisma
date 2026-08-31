@@ -34,11 +34,19 @@ enum DeliveryOption {
 enum PaymentMethod {
   CASH
   CARD
-  ONLINE
+  PIX
 }
 
-enum OnlinePaymentMethod {
-  PIX
+enum PaymentStatus {
+  PENDING
+  PAID
+  FAILED
+  CANCELED
+  REFUNDED
+}
+
+enum PaymentProvider {
+  ABACATE
 }
 
 model Category {
@@ -114,10 +122,8 @@ model Order {
   latitude  Float?
   longitude Float?
 
-  paymentMethod       PaymentMethod        @map("payment_method")
-  onlinePaymentMethod OnlinePaymentMethod? @map("online_payment_method")
-  needChange          Boolean              @default(false) @map("need_change")
-  changeFor           Decimal?             @map("change_for") @db.Decimal(10, 2)
+  needChange Boolean  @default(false) @map("need_change")
+  changeFor  Decimal? @map("change_for") @db.Decimal(10, 2)
 
   sendWhatsapp  Boolean   @default(false) @map("send_whatsapp")
   scheduleOrder Boolean   @default(false) @map("schedule_order")
@@ -132,8 +138,26 @@ model Order {
   createdAt DateTime  @default(now()) @map("created_at")
   updatedAt DateTime  @updatedAt @map("updated_at")
   deletedAt DateTime?
+  payment   Payment?
 
   @@map("orders")
+}
+
+model Payment {
+  id                String           @id
+  amount            Decimal          @db.Decimal(10, 2)
+  method            PaymentMethod
+  status            PaymentStatus    @default(PENDING)
+  provider          PaymentProvider?
+  providerPaymentId String?          @map("provider_payment_id")
+  paidAt            DateTime?        @map("paid_at")
+  createdAt         DateTime         @default(now()) @map("created_at")
+  updatedAt         DateTime         @updatedAt @map("updated_at")
+
+  orderId String @unique @map("order_id")
+  order   Order  @relation(fields: [orderId], references: [id])
+
+  @@map("payments")
 }
 
 model OrderItem {
