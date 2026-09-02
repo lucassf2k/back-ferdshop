@@ -8,6 +8,7 @@ import {
   PaymentMethodEnum,
 } from '../enums/order';
 import { OrderStatusEnum } from '../enums/order-status-enum';
+import type { Payment } from '../payment';
 import type { OrderItem } from './order-item';
 
 export type OrderProps = {
@@ -28,8 +29,7 @@ export type OrderProps = {
   latitude: number | null;
   longitude: number | null;
 
-  paymentMethod: PaymentMethodEnum;
-  onlinePaymentMethod: OnlinePaymentMethodEnum | null;
+  payment: Payment;
   needChange: boolean;
   changeFor: number | null;
 

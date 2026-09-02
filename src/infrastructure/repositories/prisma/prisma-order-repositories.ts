@@ -15,6 +15,7 @@ class PrismaOrderRepositories implements OrderRepositories {
       data: orderMapper.toSavePrisma(data),
       include: {
         items: true,
+        payment: true,
       },
     });
     return orderMapper.toOrderModel(newOrder);
@@ -29,6 +30,7 @@ class PrismaOrderRepositories implements OrderRepositories {
       },
       include: {
         items: true,
+        payment: true,
       },
     });
     if (!order) return undefined;
@@ -43,6 +45,7 @@ class PrismaOrderRepositories implements OrderRepositories {
       take: option.take,
       include: {
         items: true,
+        payment: true,
       },
     });
     if (allOrders.length === 0) return [];
@@ -59,6 +62,7 @@ class PrismaOrderRepositories implements OrderRepositories {
       data: orderMapper.toSoftDeletePrisma(),
       include: {
         items: true,
+        payment: true,
       },
     });
     if (!order) return undefined;
@@ -73,6 +77,7 @@ class PrismaOrderRepositories implements OrderRepositories {
       data: orderMapper.toUndeletePrisma(),
       include: {
         items: true,
+        payment: true,
       },
     });
     if (!order) return undefined;
@@ -92,6 +97,7 @@ class PrismaOrderRepositories implements OrderRepositories {
       take: option.take,
       include: {
         items: true,
+        payment: true,
       },
     });
     if (allOrders.length === 0) return [];
@@ -113,6 +119,7 @@ class PrismaOrderRepositories implements OrderRepositories {
       take: option.take,
       include: {
         items: true,
+        payment: true,
       },
     });
     if (orders.length === 0) return [];

@@ -2,11 +2,11 @@ import type { Request, Response } from 'express';
 import z from 'zod';
 import type { CreateOrderUseCaseProtocol } from '../../../../application/use-case/protocols/order/create-order-use-case-protocol';
 import { StatusCodeEnum } from '../../../../common/status-code-enum';
+import { DeliveryOptionEnum } from '../../../../domain/enums/order';
 import {
-  DeliveryOptionEnum,
-  OnlinePaymentMethodEnum,
   PaymentMethodEnum,
-} from '../../../../domain/enums/order';
+  PaymentStatusEnum,
+} from '../../../../domain/enums/payment';
 
 const zodOrderItemValidation = z.object({
   quantity: z
@@ -16,6 +16,13 @@ const zodOrderItemValidation = z.object({
     .number({ error: 'unitPrice must be number' })
     .refine((value) => value > 0),
   productId: z.uuid({ error: 'productId must be uuid' }),
+});
+
+const zodPaymentValidation = z.object({
+  amount: z.number().positive('Amount must be positive'),
+  orderId: z.string().min(1, 'Order ID is required'),
+  method: z.enum(PaymentMethodEnum, 'Payment method is invalid'),
+  status: z.enum(PaymentStatusEnum, 'Payment status is invalid'),
 });
 
 const zodRequestValidation = z.object({
@@ -41,14 +48,7 @@ const zodRequestValidation = z.object({
   complement: z.string({ error: 'complement must be string' }).nullable(),
   reference: z.string({ error: 'reference must be string' }).nullable(),
   notes: z.string({ error: 'notes must be string' }).nullable(),
-  paymentMethod: z.enum(PaymentMethodEnum, {
-    error: 'paymentMethod is invalid',
-  }),
-  onlinePaymentMethod: z
-    .enum(OnlinePaymentMethodEnum, {
-      error: 'onlinePaymentMethod is invalid',
-    })
-    .nullable(),
+  payment: zodPaymentValidation,
   needChange: z.boolean({
     error: 'needChange must be boolean',
   }),

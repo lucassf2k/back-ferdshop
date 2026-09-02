@@ -10,6 +10,7 @@ import {
 import { OrderStatusEnum } from '../../../../domain/enums/order-status-enum';
 import { Order } from '../../../../domain/order';
 import { OrderItem } from '../../../../domain/order/order-item';
+import { Payment } from '../../../../domain/payment';
 import type { OrderRepositories } from '../../../repositories/order-repositories';
 import type {
   ProductModel,
@@ -32,12 +33,10 @@ export class CreateOrderUseCase
     input: CreateOrderUseCaseProtocol.Input,
   ): Promise<Either<BaseApiError, CreateOrderUseCaseProtocol.Output>> {
     const productPromises: Promise<ProductModel | undefined>[] = [];
-    let totalPrice: number = 0;
     for (const orderItem of input.orderItems) {
       productPromises.push(
         this.productRepositories.getOfId(orderItem.productId),
       );
-      totalPrice += orderItem.unitPrice * orderItem.quantity;
     }
     const [user, ...products] = await Promise.all([
       this.userRepositories.getOfId(input.userId),
@@ -55,6 +54,21 @@ export class CreateOrderUseCase
       );
       return eitherUtils.left(new BadRequestApiError(httpError));
     }
+    const productsMap = new Map<string, ProductModel>();
+    for (const product of products) {
+      if (!product) {
+        const httpError = HttpResponse.error(
+          'PRODUCT_NOT_FOUND',
+          'product not found',
+        );
+        return eitherUtils.left(new BadRequestApiError(httpError));
+      }
+      productsMap.set(product.id, product);
+    }
+    const totalPrice = input.orderItems.reduce((total, orderItem) => {
+      const product = productsMap.get(orderItem.productId)!;
+      return total + Number(product.price) + orderItem.quantity;
+    }, 0);
     const newOrder = Order.create({
       totalPrice,
       userId: user.id,
@@ -65,8 +79,14 @@ export class CreateOrderUseCase
       complement: input.complement,
       reference: input.reference,
       notes: input.notes,
-      paymentMethod: input.paymentMethod,
-      onlinePaymentMethod: input.onlinePaymentMethod,
+      payment: Payment.create({
+        amount: totalPrice,
+        method: Payment.getPaymentMethodFromString(input.payment.method),
+        status: Payment.getPaymentStatusFromString(input.payment.status),
+        provider: null,
+        providerId: null,
+        paidAt: null,
+      }),
       needChange: input.needChange,
       changeFor: input.changeFor,
       customerName: input.customerName,
@@ -94,6 +114,19 @@ export class CreateOrderUseCase
       deliveryAddress: savedOrder.deliveryAddress || '',
       latitude: savedOrder.latitude,
       longitude: savedOrder.longitude,
+      payment: savedOrder.payment
+        ? {
+            amount: savedOrder.payment.amount,
+            method: savedOrder.payment.method,
+            status: savedOrder.payment.status,
+            provider: savedOrder.payment.provider,
+            providerId: savedOrder.payment.providerId,
+            paidAt: savedOrder.payment.paidAt,
+            createdAt: savedOrder.payment.createdAt,
+            orderId: savedOrder.payment.orderId,
+            updatedAt: savedOrder.payment.updatedAt,
+          }
+        : null,
       orderItems: savedOrder.orderItems.map((item) => ({
         id: item.id,
         quantity: item.quantity,
