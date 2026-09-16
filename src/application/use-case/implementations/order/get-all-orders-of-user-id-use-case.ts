@@ -6,8 +6,10 @@ import {
 } from '../../../../common/api-erros/either-error';
 import type { OrderRepositories } from '../../../repositories/order-repositories';
 import type { UserRepositories } from '../../../repositories/user-repositories';
+import { HttpResponse } from '../../../response';
 import type { GetAllOrdersOfUserIdUseCaseProtocol } from '../../protocols/order/get-all-orders-of-user-id-use-case-protocol';
 import { getPagination } from '../../protocols/pagination';
+import { orderModelToControllerMapper } from './mappers';
 
 export class GetAllOrdersOfUserIdUseCase
   implements GetAllOrdersOfUserIdUseCaseProtocol.Interface
@@ -29,8 +31,14 @@ export class GetAllOrdersOfUserIdUseCase
       this.orderRepositories.getOfUserId(input.userId, pagination),
     ]);
     if (!userExists) {
-      return eitherUtils.left(new UnauthorizedApiError('unauthorized user'));
+      return eitherUtils.left(
+        new UnauthorizedApiError(
+          HttpResponse.error('UNAUTHORIZED', 'unauthorized user'),
+        ),
+      );
     }
-    return eitherUtils.right(orders);
+    return eitherUtils.right(
+      orders.map((order) => orderModelToControllerMapper(order)),
+    );
   }
 }

@@ -5,6 +5,7 @@ import {
 import type { OrderRepositories } from '../../../repositories/order-repositories';
 import type { GetAllOrdersUseCaseProtocol } from '../../protocols/order/get-all-orders-use-case-protocol';
 import { getPagination } from '../../protocols/pagination';
+import { orderModelToControllerMapper } from './mappers';
 
 export class GetAllOrdersUseCase
   implements GetAllOrdersUseCaseProtocol.Interface
@@ -18,7 +19,10 @@ export class GetAllOrdersUseCase
       page: input.page,
       pageSize: input.pageSize,
     });
-    const allOrders = await this.orderRepositories.getAll(pagination);
-    return eitherUtils.right(allOrders);
+    const { orders, total } = await this.orderRepositories.getAll(pagination);
+    return eitherUtils.right({
+      orders: orders.map((order) => orderModelToControllerMapper(order)),
+      total,
+    });
   }
 }

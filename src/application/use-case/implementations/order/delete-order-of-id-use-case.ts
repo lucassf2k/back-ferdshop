@@ -5,7 +5,9 @@ import {
   type Either,
 } from '../../../../common/api-erros/either-error';
 import type { OrderRepositories } from '../../../repositories/order-repositories';
+import { HttpResponse } from '../../../response';
 import type { DeleteOrderOfIdUseCaseProtocol } from '../../protocols/order/delete-order-of-id-use-case-protocol';
+import { orderModelToControllerMapper } from './mappers';
 
 export class DeleteOrderOfIdUseCase
   implements DeleteOrderOfIdUseCaseProtocol.Interface
@@ -17,8 +19,12 @@ export class DeleteOrderOfIdUseCase
   ): Promise<Either<BaseApiError, DeleteOrderOfIdUseCaseProtocol.Output>> {
     const orderDeleted = await this.orderRepositories.softDelete(input.id);
     if (!orderDeleted) {
-      return eitherUtils.left(new NotFoundApiError('order not found'));
+      return eitherUtils.left(
+        new NotFoundApiError(
+          HttpResponse.error('ORDER_NOT_FOUND', 'order not found'),
+        ),
+      );
     }
-    return eitherUtils.right(orderDeleted);
+    return eitherUtils.right(orderModelToControllerMapper(orderDeleted));
   }
 }

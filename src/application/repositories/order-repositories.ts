@@ -49,7 +49,9 @@ export type BestSellerProduct = {
 export interface OrderRepositories {
   save(data: Order): Promise<OrderModel>;
   getOfId(id: string): Promise<OrderModel | undefined>;
-  getAll(options: PaginationOptions): Promise<OrderModel[]>;
+  getAll(
+    options: PaginationOptions,
+  ): Promise<{ orders: OrderModel[]; total: number }>;
   softDelete(id: string): Promise<OrderModel | undefined>;
   undelete(id: string): Promise<OrderModel | undefined>;
   getOfStatus(

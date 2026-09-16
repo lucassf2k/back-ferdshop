@@ -36,8 +36,10 @@ class PrismaOrderRepositories implements OrderRepositories {
     if (!order) return undefined;
     return orderMapper.toOrderModel(order);
   }
-  async getAll(option: PaginationOptions): Promise<OrderModel[]> {
-    const allOrders = await prisma.order.findMany({
+  async getAll(
+    option: PaginationOptions,
+  ): Promise<{ orders: OrderModel[]; total: number }> {
+    const allOrdersPromise = prisma.order.findMany({
       where: {
         isDeleted: false,
       },
@@ -48,8 +50,20 @@ class PrismaOrderRepositories implements OrderRepositories {
         payment: true,
       },
     });
-    if (allOrders.length === 0) return [];
-    return allOrders.map(orderMapper.toOrderModel);
+    const getOrdersCountPromise = prisma.order.count({
+      where: {
+        isDeleted: false,
+      },
+    });
+    const [allOrders, total] = await Promise.all([
+      allOrdersPromise,
+      getOrdersCountPromise,
+    ]);
+    if (allOrders.length === 0) return { orders: [], total: 0 };
+    return {
+      orders: allOrders.map(orderMapper.toOrderModel),
+      total,
+    };
   }
   async softDelete(id: string): Promise<OrderModel | undefined> {
     const order = await prisma.order.update({

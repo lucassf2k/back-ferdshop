@@ -4,7 +4,7 @@ import type { OrderResponse } from './order-response';
 
 export namespace GetAllOrdersUseCaseProtocol {
   export type Input = Pagination;
-  export type Output = OrderResponse[];
+  export type Output = { orders: OrderResponse[]; total: number };
 
   export interface Interface {
     execute(

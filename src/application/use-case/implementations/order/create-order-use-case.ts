@@ -19,6 +19,7 @@ import type {
 import type { UserRepositories } from '../../../repositories/user-repositories';
 import { HttpResponse } from '../../../response';
 import type { CreateOrderUseCaseProtocol } from '../../protocols/order/create-order-use-case-protocol';
+import { orderModelToControllerMapper } from './mappers';
 
 export class CreateOrderUseCase
   implements CreateOrderUseCaseProtocol.Interface
@@ -106,35 +107,6 @@ export class CreateOrderUseCase
       ),
     });
     const savedOrder = await this.orderRepositories.save(newOrder);
-    return eitherUtils.right({
-      id: savedOrder.id,
-      userId: savedOrder.userId,
-      status: savedOrder.status,
-      totalPrice: savedOrder.totalPrice,
-      deliveryAddress: savedOrder.deliveryAddress || '',
-      latitude: savedOrder.latitude,
-      longitude: savedOrder.longitude,
-      payment: savedOrder.payment
-        ? {
-            amount: savedOrder.payment.amount,
-            method: savedOrder.payment.method,
-            status: savedOrder.payment.status,
-            provider: savedOrder.payment.provider,
-            providerId: savedOrder.payment.providerId,
-            paidAt: savedOrder.payment.paidAt,
-            createdAt: savedOrder.payment.createdAt,
-            orderId: savedOrder.payment.orderId,
-            updatedAt: savedOrder.payment.updatedAt,
-          }
-        : null,
-      orderItems: savedOrder.orderItems.map((item) => ({
-        id: item.id,
-        quantity: item.quantity,
-        unitPrice: item.unitPrice,
-        productId: item.productId,
-      })),
-      createdAt: savedOrder.createdAt,
-      updatedAt: savedOrder.updatedAt,
-    });
+    return eitherUtils.right(orderModelToControllerMapper(savedOrder));
   }
 }
