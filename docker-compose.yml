@@ -11,5 +11,17 @@ services:
     volumes:
       - ./postgres-data:/var/lib/postgresql/data
 
+  rabbitmq:
+    image: rabbitmq:4-management
+    container_name: ferdshop-rabbitmq
+    environment:
+      RABBITMQ_DEFAULT_USER: docker
+      RABBITMQ_DEFAULT_PASS: docker
+    ports:
+      - '5672:5672'
+      - '15672:15672'
+    volumes:
+      - ./rabbitmq-data:/var/lib/rabbitmq
+
 volumes:
   .postgres-data:

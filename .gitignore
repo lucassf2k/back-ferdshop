@@ -8,4 +8,6 @@ coverage
 /generated/prisma
 /.postgres-data
 /postgres-data
+/rabbitmq-data
+/.rabbitmq-data
 /uploads
