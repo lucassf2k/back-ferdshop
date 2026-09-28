@@ -4,6 +4,7 @@ import { GetAllOrdersOfUserIdUseCase } from '../../../../application/use-case/im
 import { GetAllOrdersUseCase } from '../../../../application/use-case/implementations/order/get-all-orders-use-case';
 import { GetOrderOfIdUseCase } from '../../../../application/use-case/implementations/order/get-order-of-id-use-case';
 import { UndeleteOrderOfIdUseCase } from '../../../../application/use-case/implementations/order/undelete-order-of-id-use-case';
+import { UpdateOrderStatusUseCase } from '../../../../application/use-case/implementations/order/update-order-status-use-case';
 import { prismaOrderRepositories } from '../../../repositories/prisma/prisma-order-repositories';
 import { prismaProductRepositories } from '../../../repositories/prisma/prisma-product-repositories';
 import { prismaUserRepositories } from '../../../repositories/prisma/prisma-user-repositories';
@@ -13,6 +14,7 @@ import { GetAllOrdersController } from '../../controllers/order/get-all-orders-c
 import { GetAllOrdersOfUserIdController } from '../../controllers/order/get-all-orders-of-user-id-controller';
 import { GetOrderOfIdController } from '../../controllers/order/get-order-of-id-controller';
 import { UndeleteOrderOfIdController } from '../../controllers/order/undelete-order-of-id-controller';
+import { UpdateOrderStatusController } from '../../controllers/order/update-order-status-controller';
 import { OrderRouter } from './order-router';
 
 const createOrderUseCase = new CreateOrderUseCase(
@@ -50,6 +52,13 @@ const undeleteOrderOfIdController = new UndeleteOrderOfIdController(
   undeleteOrderOfIdUseCase,
 );
 
+const updateOrderStatusUseCase = new UpdateOrderStatusUseCase(
+  prismaOrderRepositories,
+);
+const updateOrderStatusController = new UpdateOrderStatusController(
+  updateOrderStatusUseCase,
+);
+
 export const orderRouter = new OrderRouter(
   createOrderController,
   getAllOrdersController,
@@ -57,4 +66,5 @@ export const orderRouter = new OrderRouter(
   getAllOrdersOfUserIdController,
   deleteOrderOfIdController,
   undeleteOrderOfIdController,
+  updateOrderStatusController,
 );

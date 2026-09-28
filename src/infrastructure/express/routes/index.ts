@@ -6,6 +6,7 @@ import { reviewRouter } from './review';
 import { orderRouter } from './order';
 import { authRouter } from './auth';
 import { organizationRouter } from './organization';
+import { paymentRouter } from './payment';
 
 const routes = Router();
 routes.use('/auth', authRouter.router);
@@ -15,5 +16,6 @@ routes.use('/products', productRouter.router);
 routes.use('/reviews', reviewRouter.router);
 routes.use('/orders', orderRouter.router);
 routes.use('/organizations', organizationRouter.router);
+routes.use('/payments', paymentRouter.router);
 
 export { routes };
