@@ -2,9 +2,11 @@ import type { PaginationOptions } from '../../../application/repositories/common
 import type {
   BestSellerProduct,
   OrderModel,
+  OrderModelWithProducts,
   OrderRepositories,
 } from '../../../application/repositories/order-repositories';
 import { OrderStatusEnum } from '../../../domain/enums/order-status-enum';
+import type { PaymentStatusEnum } from '../../../domain/enums/payment';
 import { Order } from '../../../domain/order';
 import { prisma } from '../../database/prisma';
 import { orderMapper } from './mappers/order-mapper';
@@ -20,7 +22,7 @@ class PrismaOrderRepositories implements OrderRepositories {
     });
     return orderMapper.toOrderModel(newOrder);
   }
-  async getOfId(id: string): Promise<OrderModel | undefined> {
+  async getOfId(id: string): Promise<OrderModelWithProducts | undefined> {
     const order = await prisma.order.findUnique({
       where: {
         id,
@@ -29,12 +31,16 @@ class PrismaOrderRepositories implements OrderRepositories {
         },
       },
       include: {
-        items: true,
+        items: {
+          include: {
+            product: true,
+          },
+        },
         payment: true,
       },
     });
     if (!order) return undefined;
-    return orderMapper.toOrderModel(order);
+    return orderMapper.toOrderModelWithProducts(order);
   }
   async getAll(
     option: PaginationOptions,
@@ -160,6 +166,41 @@ class PrismaOrderRepositories implements OrderRepositories {
     });
     if (bestSellers.length === 0) return [];
     return bestSellers.map(orderMapper.toBestSellerProduct);
+  }
+
+  async updateOrderStatus(
+    id: string,
+    status: OrderStatusEnum,
+  ): Promise<string> {
+    const order = await prisma.order.update({
+      where: {
+        id,
+        AND: {
+          isDeleted: false,
+        },
+      },
+      data: {
+        status,
+      },
+    });
+    if (!order) return '';
+    return order.id;
+  }
+
+  async updatePaymentStatus(
+    id: string,
+    status: PaymentStatusEnum,
+  ): Promise<string> {
+    const payment = await prisma.payment.update({
+      where: {
+        orderId: id,
+      },
+      data: {
+        status,
+      },
+    });
+    if (!payment) return '';
+    return payment.id;
   }
 }
 

@@ -3,10 +3,7 @@ import z from 'zod';
 import type { CreateOrderUseCaseProtocol } from '../../../../application/use-case/protocols/order/create-order-use-case-protocol';
 import { StatusCodeEnum } from '../../../../common/status-code-enum';
 import { DeliveryOptionEnum } from '../../../../domain/enums/order';
-import {
-  PaymentMethodEnum,
-  PaymentStatusEnum,
-} from '../../../../domain/enums/payment';
+import { PaymentMethodEnum } from '../../../../domain/enums/payment';
 
 const zodOrderItemValidation = z.object({
   quantity: z
@@ -19,10 +16,7 @@ const zodOrderItemValidation = z.object({
 });
 
 const zodPaymentValidation = z.object({
-  amount: z.number().positive('Amount must be positive'),
-  orderId: z.string().min(1, 'Order ID is required'),
   method: z.enum(PaymentMethodEnum, 'Payment method is invalid'),
-  status: z.enum(PaymentStatusEnum, 'Payment status is invalid'),
 });
 
 const zodRequestValidation = z.object({
@@ -70,8 +64,10 @@ export class CreateOrderController {
   ) {}
 
   async handle(request: Request, response: Response): Promise<Response> {
+    console.log('CONTROLLER', request.body);
     const userId = request.user.id;
     const input = zodRequestValidation.parse(request.body);
+    console.log('CONTROLLER Input', input);
     const output = await this.createOrderUseCase.execute({ userId, ...input });
     if (output.isLeft()) throw output.value;
     const url = `${request.baseUrl}/${output.value.id}`;

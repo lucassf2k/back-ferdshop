@@ -1,10 +1,7 @@
 import type { BaseApiError } from '../../../../common/api-erros/base-api-error';
 import type { Either } from '../../../../common/api-erros/either-error';
 import type { DeliveryOptionEnum } from '../../../../domain/enums/order';
-import type {
-  PaymentMethodEnum,
-  PaymentStatusEnum,
-} from '../../../../domain/enums/payment';
+import type { PaymentMethodEnum } from '../../../../domain/enums/payment';
 import type { OrderResponse } from './order-response';
 
 export namespace CreateOrderUseCaseProtocol {
@@ -15,10 +12,7 @@ export namespace CreateOrderUseCaseProtocol {
   };
 
   type Payment = {
-    amount: number;
-    orderId: string;
     method: PaymentMethodEnum;
-    status: PaymentStatusEnum;
   };
 
   export type Input = {

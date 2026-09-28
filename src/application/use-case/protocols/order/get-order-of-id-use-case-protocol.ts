@@ -1,13 +1,13 @@
 import type { BaseApiError } from '../../../../common/api-erros/base-api-error';
 import type { Either } from '../../../../common/api-erros/either-error';
-import type { OrderResponse } from './order-response';
+import type { OrderResponseWithProducts } from './order-response';
 
 export namespace GetOrderOfIdUseCaseProtocol {
   export type Input = {
     id: string;
   };
 
-  export type Output = OrderResponse;
+  export type Output = OrderResponseWithProducts;
 
   export interface Interface {
     execute(

@@ -7,7 +7,7 @@ import {
 import type { OrderRepositories } from '../../../repositories/order-repositories';
 import { HttpResponse } from '../../../response';
 import type { GetOrderOfIdUseCaseProtocol } from '../../protocols/order/get-order-of-id-use-case-protocol';
-import { orderModelToControllerMapper } from './mappers';
+import { orderModelToControllerMapperWithProducts } from './mappers';
 
 export class GetOrderOfIdUseCase
   implements GetOrderOfIdUseCaseProtocol.Interface
@@ -17,14 +17,14 @@ export class GetOrderOfIdUseCase
   async execute(
     input: GetOrderOfIdUseCaseProtocol.Input,
   ): Promise<Either<BaseApiError, GetOrderOfIdUseCaseProtocol.Output>> {
-    const output = await this.orderRepositories.getOfId(input.id);
-    if (!output) {
+    const orders = await this.orderRepositories.getOfId(input.id);
+    if (!orders) {
       return eitherUtils.left(
         new NotFoundApiError(
           HttpResponse.error('ORDER_NOT_FOUND', 'order not found'),
         ),
       );
     }
-    return eitherUtils.right(orderModelToControllerMapper(output));
+    return eitherUtils.right(orderModelToControllerMapperWithProducts(orders));
   }
 }

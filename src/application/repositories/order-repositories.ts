@@ -29,6 +29,19 @@ type PaymentModel = {
 
 export type OrderModel = {
   id: string;
+  customerName: string;
+  customerPhone: string;
+  deliveryOption: string;
+  withoutAddressNumber: boolean;
+  addressNumber: string | null;
+  complement: string | null;
+  reference: string | null;
+  notes: string | null;
+  needChange: boolean;
+  changeFor: number | null;
+  sendWhastsapp: boolean;
+  scheduleOrder: boolean;
+  scheduleDate: Date | null;
   totalPrice: number;
   status: OrderStatusEnum;
   deliveryAddress: string | null;
@@ -41,6 +54,22 @@ export type OrderModel = {
   updatedAt: Date;
 };
 
+export type OrderModelWithProducts = Omit<OrderModel, 'orderItems'> & {
+  orderItems: {
+    id: string;
+    quantity: number;
+    unitPrice: number;
+    product: {
+      id: string;
+      name: string;
+      price: number;
+      stock: number;
+      imageUrl: string;
+      description: string | null;
+    };
+  }[];
+};
+
 export type BestSellerProduct = {
   productId: string;
   totalSold: number;
@@ -48,7 +77,7 @@ export type BestSellerProduct = {
 
 export interface OrderRepositories {
   save(data: Order): Promise<OrderModel>;
-  getOfId(id: string): Promise<OrderModel | undefined>;
+  getOfId(id: string): Promise<OrderModelWithProducts | undefined>;
   getAll(
     options: PaginationOptions,
   ): Promise<{ orders: OrderModel[]; total: number }>;
@@ -60,4 +89,6 @@ export interface OrderRepositories {
   ): Promise<OrderModel[]>;
   getOfUserId(id: string, options: PaginationOptions): Promise<OrderModel[]>;
   getBestSellersProductsIds(limit: number): Promise<Array<BestSellerProduct>>;
+  updateOrderStatus(id: string, status: OrderStatusEnum): Promise<string>;
+  updatePaymentStatus(id: string, status: PaymentStatusEnum): Promise<string>;
 }

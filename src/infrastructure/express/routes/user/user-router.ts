@@ -23,15 +23,6 @@ export class UsersRouter {
   }
 
   private run(): void {
-    this.router.get(
-      '/',
-      authMiddleware,
-      allowRoles(UserRole.ADMIN),
-      asyncRouteHandler(async (request, response) => {
-        await this.getAllUsersController.handle(request, response);
-      }),
-    );
-
     this.router.post(
       '/',
       asyncRouteHandler(async (request, response) => {
@@ -68,6 +59,15 @@ export class UsersRouter {
       allowRoles(UserRole.ADMIN),
       asyncRouteHandler(async (request, response) => {
         await this.updateUserRoleController.handle(request, response);
+      }),
+    );
+
+    this.router.get(
+      '/',
+      authMiddleware,
+      allowRoles(UserRole.ADMIN),
+      asyncRouteHandler(async (request, response) => {
+        await this.getAllUsersController.handle(request, response);
       }),
     );
   }

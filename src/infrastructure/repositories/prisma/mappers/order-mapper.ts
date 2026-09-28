@@ -1,6 +1,7 @@
 import type {
   BestSellerProduct,
   OrderModel,
+  OrderModelWithProducts,
 } from '../../../../application/repositories/order-repositories';
 import { Order } from '../../../../domain/order';
 import { Payment } from '../../../../domain/payment';
@@ -39,6 +40,17 @@ function toPaymentModel(
   };
 }
 
+type OrderPrismaOutputWithProducts = Prisma.OrderGetPayload<{
+  include: {
+    items: {
+      include: {
+        product: true;
+      };
+    };
+    payment: true;
+  };
+}>;
+
 function toOrderModel(raw: OrderPrismaOutput): OrderModel {
   return {
     id: raw.id,
@@ -54,9 +66,43 @@ function toOrderModel(raw: OrderPrismaOutput): OrderModel {
       unitPrice: Number(item.unitPrice),
       productId: item.productId,
     })),
+    addressNumber: raw.addressNumber,
+    withoutAddressNumber: raw.withoutAddressNumber,
+    complement: raw.complement,
+    reference: raw.reference,
+    notes: raw.notes,
+    scheduleOrder: raw.scheduleOrder,
+    sendWhastsapp: raw.sendWhatsapp,
+    customerName: raw.customerName,
+    customerPhone: raw.customerPhone,
+    deliveryOption: raw.deliveryOption,
+    changeFor: Number(raw.changeFor),
+    needChange: raw.needChange,
+    scheduleDate: raw.scheduleDate,
     userId: raw.userId,
     createdAt: raw.createdAt,
     updatedAt: raw.updatedAt,
+  };
+}
+
+function toOrderModelWithProducts(
+  raw: OrderPrismaOutputWithProducts,
+): OrderModelWithProducts {
+  return {
+    ...toOrderModel(raw),
+    orderItems: raw.items.map((item) => ({
+      id: item.id,
+      quantity: item.quantity,
+      unitPrice: Number(item.unitPrice),
+      product: {
+        id: item.product.id,
+        name: item.product.name,
+        price: Number(item.product.price),
+        stock: item.product.stock,
+        imageUrl: item.product.imageUrl,
+        description: item.product.description,
+      },
+    })),
   };
 }
 
@@ -142,4 +188,5 @@ export const orderMapper = {
   toSoftDeletePrisma,
   toUndeletePrisma,
   toBestSellerProduct,
+  toOrderModelWithProducts,
 } as const;

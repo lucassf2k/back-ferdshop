@@ -8,6 +8,7 @@ import {
   type Either,
 } from '../../../../common/api-erros/either-error';
 import { OrderStatusEnum } from '../../../../domain/enums/order-status-enum';
+import { PaymentStatusEnum } from '../../../../domain/enums/payment';
 import { Order } from '../../../../domain/order';
 import { OrderItem } from '../../../../domain/order/order-item';
 import { Payment } from '../../../../domain/payment';
@@ -33,6 +34,7 @@ export class CreateOrderUseCase
   async execute(
     input: CreateOrderUseCaseProtocol.Input,
   ): Promise<Either<BaseApiError, CreateOrderUseCaseProtocol.Output>> {
+    console.log(input);
     const productPromises: Promise<ProductModel | undefined>[] = [];
     for (const orderItem of input.orderItems) {
       productPromises.push(
@@ -83,7 +85,7 @@ export class CreateOrderUseCase
       payment: Payment.create({
         amount: totalPrice,
         method: Payment.getPaymentMethodFromString(input.payment.method),
-        status: Payment.getPaymentStatusFromString(input.payment.status),
+        status: PaymentStatusEnum.PENDING,
         provider: null,
         providerId: null,
         paidAt: null,

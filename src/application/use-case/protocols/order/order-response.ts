@@ -1,3 +1,4 @@
+import type { OrderStatusEnum } from '../../../../domain/enums/order';
 import type {
   PaymentMethodEnum,
   PaymentProviderEnum,
@@ -25,14 +26,43 @@ type PaymentResponse = {
 
 export type OrderResponse = {
   id: string;
+  customerName: string;
+  customerPhone: string;
+  deliveryOption: string;
+  withoutAddressNumber: boolean;
+  addressNumber: string | null;
+  complement: string | null;
+  reference: string | null;
+  notes: string | null;
+  needChange: boolean;
+  changeFor: number | null;
+  sendWhastsapp: boolean;
+  scheduleOrder: boolean;
+  scheduleDate: Date | null;
   totalPrice: number;
-  status: string;
-  deliveryAddress: string;
+  status: OrderStatusEnum;
+  deliveryAddress: string | null;
   latitude: number | null;
   longitude: number | null;
-  orderItems: OrderItemResponse[];
-  payment: PaymentResponse | null;
   userId: string;
   createdAt: Date;
   updatedAt: Date;
+  orderItems: OrderItemResponse[];
+  payment: PaymentResponse | null;
+};
+
+export type OrderResponseWithProducts = Omit<OrderResponse, 'orderItems'> & {
+  orderItems: {
+    id: string;
+    quantity: number;
+    unitPrice: number;
+    product: {
+      id: string;
+      name: string;
+      price: number;
+      stock: number;
+      imageUrl: string;
+      description: string | null;
+    };
+  }[];
 };
