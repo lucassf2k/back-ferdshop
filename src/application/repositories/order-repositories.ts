@@ -1,3 +1,4 @@
+import type { DeliveryOptionEnum } from '../../domain/enums/order';
 import type { OrderStatusEnum } from '../../domain/enums/order-status-enum';
 import type {
   PaymentProviderEnum,
@@ -91,4 +92,6 @@ export interface OrderRepositories {
   getBestSellersProductsIds(limit: number): Promise<Array<BestSellerProduct>>;
   updateOrderStatus(id: string, status: OrderStatusEnum): Promise<string>;
   updatePaymentStatus(id: string, status: PaymentStatusEnum): Promise<string>;
+  updateDeliveryOption(id: string, status: DeliveryOptionEnum): Promise<string>;
+  updatePaymentMethod(id: string, method: PaymentMethodEnum): Promise<string>;
 }

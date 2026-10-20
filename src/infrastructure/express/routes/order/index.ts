@@ -4,6 +4,7 @@ import { GetAllOrdersOfUserIdUseCase } from '../../../../application/use-case/im
 import { GetAllOrdersUseCase } from '../../../../application/use-case/implementations/order/get-all-orders-use-case';
 import { GetOrderOfIdUseCase } from '../../../../application/use-case/implementations/order/get-order-of-id-use-case';
 import { UndeleteOrderOfIdUseCase } from '../../../../application/use-case/implementations/order/undelete-order-of-id-use-case';
+import { UpdateDeliveryOptionUseCase } from '../../../../application/use-case/implementations/order/update-delivery-option-use-case';
 import { UpdateOrderStatusUseCase } from '../../../../application/use-case/implementations/order/update-order-status-use-case';
 import { prismaOrderRepositories } from '../../../repositories/prisma/prisma-order-repositories';
 import { prismaProductRepositories } from '../../../repositories/prisma/prisma-product-repositories';
@@ -14,6 +15,7 @@ import { GetAllOrdersController } from '../../controllers/order/get-all-orders-c
 import { GetAllOrdersOfUserIdController } from '../../controllers/order/get-all-orders-of-user-id-controller';
 import { GetOrderOfIdController } from '../../controllers/order/get-order-of-id-controller';
 import { UndeleteOrderOfIdController } from '../../controllers/order/undelete-order-of-id-controller';
+import { UpdateDeliveryOptionController } from '../../controllers/order/update-delivery-option-controller';
 import { UpdateOrderStatusController } from '../../controllers/order/update-order-status-controller';
 import { OrderRouter } from './order-router';
 
@@ -59,6 +61,13 @@ const updateOrderStatusController = new UpdateOrderStatusController(
   updateOrderStatusUseCase,
 );
 
+const updateDeliveryOptionUseCase = new UpdateDeliveryOptionUseCase(
+  prismaOrderRepositories,
+);
+const updateDeliveryOptionController = new UpdateDeliveryOptionController(
+  updateDeliveryOptionUseCase,
+);
+
 export const orderRouter = new OrderRouter(
   createOrderController,
   getAllOrdersController,
@@ -67,4 +76,5 @@ export const orderRouter = new OrderRouter(
   deleteOrderOfIdController,
   undeleteOrderOfIdController,
   updateOrderStatusController,
+  updateDeliveryOptionController,
 );

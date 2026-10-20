@@ -5,8 +5,12 @@ import type {
   OrderModelWithProducts,
   OrderRepositories,
 } from '../../../application/repositories/order-repositories';
+import type { DeliveryOptionEnum } from '../../../domain/enums/order';
 import { OrderStatusEnum } from '../../../domain/enums/order-status-enum';
-import type { PaymentStatusEnum } from '../../../domain/enums/payment';
+import type {
+  PaymentMethodEnum,
+  PaymentStatusEnum,
+} from '../../../domain/enums/payment';
 import { Order } from '../../../domain/order';
 import { prisma } from '../../database/prisma';
 import { orderMapper } from './mappers/order-mapper';
@@ -197,6 +201,41 @@ class PrismaOrderRepositories implements OrderRepositories {
       },
       data: {
         status,
+      },
+    });
+    if (!payment) return '';
+    return payment.id;
+  }
+
+  async updateDeliveryOption(
+    id: string,
+    status: DeliveryOptionEnum,
+  ): Promise<string> {
+    const order = await prisma.order.update({
+      where: {
+        id,
+        AND: {
+          isDeleted: false,
+        },
+      },
+      data: {
+        deliveryOption: status,
+      },
+    });
+    if (!order) return '';
+    return order.id;
+  }
+
+  async updatePaymentMethod(
+    id: string,
+    method: PaymentMethodEnum,
+  ): Promise<string> {
+    const payment = await prisma.payment.update({
+      where: {
+        orderId: id,
+      },
+      data: {
+        method,
       },
     });
     if (!payment) return '';

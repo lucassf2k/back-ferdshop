@@ -9,6 +9,7 @@ import type { UndeleteOrderOfIdController } from '../../controllers/order/undele
 import { allowRoles, authMiddleware } from '../../middlewares/authentication';
 import { UserRole } from '../../../../domain/enums/user-role';
 import type { UpdateOrderStatusController } from '../../controllers/order/update-order-status-controller';
+import type { UpdateDeliveryOptionController } from '../../controllers/order/update-delivery-option-controller';
 
 export class OrderRouter {
   readonly router = Router();
@@ -21,6 +22,7 @@ export class OrderRouter {
     private readonly deleteOrderOfIdController: DeleteOrderOfIdController,
     private readonly undeleteOrderOfIdController: UndeleteOrderOfIdController,
     private readonly updateOrderStatusController: UpdateOrderStatusController,
+    private readonly updateDeliveryOptionController: UpdateDeliveryOptionController,
   ) {
     this.run();
   }
@@ -75,6 +77,15 @@ export class OrderRouter {
       allowRoles(UserRole.ADMIN),
       asyncRouteHandler(async (request, response) => {
         await this.updateOrderStatusController.handle(request, response);
+      }),
+    );
+
+    this.router.patch(
+      '/:id/delivery/option',
+      authMiddleware,
+      allowRoles(UserRole.ADMIN),
+      asyncRouteHandler(async (request, response) => {
+        await this.updateDeliveryOptionController.handle(request, response);
       }),
     );
 
