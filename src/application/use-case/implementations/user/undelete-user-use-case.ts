@@ -8,6 +8,7 @@ import type {
   UserModel,
   UserRepositories,
 } from '../../../repositories/user-repositories';
+import { HttpResponse } from '../../../response';
 import type { UndeleteUserOfIdUseCaseProtocol } from '../../protocols/user/undelete-user-of-id-use-case-protocol';
 
 export class UndeleteUserOfIdUseCase
@@ -20,7 +21,11 @@ export class UndeleteUserOfIdUseCase
   ): Promise<Either<BaseApiError, UndeleteUserOfIdUseCaseProtocol.Output>> {
     const userUndeleted = await this.userRespositories.undelete(input.id);
     if (!userUndeleted) {
-      return eitherUtils.left(new NotFoundApiError('user not found'));
+      return eitherUtils.left(
+        new NotFoundApiError(
+          HttpResponse.error('USER_NOT_FOUND', 'user not found'),
+        ),
+      );
     }
     return eitherUtils.right(UndeleteUserOfIdUseCase.output(userUndeleted));
   }

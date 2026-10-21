@@ -5,6 +5,7 @@ import {
   type Either,
 } from '../../../../common/api-erros/either-error';
 import type { ReviewRepositories } from '../../../repositories/review-repositories';
+import { HttpResponse } from '../../../response';
 import type { SoftDeleteReviewOfIdUseCaseProtocol } from '../../protocols/review/soft-delete-review-of-id-use-case-protocol';
 
 export class SoftDeleteReviewUseCase
@@ -17,7 +18,11 @@ export class SoftDeleteReviewUseCase
   ): Promise<Either<BaseApiError, SoftDeleteReviewOfIdUseCaseProtocol.Output>> {
     const review = await this.reviewRepositories.softDelete(input.id);
     if (!review) {
-      return eitherUtils.left(new NotFoundApiError('review not found'));
+      return eitherUtils.left(
+        new NotFoundApiError(
+          HttpResponse.error('REVIEW_NOT_FOUND', 'review not found'),
+        ),
+      );
     }
     return eitherUtils.right(review);
   }

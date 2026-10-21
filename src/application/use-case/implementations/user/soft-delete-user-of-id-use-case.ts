@@ -8,6 +8,7 @@ import type {
   UserModel,
   UserRepositories,
 } from '../../../repositories/user-repositories';
+import { HttpResponse } from '../../../response';
 import type { SoftDeleteUserOfIdUseCaseProtocol } from '../../protocols/user/soft-delete-user-of-id-use-case-protocol';
 
 export class SoftDeleteUserOfIdUseCase
@@ -19,7 +20,11 @@ export class SoftDeleteUserOfIdUseCase
   ): Promise<Either<BaseApiError, SoftDeleteUserOfIdUseCaseProtocol.Output>> {
     const userSoftDeleted = await this.userRepositories.softDelete(input.id);
     if (!userSoftDeleted) {
-      return eitherUtils.left(new NotFoundApiError('user not found'));
+      return eitherUtils.left(
+        new NotFoundApiError(
+          HttpResponse.error('USER_NOT_FOUND', 'user not found'),
+        ),
+      );
     }
     return eitherUtils.right(SoftDeleteUserOfIdUseCase.output(userSoftDeleted));
   }

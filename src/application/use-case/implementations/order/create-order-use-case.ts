@@ -68,6 +68,7 @@ export class CreateOrderUseCase
       }
       productsMap.set(product.id, product);
     }
+
     const totalPrice = input.orderItems.reduce((total, orderItem) => {
       const product = productsMap.get(orderItem.productId)!;
       return total + Number(product.price) + orderItem.quantity;

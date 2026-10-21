@@ -9,6 +9,7 @@ import { Review } from '../../../../domain/product/review';
 import type { ProductRepositories } from '../../../repositories/product-repositories';
 import type { ReviewRepositories } from '../../../repositories/review-repositories';
 import type { UserRepositories } from '../../../repositories/user-repositories';
+import { HttpResponse } from '../../../response';
 import type { CreateReviewUseCaseProtocol } from '../../protocols/review/create-review-use-case-protocol';
 
 export class CreateReviewUseCase
@@ -29,10 +30,18 @@ export class CreateReviewUseCase
       this.productRepositories.getOfId(productId),
     ]);
     if (!user) {
-      return eitherUtils.left(new NotFoundApiError('user not found'));
+      return eitherUtils.left(
+        new NotFoundApiError(
+          HttpResponse.error('USER_NOT_FOUND', 'user not found'),
+        ),
+      );
     }
     if (!product) {
-      return eitherUtils.left(new NotFoundApiError('product not found'));
+      return eitherUtils.left(
+        new NotFoundApiError(
+          HttpResponse.error('PRODUCT_NOT_FOUND', 'product not found'),
+        ),
+      );
     }
     const newReview = Review.create({
       rating: new Rating(rating),

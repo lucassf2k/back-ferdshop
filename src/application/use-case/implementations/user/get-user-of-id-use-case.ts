@@ -8,6 +8,7 @@ import type {
   UserModel,
   UserRepositories,
 } from '../../../repositories/user-repositories';
+import { HttpResponse } from '../../../response';
 import type { GetUserOfIdUseCaseProtocol } from '../../protocols/user/get-user-of-id-use-case-protocol';
 
 export class GetUserOfIdUseCase
@@ -19,7 +20,11 @@ export class GetUserOfIdUseCase
   ): Promise<Either<BaseApiError, GetUserOfIdUseCaseProtocol.Output>> {
     const user = await this.userRepositories.getOfId(input.id);
     if (!user) {
-      return eitherUtils.left(new BadRequestApiError('user not found'));
+      return eitherUtils.left(
+        new BadRequestApiError(
+          HttpResponse.error('USER_NOT_FOUND', 'user not found'),
+        ),
+      );
     }
     return eitherUtils.right(GetUserOfIdUseCase.output(user));
   }

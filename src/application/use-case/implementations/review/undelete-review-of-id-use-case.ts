@@ -5,6 +5,7 @@ import {
   type Either,
 } from '../../../../common/api-erros/either-error';
 import type { ReviewRepositories } from '../../../repositories/review-repositories';
+import { HttpResponse } from '../../../response';
 import type { UndeleteReviewOfIdUseCaseProtocol } from '../../protocols/review/undelete-review-of-id-use-case-protocol';
 
 export class UndeleteReviewOfIdUseCase
@@ -17,7 +18,11 @@ export class UndeleteReviewOfIdUseCase
   ): Promise<Either<BaseApiError, UndeleteReviewOfIdUseCaseProtocol.Output>> {
     const undeletedReview = await this.reviewRepositories.undelete(input.id);
     if (!undeletedReview) {
-      return eitherUtils.left(new NotFoundApiError('review not found'));
+      return eitherUtils.left(
+        new NotFoundApiError(
+          HttpResponse.error('REVIEW_NOT_FOUND', 'review not found'),
+        ),
+      );
     }
     return eitherUtils.right(undeletedReview);
   }
