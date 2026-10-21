@@ -3,6 +3,7 @@ import type { UpdateUserRoleUseCaseProtocol } from '../../../../application/use-
 import z from 'zod';
 import { User } from '../../../../domain/user';
 import { StatusCodeEnum } from '../../../../common/status-code-enum';
+import { HttpResponse } from '../../../../application/response';
 
 const zodRequestParamsValidation = z.object({
   id: z.uuid({ error: 'id is required and must be uuid' }),
@@ -24,6 +25,7 @@ export class UpdateUserRoleController {
     const { role } = zodRequestQueryValidation.parse(request.query);
     const output = await this.updateUserRoleUseCase.execute({ id, role });
     if (output.isLeft()) throw output.value;
-    return response.status(StatusCodeEnum.OK).json(output.value);
+    const httpResponse = HttpResponse.ok(output.value);
+    return response.status(StatusCodeEnum.OK).json(httpResponse);
   }
 }

@@ -23,7 +23,6 @@ export class SearchProductController {
       pagiantion: { page: input.page, pageSize: input.pageSize },
       name: input.name,
       categoryId: input.categoryId,
-      stock: input.stock,
     });
     if (output.isLeft()) throw output.value;
     const httpResponse = HttpResponse.ok(output.value);

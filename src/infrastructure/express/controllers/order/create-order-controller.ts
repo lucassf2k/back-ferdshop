@@ -4,6 +4,7 @@ import type { CreateOrderUseCaseProtocol } from '../../../../application/use-cas
 import { StatusCodeEnum } from '../../../../common/status-code-enum';
 import { DeliveryOptionEnum } from '../../../../domain/enums/order';
 import { PaymentMethodEnum } from '../../../../domain/enums/payment';
+import { HttpResponse } from '../../../../application/response';
 
 const zodOrderItemValidation = z.object({
   quantity: z
@@ -64,16 +65,15 @@ export class CreateOrderController {
   ) {}
 
   async handle(request: Request, response: Response): Promise<Response> {
-    console.log('CONTROLLER', request.body);
     const userId = request.user.id;
     const input = zodRequestValidation.parse(request.body);
-    console.log('CONTROLLER Input', input);
     const output = await this.createOrderUseCase.execute({ userId, ...input });
     if (output.isLeft()) throw output.value;
     const url = `${request.baseUrl}/${output.value.id}`;
+    const httpResponse = HttpResponse.ok({ id: output.value.id });
     return response
       .status(StatusCodeEnum.CREATED)
       .location(url)
-      .json({ id: output.value.id });
+      .json(httpResponse);
   }
 }

@@ -2,6 +2,7 @@ import type { Request, Response } from 'express';
 import type { UpdateProductUseCaseProtocol } from '../../../../application/use-case/protocols/products/update-product-use-case-protocol';
 import z from 'zod';
 import { StatusCodeEnum } from '../../../../common/status-code-enum';
+import { HttpResponse } from '../../../../application/response';
 
 const zodRequestParamsValidation = z.object({
   id: z.uuid({ error: 'id is required and must be uuid' }),
@@ -32,6 +33,7 @@ export class UpdateProductController {
       categoryId,
     });
     if (output.isLeft()) throw output.value;
-    return response.status(StatusCodeEnum.OK).json(output.value);
+    const httpResponse = HttpResponse.ok(output.value);
+    return response.status(StatusCodeEnum.OK).json(httpResponse);
   }
 }

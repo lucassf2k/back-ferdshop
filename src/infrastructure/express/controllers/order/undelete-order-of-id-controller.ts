@@ -3,6 +3,7 @@ import type { Request, Response } from 'express';
 import type { UndeleteOrderOfIdUseCaseProtocol } from '../../../../application/use-case/protocols/order/undelete-order-of-id-use-case-protocol';
 import z from 'zod';
 import { StatusCodeEnum } from '../../../../common/status-code-enum';
+import { HttpResponse } from '../../../../application/response';
 
 const zodRequestValidation = z.object({
   id: z.uuid({ error: 'id is required and must be uuid' }),
@@ -17,6 +18,7 @@ export class UndeleteOrderOfIdController {
     const input = zodRequestValidation.parse(request.params);
     const output = await this.undeleteOrderOfIdUseCase.execute(input);
     if (output.isLeft()) throw output.value;
-    return response.status(StatusCodeEnum.OK).json(output.value);
+    const httpResponse = HttpResponse.ok(output.value);
+    return response.status(StatusCodeEnum.OK).json(httpResponse);
   }
 }

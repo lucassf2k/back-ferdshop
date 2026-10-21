@@ -1,6 +1,7 @@
 import type { Request, Response } from 'express';
 import type { SoftDeleteUserOfIdUseCaseProtocol } from '../../../../application/use-case/protocols/user/soft-delete-user-of-id-use-case-protocol';
 import { StatusCodeEnum } from '../../../../common/status-code-enum';
+import { HttpResponse } from '../../../../application/response';
 
 export class SoftDeleteUserOfIdController {
   constructor(
@@ -13,6 +14,7 @@ export class SoftDeleteUserOfIdController {
       id: userId,
     });
     if (output.isLeft()) throw output.value;
-    return response.status(StatusCodeEnum.OK).json(output.value);
+    const httpResponse = HttpResponse.ok(output.value);
+    return response.status(StatusCodeEnum.OK).json(httpResponse);
   }
 }

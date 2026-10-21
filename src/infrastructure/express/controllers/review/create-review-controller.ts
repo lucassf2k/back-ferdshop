@@ -2,6 +2,7 @@ import type { Request, Response } from 'express';
 import z from 'zod';
 import type { CreateReviewUseCaseProtocol } from '../../../../application/use-case/protocols/review/create-review-use-case-protocol';
 import { StatusCodeEnum } from '../../../../common/status-code-enum';
+import { HttpResponse } from '../../../../application/response';
 
 const zodRequestValidation = z.object({
   rating: z
@@ -23,9 +24,10 @@ export class CreateReviewController {
     const output = await this.createReviewUseCase.execute(input);
     if (output.isLeft()) throw output.value;
     const url = `${request.baseUrl}/${output.value.id}`;
+    const httpResponse = HttpResponse.ok({ id: output.value.id });
     return response
       .status(StatusCodeEnum.CREATED)
       .location(url)
-      .json({ id: output.value.id });
+      .json(httpResponse);
   }
 }

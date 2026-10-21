@@ -39,6 +39,10 @@ export const appStatusCode = {
     status: 404,
     code: 'ORDER_ITEM_NOT_FOUND',
   },
+  reviewNotFound: {
+    status: 404,
+    code: 'REVIEW_NOT_FOUND',
+  },
   unauthorized: {
     status: 401,
     code: 'UNAUTHORIZED',

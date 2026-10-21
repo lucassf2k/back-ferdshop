@@ -2,6 +2,7 @@ import type { Request, Response } from 'express';
 import type { GetAllOrdersOfUserIdUseCaseProtocol } from '../../../../application/use-case/protocols/order/get-all-orders-of-user-id-use-case-protocol';
 import z from 'zod';
 import { StatusCodeEnum } from '../../../../common/status-code-enum';
+import { HttpResponse } from '../../../../application/response';
 
 const zodRequestValidation = z.object({
   page: z.number({ error: 'page must be number' }),
@@ -21,6 +22,7 @@ export class GetAllOrdersOfUserIdController {
       pagination,
     });
     if (output.isLeft()) throw output.value;
-    return response.status(StatusCodeEnum.OK).json(output.value);
+    const httpResponse = HttpResponse.ok(output.value);
+    return response.status(StatusCodeEnum.OK).json(httpResponse);
   }
 }
