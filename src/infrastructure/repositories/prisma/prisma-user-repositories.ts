@@ -35,6 +35,9 @@ class PrismaUserRepositories implements UserRepositories {
     const allUsersPromise = prisma.user.findMany({
       skip: option.skip,
       take: option.take,
+      orderBy: {
+        createdAt: 'desc',
+      },
     });
     const countOfUsersPromise = prisma.user.count();
     const [allUsers, total] = await Promise.all([

@@ -60,6 +60,9 @@ class PrismaProductRepositories implements ProductRepositories {
       where: {
         isDeleted: false,
       },
+      orderBy: {
+        createdAt: 'desc',
+      },
       skip: option.skip,
       take: option.take,
       include: {
@@ -184,6 +187,9 @@ class PrismaProductRepositories implements ProductRepositories {
         AND: {
           isDeleted: false,
         },
+      },
+      orderBy: {
+        stock: 'desc',
       },
       skip: option.skip,
       take: option.take,

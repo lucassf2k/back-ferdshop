@@ -53,6 +53,9 @@ class PrismaOrderRepositories implements OrderRepositories {
       where: {
         isDeleted: false,
       },
+      orderBy: {
+        createdAt: 'desc',
+      },
       skip: option.skip,
       take: option.take,
       include: {

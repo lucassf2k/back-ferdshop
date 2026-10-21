@@ -32,6 +32,9 @@ class PrismaCategoryRepositories implements CategoryRepositories {
       where: {
         isDeleted: false,
       },
+      orderBy: {
+        createdAt: 'desc',
+      },
     });
     if (allCategories.length === 0) return [];
     return allCategories.map(categoryMapper.toCategoryModel);
