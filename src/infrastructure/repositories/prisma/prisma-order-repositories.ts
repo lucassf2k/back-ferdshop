@@ -5,6 +5,8 @@ import type {
   OrderModelWithProducts,
   OrderRepositories,
 } from '../../../application/repositories/order-repositories';
+import { HttpResponse } from '../../../application/response';
+import { ConflictApiError } from '../../../common/api-erros';
 import type { DeliveryOptionEnum } from '../../../domain/enums/order';
 import { OrderStatusEnum } from '../../../domain/enums/order-status-enum';
 import type {
@@ -17,12 +19,46 @@ import { orderMapper } from './mappers/order-mapper';
 
 class PrismaOrderRepositories implements OrderRepositories {
   async save(data: Order): Promise<OrderModel> {
-    const newOrder = await prisma.order.create({
-      data: orderMapper.toSavePrisma(data),
-      include: {
-        items: true,
-        payment: true,
-      },
+    const newOrder = await prisma.$transaction(async (tx) => {
+      const requestedQuantities = new Map<string, number>();
+      for (const item of data.props.orderItems) {
+        const currentQuantity =
+          requestedQuantities.get(item.props.productId) ?? 0;
+        requestedQuantities.set(
+          item.props.productId,
+          currentQuantity + item.props.quantity,
+        );
+      }
+      for (const [productId, quantity] of requestedQuantities) {
+        const result = await tx.product.updateMany({
+          where: {
+            id: productId,
+            stock: {
+              gte: quantity,
+            },
+          },
+          data: {
+            stock: {
+              decrement: quantity,
+            },
+          },
+        });
+        if (result.count !== 1) {
+          throw new ConflictApiError(
+            HttpResponse.error(
+              'INSUFFICIENT_STOCK',
+              'insufficient stock error',
+            ),
+          );
+        }
+      }
+      return tx.order.create({
+        data: orderMapper.toSavePrisma(data),
+        include: {
+          items: true,
+          payment: true,
+        },
+      });
     });
     return orderMapper.toOrderModel(newOrder);
   }

@@ -34,7 +34,6 @@ export class CreateOrderUseCase
   async execute(
     input: CreateOrderUseCaseProtocol.Input,
   ): Promise<Either<BaseApiError, CreateOrderUseCaseProtocol.Output>> {
-    console.log(input);
     const productPromises: Promise<ProductModel | undefined>[] = [];
     for (const orderItem of input.orderItems) {
       productPromises.push(
@@ -49,29 +48,29 @@ export class CreateOrderUseCase
       const httpError = HttpResponse.error('USER_NOT_FOUND', 'user not found');
       return eitherUtils.left(new NotFoundApiError(httpError));
     }
-    const isProductNotFound = products.some((product) => !product);
-    if (isProductNotFound) {
+    const validProducts = products.filter(
+      (product): product is ProductModel => product !== null,
+    );
+    if (validProducts.length !== products.length) {
       const httpError = HttpResponse.error(
         'PRODUCT_NOT_FOUND',
         'product not found',
       );
       return eitherUtils.left(new BadRequestApiError(httpError));
     }
-    const productsMap = new Map<string, ProductModel>();
-    for (const product of products) {
-      if (!product) {
-        const httpError = HttpResponse.error(
-          'PRODUCT_NOT_FOUND',
-          'product not found',
-        );
-        return eitherUtils.left(new BadRequestApiError(httpError));
-      }
-      productsMap.set(product.id, product);
+    const productsMap = new Map(
+      validProducts.map((product) => [product.id, product]),
+    );
+    if (!this.hasSufficientStock(input.orderItems, productsMap)) {
+      const httpError = HttpResponse.error(
+        'INSUFFICIENT_STOCK',
+        'insufficient stock',
+      );
+      return eitherUtils.left(new BadRequestApiError(httpError));
     }
-
     const totalPrice = input.orderItems.reduce((total, orderItem) => {
       const product = productsMap.get(orderItem.productId)!;
-      return total + Number(product.price) + orderItem.quantity;
+      return total + Number(product.price) * orderItem.quantity;
     }, 0);
     const newOrder = Order.create({
       totalPrice,
@@ -101,15 +100,35 @@ export class CreateOrderUseCase
       status: OrderStatusEnum.PENDING,
       latitude: input.latitude,
       longitude: input.longitude,
-      orderItems: input.orderItems.map((orderItem) =>
-        OrderItem.create({
+      orderItems: input.orderItems.map((orderItem) => {
+        const product = productsMap.get(orderItem.productId)!;
+        return OrderItem.create({
           productId: orderItem.productId,
           quantity: orderItem.quantity,
-          unitPrice: orderItem.unitPrice,
-        }),
-      ),
+          unitPrice: Number(product.price),
+        });
+      }),
     });
     const savedOrder = await this.orderRepositories.save(newOrder);
     return eitherUtils.right(orderModelToControllerMapper(savedOrder));
+  }
+
+  private hasSufficientStock(
+    orderItems: CreateOrderUseCaseProtocol.Input['orderItems'],
+    productMap: Map<string, ProductModel>,
+  ): boolean {
+    const requestedQuantities = new Map<string, number>();
+    for (const orderItem of orderItems) {
+      const currentQuantity = requestedQuantities.get(orderItem.productId) ?? 0;
+      requestedQuantities.set(
+        orderItem.productId,
+        currentQuantity + orderItem.quantity,
+      );
+    }
+    for (const [productId, requestedQuantity] of requestedQuantities) {
+      const product = productMap.get(productId)!;
+      if (!product || product.stock < requestedQuantity) return false;
+    }
+    return true;
   }
 }

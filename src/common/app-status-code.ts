@@ -99,4 +99,8 @@ export const appStatusCode = {
     status: 500,
     code: 'ERROR_UPDATING_USER_FAILED',
   },
+  insufficientStock: {
+    status: 409,
+    code: 'INSUFFICIENT_STOCK',
+  },
 } as const;
