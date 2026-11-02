@@ -1,8 +1,9 @@
 import type { OrganizationModel } from '../../../../application/repositories/organization-repositories';
+import { PaymentMethodEnum } from '../../../../domain/enums/payment';
 import type { Organization } from '../../../../domain/organization';
 import type { Prisma } from '../../../../prisma/client';
 
-function toPrisma(data: Organization) {
+function toPrisma(data: Organization): Prisma.OrganizationUpsertArgs['create'] {
   return {
     email: data.props.email,
     name: data.props.name,
@@ -14,12 +15,24 @@ function toPrisma(data: Organization) {
     state: data.props.state,
     whatsapp: data.props.whatsapp,
     instagram: data.props.instagram,
+    paymentMethods: data.props.paymentMethods,
   };
 }
 
-function toDomain(
-  raw: Prisma.OrganizationGetPayload<object>,
-): OrganizationModel {
+type OrganizationPrismaOutpur = Prisma.OrganizationGetPayload<object>;
+
+function toDomain(raw: OrganizationPrismaOutpur): OrganizationModel {
+  const paymentMethods = raw.paymentMethods.map((method) => {
+    switch (method) {
+      case 'CASH':
+        return PaymentMethodEnum.CASH;
+      case 'CARD':
+        return PaymentMethodEnum.CARD;
+      case 'PIX':
+        return PaymentMethodEnum.PIX;
+    }
+  });
+
   return {
     id: raw.id,
     name: raw.name,
@@ -34,6 +47,7 @@ function toDomain(
     state: raw.state,
     whatsapp: raw.whatsapp,
     instagram: raw.instagram,
+    paymentMethods,
     createdAt: raw.createdAt,
     updatedAt: raw.updatedAt,
   };

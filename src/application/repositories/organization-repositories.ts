@@ -1,3 +1,4 @@
+import type { PaymentMethodEnum } from '../../domain/enums/payment';
 import type { Coordinates, Organization } from '../../domain/organization';
 
 export type OrganizationModel = {
@@ -11,6 +12,7 @@ export type OrganizationModel = {
   state: string;
   whatsapp: string;
   instagram: string;
+  paymentMethods: PaymentMethodEnum[];
   createdAt: Date;
   updatedAt: Date;
 };

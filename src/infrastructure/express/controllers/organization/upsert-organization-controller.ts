@@ -3,6 +3,7 @@ import type { UpsertOrganizationUseCaseProtocol } from '../../../../application/
 import z from 'zod';
 import { StatusCodeEnum } from '../../../../common/status-code-enum';
 import { HttpResponse } from '../../../../application/response';
+import { PaymentMethodEnum } from '../../../../domain/enums/payment';
 
 const zodRequestValidation = z.object({
   name: z
@@ -29,6 +30,11 @@ const zodRequestValidation = z.object({
   instagram: z.string({ error: 'instagram must be string' }).min(1, {
     error: 'instagram is required',
   }),
+  paymentMethods: z.array(
+    z.enum(PaymentMethodEnum, {
+      error: 'paymentMethods is invalid',
+    }),
+  ),
 });
 
 export class UpsertOrganizationController {
@@ -51,6 +57,7 @@ export class UpsertOrganizationController {
         latitude: data.latitude,
         longitude: data.longitude,
       },
+      paymentMethods: data.paymentMethods,
     });
     const httpResponse = HttpResponse.ok(output.value);
     return response.status(StatusCodeEnum.OK).json(httpResponse);

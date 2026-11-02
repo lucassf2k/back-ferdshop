@@ -210,6 +210,8 @@ model Organization {
   latitude  Float
   longitude Float
 
+  paymentMethods PaymentMethod[] @default([]) @map("payment_methods")
+
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 

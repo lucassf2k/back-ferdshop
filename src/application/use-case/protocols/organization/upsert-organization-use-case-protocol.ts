@@ -1,4 +1,5 @@
 import type { Either } from '../../../../common/api-erros/either-error';
+import type { PaymentMethodEnum } from '../../../../domain/enums/payment';
 import type { OrganizationModel } from '../../../repositories/organization-repositories';
 
 export namespace UpsertOrganizationUseCaseProtocol {
@@ -15,6 +16,7 @@ export namespace UpsertOrganizationUseCaseProtocol {
     state: string;
     whatsapp: string;
     instagram: string;
+    paymentMethods: PaymentMethodEnum[];
   };
 
   export type Output = OrganizationModel;

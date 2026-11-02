@@ -26,6 +26,7 @@ export class UpsertOrganizationUseCase
       state: input.state,
       whatsapp: input.whatsapp,
       instagram: input.instagram,
+      paymentMethods: input.paymentMethods,
     });
     const output = await this.organizationRepositories.upsert(newOrganization);
     return eitherUtils.right(output);
