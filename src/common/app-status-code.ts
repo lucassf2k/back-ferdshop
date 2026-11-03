@@ -103,4 +103,8 @@ export const appStatusCode = {
     status: 409,
     code: 'INSUFFICIENT_STOCK',
   },
+  errorSendWhatsappMessage: {
+    status: 503,
+    code: 'ERROR_SEND_WHATSAPP_MESSAGE',
+  },
 } as const;

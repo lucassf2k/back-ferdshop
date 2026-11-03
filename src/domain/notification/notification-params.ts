@@ -3,7 +3,7 @@ export type NotificationParams = {
   orderId: string;
   totalPrice: number;
   items: {
-    productId: string;
+    productName: string;
     quantity: number;
     unitPrice: number;
   }[];

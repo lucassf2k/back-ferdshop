@@ -94,4 +94,5 @@ export interface OrderRepositories {
   updatePaymentStatus(id: string, status: PaymentStatusEnum): Promise<string>;
   updateDeliveryOption(id: string, status: DeliveryOptionEnum): Promise<string>;
   updatePaymentMethod(id: string, method: PaymentMethodEnum): Promise<string>;
+  getAllPhonesOfUsers(): Promise<{ phones: Set<string> }>;
 }

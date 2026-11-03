@@ -9,9 +9,12 @@ import {
 } from '../../../../common/api-erros/either-error';
 import { OrderStatusEnum } from '../../../../domain/enums/order-status-enum';
 import { PaymentStatusEnum } from '../../../../domain/enums/payment';
+import { createNotificationMessage } from '../../../../domain/notification/message-template';
+import type { NotificationParams } from '../../../../domain/notification/notification-params';
 import { Order } from '../../../../domain/order';
 import { OrderItem } from '../../../../domain/order/order-item';
 import { Payment } from '../../../../domain/payment';
+import type { WhatsappApiGatewayProtocol } from '../../../../domain/whastapp';
 import type { OrderRepositories } from '../../../repositories/order-repositories';
 import type {
   ProductModel,
@@ -29,6 +32,7 @@ export class CreateOrderUseCase
     private readonly orderRepositories: OrderRepositories,
     private readonly userRepositories: UserRepositories,
     private readonly productRepositories: ProductRepositories,
+    private readonly evolutionWhatsappApi: WhatsappApiGatewayProtocol,
   ) {}
 
   async execute(
@@ -110,6 +114,24 @@ export class CreateOrderUseCase
       }),
     });
     const savedOrder = await this.orderRepositories.save(newOrder);
+    if (input.sendWhastsapp) {
+      const items: NotificationParams['items'] = [] as const;
+      for (const product of productsMap.values()) {
+        const order = input.orderItems.find((o) => o.productId === product.id)!;
+        items.push({
+          productName: product.name,
+          quantity: order.quantity,
+          unitPrice: Number(product.price),
+        });
+      }
+      const message = createNotificationMessage('ORDER_CREATED', {
+        customerName: input.customerName,
+        orderId: savedOrder.id,
+        items: items,
+        totalPrice: totalPrice,
+      });
+      await this.evolutionWhatsappApi.send(savedOrder.customerPhone, message);
+    }
     return eitherUtils.right(orderModelToControllerMapper(savedOrder));
   }
 

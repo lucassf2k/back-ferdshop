@@ -9,6 +9,7 @@ import { UpdateOrderStatusUseCase } from '../../../../application/use-case/imple
 import { prismaOrderRepositories } from '../../../repositories/prisma/prisma-order-repositories';
 import { prismaProductRepositories } from '../../../repositories/prisma/prisma-product-repositories';
 import { prismaUserRepositories } from '../../../repositories/prisma/prisma-user-repositories';
+import { whatsappEvolutionApi } from '../../../services/whatsapp/evolution-api';
 import { CreateOrderController } from '../../controllers/order/create-order-controller';
 import { DeleteOrderOfIdController } from '../../controllers/order/delete-order-of-id-controller';
 import { GetAllOrdersController } from '../../controllers/order/get-all-orders-controller';
@@ -23,6 +24,7 @@ const createOrderUseCase = new CreateOrderUseCase(
   prismaOrderRepositories,
   prismaUserRepositories,
   prismaProductRepositories,
+  whatsappEvolutionApi,
 );
 const createOrderController = new CreateOrderController(createOrderUseCase);
 

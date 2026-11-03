@@ -4,8 +4,8 @@ import type { NotificationParams } from './notification-params';
 const orderItemsMessage = (items: NotificationParams['items']) => {
   return items
     .map(
-      ({ productId, quantity, unitPrice }) =>
-        `- ${productId} | Quantidade: ${quantity} | R$ ${unitPrice.toFixed(2)}`,
+      ({ productName, quantity, unitPrice }) =>
+        `- ${productName} | Quantidade: ${quantity} | R$ ${unitPrice.toFixed(2)}`,
     )
     .join('\n');
 };
@@ -78,3 +78,5 @@ export const createNotificationMessage = (
 ): string => {
   return notificationMessages[type](params);
 };
+
+export type MessageTemplate = typeof createNotificationMessage;

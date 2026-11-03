@@ -280,6 +280,24 @@ class PrismaOrderRepositories implements OrderRepositories {
     if (!payment) return '';
     return payment.id;
   }
+
+  async getAllPhonesOfUsers(): Promise<{ phones: Set<string> }> {
+    const orders = await prisma.orderItem.findMany({
+      where: {
+        isDeleted: false,
+      },
+      select: {
+        order: {
+          select: {
+            customerPhone: true,
+          },
+        },
+      },
+    });
+    const phones = new Set<string>();
+    for (const order of orders) phones.add(order.order.customerPhone);
+    return { phones };
+  }
 }
 
 export const prismaOrderRepositories = new PrismaOrderRepositories();
