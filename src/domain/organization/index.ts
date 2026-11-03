@@ -1,5 +1,6 @@
 import { getUUIDV7 } from '../../infrastructure/services/id-services';
 import { Entity } from '../entity';
+import type { PaymentMethodEnum } from '../enums/payment';
 
 export type Coordinates = {
   latitude: number;
@@ -16,6 +17,7 @@ type OrganizationProps = {
   state: string;
   whatsapp: string;
   instagram: string;
+  paymentMethods: PaymentMethodEnum[];
 };
 
 export class Organization extends Entity<OrganizationProps> {
