@@ -49,6 +49,16 @@ enum PaymentProvider {
   ABACATE
 }
 
+enum WeekDay {
+  MONDAY
+  TUESDAY
+  WEDMESDAY
+  THURSDAY
+  FRIDAY
+  SATURDAY
+  SUNDAY
+}
+
 model Category {
   id        String    @id
   name      String    @unique
@@ -211,9 +221,22 @@ model Organization {
   longitude Float
 
   paymentMethods PaymentMethod[] @default([]) @map("payment_methods")
+  businessHours  BusinessHour[]
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
   @@map("organizations")
+}
+
+model BusinessHour {
+  id       String  @id
+  day      WeekDay @unique
+  hours    String
+  isClosed Boolean @default(false) @map("is_closed")
+
+  organizationId Boolean      @default(true) @map("organization_id")
+  organization   Organization @relation(fields: [organizationId], references: [id])
+
+  @@map("business_hours")
 }
