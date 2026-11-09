@@ -1,6 +1,7 @@
 import { getUUIDV7 } from '../../infrastructure/services/id-services';
 import { Entity } from '../entity';
 import type { PaymentMethodEnum } from '../enums/payment';
+import type { BusinessHours } from './business-hours';
 
 export type Coordinates = {
   latitude: number;
@@ -18,10 +19,11 @@ type OrganizationProps = {
   whatsapp: string;
   instagram: string;
   paymentMethods: PaymentMethodEnum[];
+  businessHours: BusinessHours[];
 };
 
 export class Organization extends Entity<OrganizationProps> {
-  constructor(id: string, props: OrganizationProps) {
+  private constructor(id: string, props: OrganizationProps) {
     super(id, props);
   }
 

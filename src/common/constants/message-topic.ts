@@ -1,1 +1,3 @@
-export type MessageTopic = 'notification.whatsapp';
+export enum MessageTopic {
+  WHATSAPP_SEND_MESSAGE = 'whatsapp.send.message',
+}

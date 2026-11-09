@@ -13,6 +13,11 @@ export type OrganizationModel = {
   whatsapp: string;
   instagram: string;
   paymentMethods: PaymentMethodEnum[];
+  businessHours: {
+    day: string;
+    hour: string;
+    isClosed: boolean;
+  }[];
   createdAt: Date;
   updatedAt: Date;
 };
