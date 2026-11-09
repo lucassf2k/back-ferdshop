@@ -15,6 +15,9 @@ class PrismaOrganizationRepositories implements OrganizationRepositories {
       },
       update: prismaData,
       create: prismaData,
+      include: {
+        businessHours: true,
+      },
     });
     return organizationMapper.toDomain(organization);
   }
@@ -22,6 +25,9 @@ class PrismaOrganizationRepositories implements OrganizationRepositories {
     const organization = await prisma.organization.findUnique({
       where: {
         id: true,
+      },
+      include: {
+        businessHours: true,
       },
     });
     if (!organization) return undefined;

@@ -1,7 +1,37 @@
 import type { OrganizationModel } from '../../../../application/repositories/organization-repositories';
 import { PaymentMethodEnum } from '../../../../domain/enums/payment';
-import type { Organization } from '../../../../domain/organization';
-import type { Prisma } from '../../../../prisma/client';
+import { type Organization } from '../../../../domain/organization';
+import { WeekDaysEnum } from '../../../../domain/organization/business-hours';
+import { WeekDay, type Prisma } from '../../../../../generated/prisma/client';
+
+const WEEK_DAY_PRISMA_MAPPER: Record<WeekDaysEnum, WeekDay> = {
+  [WeekDaysEnum.MONDAY]: WeekDay.MONDAY,
+  [WeekDaysEnum.TUESDAY]: WeekDay.TUESDAY,
+  [WeekDaysEnum.WEDNESDAY]: WeekDay.WEDMESDAY,
+  [WeekDaysEnum.THURSDAY]: WeekDay.THURSDAY,
+  [WeekDaysEnum.FRIDAY]: WeekDay.FRIDAY,
+  [WeekDaysEnum.SATURDAY]: WeekDay.SATURDAY,
+  [WeekDaysEnum.SUNDAY]: WeekDay.SUNDAY,
+};
+
+const WEEK_DAY_PRISMA_MAPPER_REVERSE: Record<WeekDay, WeekDaysEnum> = {
+  [WeekDay.MONDAY]: WeekDaysEnum.MONDAY,
+  [WeekDay.TUESDAY]: WeekDaysEnum.TUESDAY,
+  [WeekDay.WEDMESDAY]: WeekDaysEnum.WEDNESDAY,
+  [WeekDay.THURSDAY]: WeekDaysEnum.THURSDAY,
+  [WeekDay.FRIDAY]: WeekDaysEnum.FRIDAY,
+  [WeekDay.SATURDAY]: WeekDaysEnum.SATURDAY,
+  [WeekDay.SUNDAY]: WeekDaysEnum.SUNDAY,
+};
+
+const mapperWeekDayEnumToPrisma = (organization: Organization) => {
+  return organization.props.businessHours.map((b) => ({
+    id: b._id,
+    day: WEEK_DAY_PRISMA_MAPPER[b.props.day],
+    hours: b.props.hour,
+    isClosed: b.props.isClosed,
+  }));
+};
 
 function toPrisma(data: Organization): Prisma.OrganizationUpsertArgs['create'] {
   return {
@@ -16,10 +46,17 @@ function toPrisma(data: Organization): Prisma.OrganizationUpsertArgs['create'] {
     whatsapp: data.props.whatsapp,
     instagram: data.props.instagram,
     paymentMethods: data.props.paymentMethods,
+    businessHours: {
+      createMany: {
+        data: mapperWeekDayEnumToPrisma(data),
+      },
+    },
   };
 }
 
-type OrganizationPrismaOutpur = Prisma.OrganizationGetPayload<object>;
+type OrganizationPrismaOutpur = Prisma.OrganizationGetPayload<{
+  include: { businessHours: true };
+}>;
 
 function toDomain(raw: OrganizationPrismaOutpur): OrganizationModel {
   const paymentMethods = raw.paymentMethods.map((method) => {
@@ -48,6 +85,13 @@ function toDomain(raw: OrganizationPrismaOutpur): OrganizationModel {
     whatsapp: raw.whatsapp,
     instagram: raw.instagram,
     paymentMethods,
+    businessHours: raw.businessHours.map((b) => {
+      return {
+        day: WEEK_DAY_PRISMA_MAPPER_REVERSE[b.day],
+        hour: b.hours,
+        isClosed: b.isClosed,
+      };
+    }),
     createdAt: raw.createdAt,
     updatedAt: raw.updatedAt,
   };

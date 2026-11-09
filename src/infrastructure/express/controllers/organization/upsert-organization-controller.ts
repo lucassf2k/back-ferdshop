@@ -4,6 +4,10 @@ import z from 'zod';
 import { StatusCodeEnum } from '../../../../common/status-code-enum';
 import { HttpResponse } from '../../../../application/response';
 import { PaymentMethodEnum } from '../../../../domain/enums/payment';
+import {
+  BusinessHours,
+  WeekDaysEnum,
+} from '../../../../domain/organization/business-hours';
 
 const zodRequestValidation = z.object({
   name: z
@@ -35,6 +39,16 @@ const zodRequestValidation = z.object({
       error: 'paymentMethods is invalid',
     }),
   ),
+  businessHours: z.array(
+    z.object({
+      day: z.enum(WeekDaysEnum, {
+        error:
+          'day is invalid. Must be MONDAY, TUESDAY, WEDNESDAY, THURSDAY, FRIDAY, SATURDAY or SUNDAY',
+      }),
+      hour: z.string({ error: 'hours must be string' }),
+      isClosed: z.boolean({ error: 'isClosed must be boolean' }),
+    }),
+  ),
 });
 
 export class UpsertOrganizationController {
@@ -58,6 +72,13 @@ export class UpsertOrganizationController {
         longitude: data.longitude,
       },
       paymentMethods: data.paymentMethods,
+      businessHours: data.businessHours.map((b) => {
+        return BusinessHours.create({
+          day: b.day,
+          hour: b.hour,
+          isClosed: b.isClosed,
+        });
+      }),
     });
     const httpResponse = HttpResponse.ok(output.value);
     return response.status(StatusCodeEnum.OK).json(httpResponse);

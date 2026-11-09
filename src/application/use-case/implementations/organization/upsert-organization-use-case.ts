@@ -27,6 +27,7 @@ export class UpsertOrganizationUseCase
       whatsapp: input.whatsapp,
       instagram: input.instagram,
       paymentMethods: input.paymentMethods,
+      businessHours: input.businessHours,
     });
     const output = await this.organizationRepositories.upsert(newOrganization);
     return eitherUtils.right(output);
