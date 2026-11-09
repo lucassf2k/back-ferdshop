@@ -4,6 +4,7 @@ import { routes } from './routes';
 import { errorHandler } from './middlewares/error-handler';
 import { swaggerConfig } from '../services/swagger';
 import cookieParser from 'cookie-parser';
+import { Env } from '../configurations/environment';
 
 export class ExpressApplication {
   static run(): void {
@@ -12,7 +13,7 @@ export class ExpressApplication {
     app.use(cookieParser());
     app.use(
       cors({
-        origin: 'http://localhost:5173',
+        origin: Env.FRONTEND_URL,
         credentials: true,
       }),
     );

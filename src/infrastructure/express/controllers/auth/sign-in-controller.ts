@@ -25,8 +25,8 @@ export class SignInController {
     const { token } = output.value;
     response.cookie(TOKEN_KEY, token, {
       httpOnly: true,
-      secure: false,
-      sameSite: 'lax',
+      secure: true,
+      sameSite: 'none',
       maxAge: TOKEN_MAX_AGE,
     });
     return response.status(StatusCodeEnum.OK).json(httpResponse);

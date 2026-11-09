@@ -8,6 +8,7 @@ const EnvSchema = z.object({
   DATABASE_URL: z.string().min(1),
   EVOLUTION_API_KEY: z.string().min(1).default(randomBytes(32).toString('hex')),
   RABBITMQ_URL: z.string().min(1).default('amqp://localhost:5672'),
+  FRONTEND_URL: z.string().min(1).default('http://localhost:5173'),
 });
 
 export const Env = EnvSchema.parse(process.env);
